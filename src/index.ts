@@ -1,15 +1,18 @@
 import 'dotenv/config';
-import { Client } from 'discord.js';
-import { handleMsgSent } from './Events/MessageSent';
+import { ActivityType, GatewayIntentBits } from 'discord.js';
+import { SapphireClient } from '@sapphire/framework';
 
-const client = new Client({
-  intents: ['Guilds', 'GuildMessages', 'GuildMembers', 'MessageContent'],
+const client = new SapphireClient({
+  intents: [
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+  ],
+  presence: {
+    status: 'dnd',
+    activities: [{ name: 'with fire!', type: ActivityType.Playing }],
+  },
+  loadMessageCommandListeners: true,
 });
-
-client.on('ready', (c) => {
-  console.log(`Bot loaded as ${c.user.tag}`);
-});
-
-client.on('messageCreate', (message) => handleMsgSent(message));
 
 client.login(process.env.TOKEN);
