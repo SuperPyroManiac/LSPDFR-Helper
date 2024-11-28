@@ -6,8 +6,8 @@ export class Error {
   pattern?: string;
   solution?: string;
   description?: string;
-  stringMatch?: boolean;
-  level?: Level;
+  stringMatch: boolean = false;
+  level!: Level;
   pluginList: Plugin[] = [];
 
   clone(): Error {

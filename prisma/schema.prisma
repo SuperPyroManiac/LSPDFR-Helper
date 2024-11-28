@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+enum PluginType {
+  LSPDFR
+  RPH
+  ASI
+  SHV
+  SHVDN
+  LIBRARY
+}
+
+enum State {
+  NORMAL
+  EXTERNAL
+  BROKEN
+  IGNORE
+}
+
+enum Level {
+  PMSG
+  PIMG
+  XTRA
+  WARN
+  SEVERE
+  CRITICAL
+}
+
+model plugins {
+  name        String     @id
+  dname       String
+  description String?
+  version     String?
+  eaVersion   String?
+  id          Int?
+  link        String?
+  type        PluginType
+  state       State
+}
+
+model errors {
+  id          Int     @id @default(autoincrement())
+  pattern     String?
+  solution    String?
+  description String?
+  stringMatch Boolean
+  level       Level
+}

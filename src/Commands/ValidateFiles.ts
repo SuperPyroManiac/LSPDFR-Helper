@@ -1,5 +1,5 @@
 import { Command } from '@sapphire/framework';
-import { ApplicationCommandType, ContextMenuCommandType } from 'discord.js';
+import { ApplicationCommandType, ContextMenuCommandType, MessagePayload } from 'discord.js';
 
 export class SlashCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -18,6 +18,9 @@ export class SlashCommand extends Command {
   }
 
   public override contextMenuRun(interaction: Command.ContextMenuCommandInteraction) {
-    return interaction.reply(`Interaction works, ran by ${interaction.user.tag}`);
+    return interaction.reply({
+      content: `Interaction works, ran by ${interaction.user.tag}`,
+      ephemeral: true,
+    });
   }
 }

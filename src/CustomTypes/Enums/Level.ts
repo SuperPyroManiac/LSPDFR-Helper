@@ -1,19 +1,19 @@
 export enum Level {
   /** Processes messages */
-  PMSG = 1,
+  PMSG = 'PMSG',
 
   /** Special: Checks images text in AH channels via fuzzymatch */
-  PIMG = 2,
+  PIMG = 'PIMG',
 
   /** Checks via regex - Only TS can view */
-  XTRA = 3,
+  XTRA = 'XTRA',
 
   /** Checks via regex - Does not cause a crash */
-  WARN = 4,
+  WARN = 'WARN',
 
   /** Checks via regex - Can cause a crash */
-  SEVERE = 5,
+  SEVERE = 'SEVERE',
 
   /** Checks via regex - High priority, other errors will not show when this is present */
-  CRITICAL = 6,
+  CRITICAL = 'CRITICAL',
 }

@@ -9,8 +9,8 @@ export class Plugin {
   eaVersion?: string;
   id?: number;
   link?: string;
-  type?: PluginType;
-  state?: State;
+  type!: PluginType;
+  state!: State;
 
   linkedName(): string {
     if (!this.link) {

@@ -1,19 +1,19 @@
 export enum PluginType {
   /** LSPDFR plugins */
-  LSPDFR = 1,
+  LSPDFR = 'LSPDFR',
 
   /** RagePluginHook plugins */
-  RPH = 2,
+  RPH = 'RPH',
 
   /** ASI scripts */
-  ASI = 3,
+  ASI = 'ASI',
 
   /** ScriptHookV scripts */
-  SHV = 4,
+  SHV = 'SHV',
 
   /** ScriptHookVDotNet scripts */
-  SHVDN = 5,
+  SHVDN = 'SHVDN',
 
   /** Libraries, ex: RageNativeUI or PyroCommon */
-  LIBRARY = 6,
+  LIBRARY = 'LIBRARY',
 }

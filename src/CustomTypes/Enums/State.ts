@@ -1,13 +1,13 @@
 export enum State {
   /** Normal and working */
-  NORMAL = 1,
+  NORMAL = 'NORMAL',
 
   /** Normal but not downloaded from LCPDFR.com */
-  EXTERNAL = 2,
+  EXTERNAL = 'EXTERNAL',
 
   /** Does not work, should be removed */
-  BROKEN = 3,
+  BROKEN = 'BROKEN',
 
   /** SPECIAL: Requires Pyro's approval! */
-  IGNORE = 4,
+  IGNORE = 'IGNORE',
 }
