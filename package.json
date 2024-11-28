@@ -1,11 +1,11 @@
 {
   "name": "LSPDFRHelper",
   "version": "1.0.0",
-  "main": "dist/main.js",
+  "main": "dist/Main.js",
   "scripts": {
-    "dev": "tsx watch src/main.ts",
+    "dev": "tsx watch src/Main.ts",
     "build": "tsc",
-    "start": "node dist/main.js"
+    "start": "node dist/Main.js"
   },
   "keywords": [],
   "author": "",
