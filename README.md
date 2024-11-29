@@ -1,0 +1,1 @@
+LSPDFR Helper is a Discord bot that can read multiple types of logs from modded GTA. You can invite it to your server by searching for LSPDFR in the apps directory. Eventually ill make this readme nicer.
