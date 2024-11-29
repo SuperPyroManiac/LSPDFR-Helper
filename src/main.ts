@@ -15,4 +15,4 @@ const client = new SapphireClient({
   loadMessageCommandListeners: true,
 });
 
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN); //Test
