@@ -6,3 +6,4 @@ config.json
 .eslintrc.json
 prisma/*
 dist/*
+.vscode/*
