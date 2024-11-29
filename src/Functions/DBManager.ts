@@ -1,6 +1,7 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { Plugin } from '../CustomTypes/MainTypes/Plugin';
 import { Error } from '../CustomTypes/MainTypes/Error';
+import { Logger } from './Messages/Logger';
 const prisma = new PrismaClient();
 
 export abstract class DBManager {
@@ -9,11 +10,9 @@ export abstract class DBManager {
       return await operation();
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        // Handle specific Prisma errors
-        console.error(`Database error: ${error.code} - ${error.message}`);
+        Logger.ErrLog(`Database error: ${error.code} - ${error.message}`);
       } else {
-        // Handle unexpected errors
-        console.error(`Unexpected database error: ${error}`);
+        Logger.ErrLog(`Unexpected database error: ${error}`);
       }
       return null;
     }
