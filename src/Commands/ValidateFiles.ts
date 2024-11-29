@@ -1,11 +1,11 @@
 import { Command } from '@sapphire/framework';
-import { ApplicationCommandType, ContextMenuCommandType, MessagePayload } from 'discord.js';
+import { ApplicationCommandType, ContextMenuCommandType } from 'discord.js';
 
-export class SlashCommand extends Command {
+export class ValidateFilesCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
     super(context, {
       ...options,
-      description: 'Delete message and ban author.',
+      description: 'Validate the selected files.',
     });
   }
 

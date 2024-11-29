@@ -1,4 +1,3 @@
-import { isMessageInstance } from '@sapphire/discord.js-utilities';
 import { Command } from '@sapphire/framework';
 import { DBManager } from '../Functions/DBManager';
 import { Plugin } from '../CustomTypes/MainTypes/Plugin';
