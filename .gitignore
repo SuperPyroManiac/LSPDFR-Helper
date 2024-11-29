@@ -4,3 +4,4 @@ config.json
 .prettierrc
 .prettierignore
 .eslintrc.json
+prisma/*
