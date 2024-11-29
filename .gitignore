@@ -5,3 +5,4 @@ config.json
 .prettierignore
 .eslintrc.json
 prisma/*
+dist/*

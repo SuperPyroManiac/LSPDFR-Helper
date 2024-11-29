@@ -72,17 +72,19 @@ export class RPHValidator {
             break;
           }
           const result = this.compareVersions(plugin.version!, plug.version!);
-          switch (true) {
-            case result < 0:
-              if (!log.outdated.some((x) => x.name === plug.name)) log.outdated.push(plug);
-              break;
-            case result > 0:
-              plug.eaVersion = plugin.version;
-              if (!log.newVersion.some((x) => x.name === plug.name)) log.newVersion.push(plug);
-              break;
-            default:
-              if (!log.current.some((x) => x.name === plug.name)) log.current.push(plug);
-              break;
+          if (result < 0) {
+            if (!log.outdated.some((x) => x.name === plug.name)) {
+              log.outdated.push(plug);
+            }
+          } else if (result > 0) {
+            plug.eaVersion = plugin.version;
+            if (!log.newVersion.some((x) => x.name === plug.name)) {
+              log.newVersion.push(plug);
+            }
+          } else {
+            if (!log.current.some((x) => x.name === plug.name)) {
+              log.current.push(plug);
+            }
           }
           break;
       }
