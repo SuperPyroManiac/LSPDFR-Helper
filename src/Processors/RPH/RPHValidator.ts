@@ -12,15 +12,11 @@ export class RPHValidator {
     const rawLog = await (await fetch(attachmenturl)).text();
     const unSorted: Plugin[] = [];
 
-    /*prettier-ignore */
-    {
     log.downloadLink = attachmenturl;
     log.logPath = rawLog.match(/Log path: (.+)RagePluginHook\.log/)?.[1];
     log.rphVersion = rawLog.match(/.+ Version: RAGE Plugin Hook v(\d+\.\d+\.\d+\.\d+) for Grand Theft Auto V/)?.[1];
     log.lspdfrVersion = rawLog.match(/.+ Running LSPD First Response 0\.4\.9 \((\d+\.\d+\.\d+\.\d+)\)/)?.[1];
     log.gtaVersion = rawLog.match(/.+ Product version: (\d+\.\d+\.\d+\.\d+)/)?.[1];
-    
-    }
 
     if (!rawLog.includes('Started new log on') || !rawLog.includes('Cleaning temp folder')) {
       log.logModified = true;
@@ -46,17 +42,14 @@ export class RPHValidator {
           if (!unSorted.some((x) => x.name === newPlug.name)) unSorted.push(newPlug);
           continue;
         }
-        if (!log.missing.some((x) => x.name === match[1]))
-          log.missing.push(Object.assign(new Plugin(), { name: match[1], version: match[2] }));
+        if (!log.missing.some((x) => x.name === match[1])) log.missing.push(Object.assign(new Plugin(), { name: match[1], version: match[2] }));
         continue;
       }
       //RPH Plugins
       let rphPlug = Cache.getPlugin(match[3]);
       if (rphPlug && !unSorted.some((x) => x.name === rphPlug.name)) unSorted.push(rphPlug);
       if (!rphPlug && !log.missing.some((x) => x.name === match[3]))
-        log.missing.push(
-          Object.assign(new Plugin(), { name: match[3], version: 'RPH', type: PluginType.RPH })
-        );
+        log.missing.push(Object.assign(new Plugin(), { name: match[3], version: 'RPH', type: PluginType.RPH }));
     }
 
     for (const plug of unSorted) {
@@ -64,10 +57,7 @@ export class RPHValidator {
       switch (plugin.state) {
         case State.NORMAL:
         case State.EXTERNAL:
-          if (
-            plugin.eaVersion === plug.eaVersion &&
-            !log.current.some((x) => x.name === plug.name)
-          ) {
+          if (plugin.eaVersion === plug.eaVersion && !log.current.some((x) => x.name === plug.name)) {
             log.current.push(plug);
             break;
           }
@@ -91,15 +81,7 @@ export class RPHValidator {
     }
 
     for (const error of Cache.getErrors()) {
-      if (
-        error.id === 1 ||
-        error.id === 97 ||
-        error.id === 98 ||
-        error.id === 99 ||
-        error.id === 41 ||
-        error.id === 176
-      )
-        continue;
+      if (error.id === 1 || error.id === 97 || error.id === 98 || error.id === 99 || error.id === 41 || error.id === 176) continue;
       if (error.level === Level.PIMG || error.level === Level.PMSG) continue;
       if (error.stringMatch) {
         if (rawLog.includes(error.pattern!)) log.errors.push(error);

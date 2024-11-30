@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "dist/Main.js",
   "scripts": {
-    "dev": "tsx watch src/Main.ts",
-    "build": "tsc",
-    "start": "node dist/Main.js"
+    "dev": "rimraf dist && tsc && node dist/Main.js",
+    "build": "rimraf dist && tsc",
+    "start": "node dist/Main.js",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -14,17 +15,22 @@
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "@sapphire/framework": "^5.3.1",
+    "@sapphire/plugin-logger": "^4.0.2",
     "@sapphire/plugin-subcommands": "^7.0.1",
     "@sapphire/utilities": "^3.18.1",
+    "@types/jsdom": "^21.1.7",
     "discord.js": "^14.16.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "jsdom": "^25.0.1"
   },
   "devDependencies": {
     "@prettier/sync": "^0.5.2",
     "@types/node": "^22.9.4",
     "eslint": "^9.15.0",
+    "eslint-plugin-promise": "^7.2.1",
     "prettier": "^3.3.3",
     "prisma": "^5.22.0",
+    "rimraf": "^6.0.1",
     "tsx": "^4.19.2"
   }
 }
