@@ -8,8 +8,8 @@ import { State } from '../../CustomTypes/Enums/State';
 
 export class RPHValidator {
   async validate(attachmenturl: string): Promise<RPHLog> {
-    const log = new RPHLog();
     const rawLog = await (await fetch(attachmenturl)).text();
+    const log = new RPHLog();
     const unSorted: Plugin[] = [];
 
     log.downloadLink = attachmenturl;

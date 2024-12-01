@@ -57,12 +57,12 @@ export class ValidateFilesCommand extends Command {
     }
 
     if (attach.name.toLowerCase().includes('ragepluginhook')) {
-      await interaction.reply({ embeds: [EmbedCreator.Success('__Validating!__\r\n>>> The file is currently being processed. Please wait...')] });
+      await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)] });
       const rphProc = new RPHValidator();
       const log = await rphProc.validate(attach.url);
 
       // prettier-ignore
-      await interaction.editReply(`Log proocessed in ${log.elapsedTime}ms\r\nUp To Date Plugins: ${log.current.length}\r\nOutdated Plugins: ${log.outdated.length}\r\nErrors: ${log.errors.length}`);
+      await interaction.editReply({embeds: [EmbedCreator.Success(`__Validated!__\r\n>>> Time Taken: ${log.elapsedTime}MS\r\nPlugins: ${log.current.length + log.outdated.length}\r\nErrors:  ${log.errors.length}`), EmbedCreator.Info(`__Current Plugins__\r\n${log.current.map((x) => `**${x.name}** - ${x.version}`).join('\r\n')}`), EmbedCreator.Warning(`__Outdated Plugins__\r\n${log.outdated.map((x) => `**${x.name}** - ${x.version}`).join('\r\n')}`), EmbedCreator.Warning(`__Errors__\r\n${log.errors.map((x) => `**${x.id}** - ${x.solution}`).join('\r\n')}`)]});
     }
   }
 }
