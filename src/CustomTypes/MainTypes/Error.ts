@@ -7,7 +7,7 @@ export class Error {
   solution?: string;
   description?: string;
   stringMatch: boolean = false;
-  level!: Level;
+  level: Level = Level.XTRA;
   pluginList: Plugin[] = [];
 
   clone(): Error {

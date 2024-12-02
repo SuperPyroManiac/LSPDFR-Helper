@@ -5,12 +5,13 @@ import { Error } from '../../CustomTypes/MainTypes/Error';
 import { Level } from '../../CustomTypes/Enums/Level';
 import { PluginType } from '../../CustomTypes/Enums/PluginType';
 import { State } from '../../CustomTypes/Enums/State';
+import { RPHAdvancedErrors } from './RPHAdvancedErrors';
 
 export class RPHValidator {
   async validate(attachmenturl: string): Promise<RPHLog> {
     const rawLog = await (await fetch(attachmenturl)).text();
-    const log = new RPHLog();
     const unSorted: Plugin[] = [];
+    let log = new RPHLog();
 
     log.downloadLink = attachmenturl;
     log.logPath = rawLog.match(/Log path: (.+)RagePluginHook\.log/)?.[1];
@@ -101,6 +102,8 @@ export class RPHValidator {
         }
       }
     }
+
+    log = RPHAdvancedErrors.processAdvancedErrors(log, rawLog);
 
     log.validaterCompletedAt = new Date();
     log.elapsedTime = (new Date().getTime() - log.validaterStartedAt.getTime()).toString();

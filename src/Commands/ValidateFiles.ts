@@ -1,5 +1,5 @@
 import { Command } from '@sapphire/framework';
-import { ApplicationCommandType, Attachment, ContextMenuCommandType, Message } from 'discord.js';
+import { ApplicationCommandType, Attachment, ContextMenuCommandType, inlineCode, Message } from 'discord.js';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { Logger } from '../Functions/Messages/Logger';
 import { RPHValidator } from '../Processors/RPH/RPHValidator';
@@ -62,7 +62,7 @@ export class ValidateFilesCommand extends Command {
       const log = await rphProc.validate(attach.url);
 
       // prettier-ignore
-      await interaction.editReply({embeds: [EmbedCreator.Success(`__Validated!__\r\n>>> Time Taken: ${log.elapsedTime}MS\r\nPlugins: ${log.current.length + log.outdated.length}\r\nErrors:  ${log.errors.length}`), EmbedCreator.Info(`__Current Plugins__\r\n${log.current.map((x) => `**${x.name}** - ${x.version}`).join('\r\n')}`), EmbedCreator.Warning(`__Outdated Plugins__\r\n${log.outdated.map((x) => `**${x.name}** - ${x.version}`).join('\r\n')}`), EmbedCreator.Warning(`__Errors__\r\n${log.errors.map((x) => `**${x.id}** - ${x.solution}`).join('\r\n')}`)]});
+      await interaction.editReply({embeds: [EmbedCreator.Success(`__Validated!__\r\n>>> Time Taken: ${log.elapsedTime}MS\r\nPlugins: ${log.current.length + log.outdated.length}\r\nErrors:  ${log.errors.length}`), EmbedCreator.Info(`__Current Plugins__\r\n${log.current.map((x) => `**${x.name}** - ${x.version}`).join('\r\n')}`), EmbedCreator.Warning(`__Outdated Plugins__\r\n${log.outdated.map((x) => `**${x.name}** - ${x.version}`).join('\r\n')}`), EmbedCreator.Warning(`__Errors__\r\n>>> ${log.errors.map((x) => `**${inlineCode(`${x.level} ID: ${x.id}`)}**\r\n${x.solution}`).join('\r\n\r\n')}`)]});
     }
   }
 }
