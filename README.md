@@ -1,1 +1,36 @@
-LSPDFR Helper is a Discord bot that can read multiple types of logs from modded GTA. You can invite it to your server by searching for LSPDFR in the apps directory. Eventually ill make this readme nicer.
+# 🚓 LSPDFR Helper Discord Bot
+
+A powerful Discord bot designed to analyze and interpret various log types from modded Grand Theft Auto V, specifically focusing on LSPDFR.
+
+## ✨ Features
+
+- Multiple log type analysis support
+- Instant error detection and reporting
+- User-friendly Discord interface
+- Comprehensive mod compatibility checking
+
+## 🚀 Getting Started
+
+Add LSPDFR Helper to your Discord server:
+1. Open Discord Apps Directory
+2. Search for "LSPDFR Helper"
+3. Click "Add to Server"
+
+User app is coming soon!
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to submit pull requests or open issues.
+
+## 📝 License
+
+This project has a strict license. - see the LICENSE file for details.
+
+## 🔗 Links
+
+- [Discord Support Server](dsc.PyrosFun.com)
+- [Documentation](dsc.PyrosFun.com)
+Docs in progress...
+
+---
+Made by SuperPyroManiac for the LSPDFR Community
