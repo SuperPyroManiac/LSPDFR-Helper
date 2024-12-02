@@ -29,7 +29,7 @@ This project has a strict license. - see the LICENSE file for details.
 ## 🔗 Links
 
 - [Discord Support Server](https://dsc.pyrosfun.com/)
-- [Documentation](https://dsc.pyrosfun.com/)
+- [Documentation](https://dsc.pyrosfun.com/helper)
 Docs in progress...
 
 ---
