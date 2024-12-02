@@ -28,8 +28,8 @@ This project has a strict license. - see the LICENSE file for details.
 
 ## 🔗 Links
 
-- [Discord Support Server](dsc.PyrosFun.com)
-- [Documentation](dsc.PyrosFun.com)
+- [Discord Support Server](https://dsc.pyrosfun.com/)
+- [Documentation](https://dsc.pyrosfun.com/)
 Docs in progress...
 
 ---
