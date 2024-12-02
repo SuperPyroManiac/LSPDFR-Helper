@@ -66,13 +66,35 @@ export abstract class RPHAdvancedErrors {
     //* Incorrect RPH Plugin
     const err5 = Cache.getError(41)!.clone();
     for (const match of rawLog.matchAll(new RegExp(err5.pattern!, 'gm'))) {
-      if (err5.pluginList.some((x) => x.name === match[1])) continue;
-      err5.pluginList.push(Cache.getPlugin(match[1]) ?? new Plugin(match[1]));
+      if (err5.pluginList.some((x) => x.name === match[2])) continue;
+      err5.pluginList.push(Cache.getPlugin(match[2]) ?? new Plugin(match[2]));
     }
     if (err5.pluginList.length > 0) {
       err5.solution += `\r\n${err5.pluginList.map((x) => `- ${x.linkedName()}`).join('\r\n')}`;
       if (err5.solution!.length >= 1023) err5.solution = 'Too many to show!';
       log.errors.push(err5);
+    }
+
+    //! Outdated RPH Plugin TODO: Better implimentation
+    if (rawLog.match(new RegExp('DamageTrackingFramework: \\[VERSION OUTDATED\\]', 'gm'))) log.outdated.push(Cache.getPlugin('DamageTrackingFramework')!);
+
+    //! Exception Detection
+    const err6 = new Error();
+    for (const match of rawLog.matchAll(new RegExp('Stack trace:.*\\n(?:.+at (\\w+)\\..+\\n)+', 'gm'))) {
+      const plug = Cache.getPlugin(match[2]);
+      if (!plug || err6.pluginList.some((x) => x.name === plug.name)) continue;
+      err6.pluginList.push(plug);
+    }
+    if (err6.pluginList.length > 0) {
+      err6.solution =
+        '**These plugins threw an error:**' +
+        `\r\n${err6.pluginList.map((x) => `- ${x.linkedName()}`).join('\r\n')}` +
+        '\r\nEnsure you follow all other steps listed to fix these!' +
+        '\r\n*If the issue persists, you may want to report it to the author or remove the plugin.*';
+      err6.level = Level.SEVERE;
+      err6.id = 20;
+      if (err6.solution!.length >= 1023) err6.solution = 'Too many exceptions to list in this error! Either you send a modified log, or your game is cooked.';
+      log.errors.push(err6);
     }
 
     return log;
