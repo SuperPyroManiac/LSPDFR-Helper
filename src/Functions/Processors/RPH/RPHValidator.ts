@@ -1,10 +1,10 @@
-import { Cache } from '../../Cache';
-import { RPHLog } from '../../CustomTypes/LogTypes/RPHLog';
-import { Plugin } from '../../CustomTypes/MainTypes/Plugin';
-import { Error } from '../../CustomTypes/MainTypes/Error';
-import { Level } from '../../CustomTypes/Enums/Level';
-import { PluginType } from '../../CustomTypes/Enums/PluginType';
-import { State } from '../../CustomTypes/Enums/State';
+import { Cache } from '../../../Cache';
+import { Level } from '../../../CustomTypes/Enums/Level';
+import { PluginType } from '../../../CustomTypes/Enums/PluginType';
+import { State } from '../../../CustomTypes/Enums/State';
+import { RPHLog } from '../../../CustomTypes/LogTypes/RPHLog';
+import { Error } from '../../../CustomTypes/MainTypes/Error';
+import { Plugin } from '../../../CustomTypes/MainTypes/Plugin';
 import { RPHAdvancedErrors } from './RPHAdvancedErrors';
 
 export class RPHValidator {

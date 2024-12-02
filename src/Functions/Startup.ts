@@ -1,8 +1,6 @@
-import { container } from '@sapphire/framework';
 import { Cache } from '../Cache';
 import { EmbedCreator } from './Messages/EmbedCreator';
 import { Logger } from './Messages/Logger';
-import { DBManager } from './DBManager';
 
 export abstract class Startup {
   static async Init() {

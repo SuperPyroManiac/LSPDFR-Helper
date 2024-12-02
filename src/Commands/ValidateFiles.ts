@@ -2,7 +2,11 @@ import { Command } from '@sapphire/framework';
 import { ApplicationCommandType, Attachment, ContextMenuCommandType, inlineCode, Message } from 'discord.js';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { Logger } from '../Functions/Messages/Logger';
-import { RPHValidator } from '../Processors/RPH/RPHValidator';
+import { RPHValidator } from '../Functions/RPH/RPHValidator';
+import { Cache } from '../Cache';
+import { ProcessCache } from '../CustomTypes/CacheTypes/ProcessCache';
+import { RPHProcessor } from '../Functions/Processors/RPH/RPHProcessor';
+import { RPHLog } from '../CustomTypes/LogTypes/RPHLog';
 
 export class ValidateFilesCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -58,9 +62,14 @@ export class ValidateFilesCommand extends Command {
 
     if (attach.name.toLowerCase().includes('ragepluginhook')) {
       await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)] });
-      const rphProc = new RPHValidator();
-      const log = await rphProc.validate(attach.url);
+      let proc: RPHProcessor;
+      if (!ProcessCache.IsCacheAvailable(Cache.getProcess(targetMessage.id))) {
+        const proc = new RPHProcessor(await new RPHValidator().validate(attach.url), targetMessage.id);
+        Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, proc));
+      }
 
+      //TODO: DEBUG - Replace with propper message handler
+      const log = proc!.log;
       // prettier-ignore
       await interaction.editReply({embeds: [EmbedCreator.Success(`__Validated!__\r\n>>> Time Taken: ${log.elapsedTime}MS\r\nPlugins: ${log.current.length + log.outdated.length}\r\nErrors:  ${log.errors.length}`), EmbedCreator.Info(`__Current Plugins__\r\n${log.current.map((x) => `**${x.name}** - ${x.version}`).join('\r\n')}`), EmbedCreator.Warning(`__Outdated Plugins__\r\n${log.outdated.map((x) => `**${x.name}** - ${x.version}`).join('\r\n')}`), EmbedCreator.Warning(`__Errors__\r\n>>> ${log.errors.map((x) => `**${inlineCode(`${x.level} ID: ${x.id}`)}**\r\n${x.solution}`).join('\r\n\r\n')}`)]});
     }

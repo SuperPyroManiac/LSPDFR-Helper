@@ -1,8 +1,8 @@
-import { Cache } from '../../Cache';
-import { Level } from '../../CustomTypes/Enums/Level';
-import { RPHLog } from '../../CustomTypes/LogTypes/RPHLog';
-import { Error } from '../../CustomTypes/MainTypes/Error';
-import { Plugin } from '../../CustomTypes/MainTypes/Plugin';
+import { Cache } from '../../../Cache';
+import { Level } from '../../../CustomTypes/Enums/Level';
+import { RPHLog } from '../../../CustomTypes/LogTypes/RPHLog';
+import { Error } from '../../../CustomTypes/MainTypes/Error';
+import { Plugin } from '../../../CustomTypes/MainTypes/Plugin';
 
 export abstract class RPHAdvancedErrors {
   static processAdvancedErrors(log: RPHLog, rawLog: string): RPHLog {

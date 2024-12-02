@@ -1,8 +1,12 @@
+import { ProcessCache } from './CustomTypes/CacheTypes/ProcessCache';
 import { Error } from './CustomTypes/MainTypes/Error';
 import { Plugin } from './CustomTypes/MainTypes/Plugin';
 import { DBManager } from './Functions/DBManager';
+import { RPHProcessor } from './Functions/Processors/RPH/RPHProcessor';
 
+export type ProcessorType = RPHProcessor;
 export abstract class Cache {
+  private static processCache = new Map<string, ProcessCache<ProcessorType>>();
   private static pluginCache = new Map<string, Plugin>();
   private static errorCache = new Map<number, Error>();
 
@@ -35,5 +39,23 @@ export abstract class Cache {
 
   static getError(id: number): Error | undefined {
     return this.errorCache.get(id);
+  }
+
+  //! Special Caches
+  static async removeExpired() {
+    this.processCache.forEach((cache, key) => {
+      if (cache.Expire <= new Date()) {
+        this.processCache.delete(key);
+      }
+    });
+  }
+
+  static saveProcess(messageId: string, process: ProcessCache<ProcessorType>) {
+    if (this.processCache.has(messageId)) this.processCache.get(messageId)?.Update(process);
+    else this.processCache.set(messageId, process);
+  }
+
+  static getProcess(messageId: string): ProcessCache<ProcessorType> | undefined {
+    return this.processCache.get(messageId);
   }
 }
