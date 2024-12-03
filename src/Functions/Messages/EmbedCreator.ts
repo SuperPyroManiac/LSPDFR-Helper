@@ -21,15 +21,22 @@ export abstract class EmbedCreator {
     return new EmbedBuilder().setColor('Blue').setDescription(bold ? `## ${process.env.INFO} ${msg}` : `${process.env.INFO} ${msg}`);
   }
 
-  static Support(msg: string, bold: boolean = true): EmbedBuilder {
-    return new EmbedBuilder().setColor('Blue').setDescription(bold ? `## ${process.env.SUPPORT} ${msg}` : `${process.env.SUPPORT} ${msg}`);
-  }
-
   static Success(msg: string, bold: boolean = true): EmbedBuilder {
     return new EmbedBuilder().setColor('Green').setDescription(bold ? `## ${process.env.SUCCESS} ${msg}` : `${process.env.SUCCESS} ${msg}`);
   }
 
   static Loading(msg: string, bold: boolean = true): EmbedBuilder {
     return new EmbedBuilder().setColor('Blue').setDescription(bold ? `## ${process.env.LOADING} ${msg}` : `${process.env.LOADING} ${msg}`);
+  }
+
+  static Support(msg: string, bold: boolean = true): EmbedBuilder {
+    return new EmbedBuilder()
+      .setColor('Gold')
+      .setDescription(bold ? `## ${process.env.CHECKLIST} ${msg}` : `${process.env.SUPPORT} ${msg}`)
+      .setThumbnail('https://i.imgur.com/bPWj8aV.png');
+  }
+
+  static AddBlanks(count: number): string {
+    return Array(count).fill('\u200b ').join('');
   }
 }

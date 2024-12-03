@@ -1,14 +1,16 @@
 import { addMinutes } from 'date-fns';
-import { Message } from 'discord.js';
+import { Interaction, Message } from 'discord.js';
 import { Logger } from '../../Functions/Messages/Logger';
 import { ProcessorType } from '../../Cache';
 
 export class ProcessCache<T extends ProcessorType> {
   public Expire = addMinutes(new Date(), 15);
   public OriginalMessage!: Message;
+  public Interaction: Interaction;
   public Processor?: T;
 
-  constructor(originalMessage: Message, processor?: T) {
+  constructor(originalMessage: Message, interaction: Interaction, processor?: T) {
+    this.Interaction = interaction;
     this.OriginalMessage = originalMessage;
     this.Processor = processor;
   }

@@ -24,6 +24,6 @@ export class Plugin {
   }
 
   clone(): Plugin {
-    return JSON.parse(JSON.stringify(this));
+    return Object.assign(new Plugin(), JSON.parse(JSON.stringify(this)));
   }
 }

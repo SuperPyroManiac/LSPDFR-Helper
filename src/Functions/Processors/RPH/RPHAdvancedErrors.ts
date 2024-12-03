@@ -80,7 +80,8 @@ export abstract class RPHAdvancedErrors {
 
     //! Exception Detection
     const err6 = new Error();
-    for (const match of rawLog.matchAll(new RegExp('Stack trace:.*\\n(?:.+at (\\w+)\\..+\\n)+', 'gm'))) {
+    for (const match of rawLog.matchAll(new RegExp('/Stack trace:.*\n(?:.+at (w+)..+\n)+/', 'g'))) {
+      console.log(`Found ${match[2]}`);
       const plug = Cache.getPlugin(match[2]);
       if (!plug || err6.pluginList.some((x) => x.name === plug.name)) continue;
       err6.pluginList.push(plug);

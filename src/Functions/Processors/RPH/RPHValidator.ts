@@ -53,30 +53,36 @@ export class RPHValidator {
         log.missing.push(Object.assign(new Plugin(), { name: match[3], version: 'RPH', type: PluginType.RPH }));
     }
 
-    for (const plug of unSorted) {
-      var plugin = Cache.getPlugin(plug.name)!;
-      switch (plugin.state) {
+    for (const logPlug of unSorted) {
+      var cachePlug = Cache.getPlugin(logPlug.name)!;
+      switch (cachePlug.state) {
         case State.NORMAL:
         case State.EXTERNAL:
-          if (plugin.eaVersion === plug.eaVersion && !log.current.some((x) => x.name === plug.name)) {
-            log.current.push(plug);
+          if (cachePlug.eaVersion === logPlug.version && !log.current.some((x) => x.name === logPlug.name)) {
+            log.current.push(logPlug);
             break;
           }
-          const result = this.compareVersions(plugin.version!, plug.version!);
+          if (!logPlug.version || !cachePlug.version) continue;
+          const result = this.compareVer(logPlug.version, cachePlug.version);
           if (result < 0) {
-            if (!log.outdated.some((x) => x.name === plug.name)) {
-              log.outdated.push(plug);
+            logPlug.eaVersion = cachePlug.version;
+            if (!log.outdated.some((x) => x.name === logPlug.name)) {
+              log.outdated.push(logPlug);
             }
           } else if (result > 0) {
-            plug.eaVersion = plugin.version;
-            if (!log.newVersion.some((x) => x.name === plug.name)) {
-              log.newVersion.push(plug);
+            logPlug.eaVersion = cachePlug.version;
+            if (!log.newVersion.some((x) => x.name === logPlug.name)) {
+              log.newVersion.push(logPlug);
             }
           } else {
-            if (!log.current.some((x) => x.name === plug.name)) {
-              log.current.push(plug);
+            if (!log.current.some((x) => x.name === logPlug.name)) {
+              log.current.push(logPlug);
             }
           }
+          break;
+        case State.BROKEN:
+        case State.IGNORE:
+          if (!log.current.some((x) => x.name === logPlug.name)) log.current.push(logPlug);
           break;
       }
     }
@@ -104,26 +110,23 @@ export class RPHValidator {
     }
 
     log = RPHAdvancedErrors.processAdvancedErrors(log, rawLog);
+    log.errors.sort((a, b) => Number(b.level) - Number(a.level));
 
     log.validaterCompletedAt = new Date();
     log.elapsedTime = (new Date().getTime() - log.validaterStartedAt.getTime()).toString();
     return log;
   }
 
-  private compareVersions(version1: string, version2: string): number {
-    const parts1 = version1.split('.');
-    const parts2 = version2.split('.');
-    const minLength = Math.min(parts1.length, parts2.length);
-
-    for (let i = 0; i < minLength; i++) {
-      const part1 = parseInt(parts1[i], 10);
-      const part2 = parseInt(parts2[i], 10);
-      if (part1 < part2) return -1; // version1 is smaller
-      if (part1 > part2) return 1; // version1 is larger
+  private compareVer(version1: string, version2: string): number {
+    const parts1 = version1.split('.').map(Number);
+    const parts2 = version2.split('.').map(Number);
+    const length = Math.max(parts1.length, parts2.length);
+    for (let i = 0; i < length; i++) {
+      const num1 = parts1[i] || 0;
+      const num2 = parts2[i] || 0;
+      if (num1 < num2) return -1;
+      if (num1 > num2) return 1;
     }
-    // If all common parts are equal, check the remaining parts
-    if (parts1.length < parts2.length) return -1; // version1 is smaller
-    if (parts1.length > parts2.length) return 1; // version1 is larger
-    return 0; // versions are equal
+    return 0;
   }
 }
