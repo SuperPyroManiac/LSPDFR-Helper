@@ -1,5 +1,7 @@
 import { Cache } from '../../../Cache';
 import { Level } from '../../../CustomTypes/Enums/Level';
+import { PluginType } from '../../../CustomTypes/Enums/PluginType';
+import { State } from '../../../CustomTypes/Enums/State';
 import { RPHLog } from '../../../CustomTypes/LogTypes/RPHLog';
 import { Error } from '../../../CustomTypes/MainTypes/Error';
 import { Plugin } from '../../../CustomTypes/MainTypes/Plugin';
@@ -75,16 +77,15 @@ export abstract class RPHAdvancedErrors {
       log.errors.push(err5);
     }
 
-    //! Outdated RPH Plugin TODO: Better implimentation
+    //TODO Better implimentation - Outdated RPH Plugin
     if (rawLog.match(new RegExp('DamageTrackingFramework: \\[VERSION OUTDATED\\]', 'gm'))) log.outdated.push(Cache.getPlugin('DamageTrackingFramework')!);
 
     //! Exception Detection
     const err6 = new Error();
-    for (const match of rawLog.matchAll(new RegExp('/Stack trace:.*\n(?:.+at (w+)..+\n)+/', 'g'))) {
-      console.log(`Found ${match[2]}`);
-      const plug = Cache.getPlugin(match[2]);
+    for (const match of rawLog.matchAll(/(?:.+ at (\w*)\..+\(\))/g)) {
+      const plug = Cache.getPlugin(match[1]);
       if (!plug || err6.pluginList.some((x) => x.name === plug.name)) continue;
-      err6.pluginList.push(plug);
+      if (plug.type === PluginType.LSPDFR || plug.type === PluginType.RPH) err6.pluginList.push(plug);
     }
     if (err6.pluginList.length > 0) {
       err6.solution =

@@ -7,8 +7,8 @@ import { Error } from '../../../CustomTypes/MainTypes/Error';
 import { Plugin } from '../../../CustomTypes/MainTypes/Plugin';
 import { RPHAdvancedErrors } from './RPHAdvancedErrors';
 
-export class RPHValidator {
-  async validate(attachmenturl: string): Promise<RPHLog> {
+export abstract class RPHValidator {
+  static async validate(attachmenturl: string): Promise<RPHLog> {
     const rawLog = await (await fetch(attachmenturl)).text();
     const unSorted: Plugin[] = [];
     let log = new RPHLog();
@@ -117,7 +117,7 @@ export class RPHValidator {
     return log;
   }
 
-  private compareVer(version1: string, version2: string): number {
+  private static compareVer(version1: string, version2: string): number {
     const parts1 = version1.split('.').map(Number);
     const parts2 = version2.split('.').map(Number);
     const length = Math.max(parts1.length, parts2.length);

@@ -62,13 +62,17 @@ export class ValidateFilesCommand extends Command {
     }
 
     if (attach!.name.toLowerCase().includes('ragepluginhook')) {
-      await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)] });
-      if (!ProcessCache.IsCacheAvailable(Cache.getProcess(targetMessage.id)))
-        Cache.saveProcess(
-          targetMessage.id,
-          new ProcessCache(targetMessage, interaction as Interaction, new RPHProcessor(await new RPHValidator().validate(attach!.url), targetMessage.id))
-        );
-      await Cache.getProcess(targetMessage.id)!.Processor?.SendContextReply();
+      await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)], ephemeral: true });
+      let rphProc: RPHProcessor;
+      const cache = Cache.getProcess(targetMessage.id);
+      if (ProcessCache.IsCacheAvailable(cache)) {
+        cache!.Interaction = interaction as Interaction;
+        rphProc = cache!.Processor;
+      } else {
+        rphProc = new RPHProcessor(await RPHValidator.validate(attach!.url), targetMessage.id);
+        Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction as Interaction, rphProc));
+      }
+      await rphProc.SendServerContextReply();
     }
   }
 }
