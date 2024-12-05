@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ContextMenuCommandInteraction, EmbedBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ContextMenuCommandInteraction, EmbedBuilder, Interaction, time, TimestampStyles } from 'discord.js';
 import { Cache, ProcessorType } from '../../../Cache';
 import { PluginType } from '../../../CustomTypes/Enums/PluginType';
 import { State } from '../../../CustomTypes/Enums/State';
@@ -11,7 +11,7 @@ import { RphSendToUser } from '../../../interaction-handlers/_CustomIds';
 export class RPHProcessor {
   log: RPHLog;
   msgId: string;
-  private cache?: ProcessCache<ProcessorType>;
+  private cache!: ProcessCache<ProcessorType>;
   private currentPlugins?: string;
   private outdatedPlugins?: string;
   private removePlugins?: string;
@@ -22,9 +22,9 @@ export class RPHProcessor {
   private lspdfrVer = '❌';
   private rphVer = '❌';
 
-  constructor(log: RPHLog, msgId: string) {
+  constructor(log: RPHLog, mesgId: string) {
     this.log = log;
-    this.msgId = msgId;
+    this.msgId = mesgId;
     //prettier-ignore
     {
     this.currentPlugins = log.current.map((x) => x.dname).join('**,** ');
@@ -77,31 +77,28 @@ export class RPHProcessor {
     const errEmb = EmbedCreator.Support('__Error Information:__\r\n*This shows common issues that were detected.*\r\n\r\n');
     const update = this.log.errors.some((x) => x.level === Level.CRITICAL);
     for (const err of this.log.errors) {
-      if (update && err.level !== Level.CRITICAL) continue;
+      //if (update && err.level !== Level.CRITICAL) continue;
       errEmb.addFields({
         //prettier-ignore
         name: `${err.level === Level.XTRA ? process.env.INFO : err.level === Level.WARN ? process.env.WARNING : process.env.ALERT}___ *${err.level} ID: ${err.id}* Possible Solutions:___`,
         value: `>>> ${err.solution}`,
       });
+      errEmb.data.fields?.sort((a, b) => a.name.localeCompare(b.name));
     }
     return errEmb;
   }
 
   //! Server Context Menu Messages
-  async SendServerContextReply(sendToUser: boolean = false) {
-    if (!sendToUser) {
-      this.cache = Cache.getProcess(this.msgId)!;
-      const comps = new ActionRowBuilder<ButtonBuilder>();
-      comps.addComponents([new ButtonBuilder().setCustomId(RphSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
+  async SendServerContextReply(interaction: ContextMenuCommandInteraction) {
+    this.cache = Cache.getProcess(this.msgId)!;
+    const comps = new ActionRowBuilder<ButtonBuilder>();
+    comps.addComponents([new ButtonBuilder().setCustomId(RphSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
 
-      if (this.cache.Interaction.isContextMenuCommand()) {
-        const reply = await this.cache.Interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()], components: [comps] });
-        Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, this.cache.Interaction, this));
-      }
-    } else {
-      if (this.cache?.Interaction.isContextMenuCommand()) await this.cache.Interaction.deleteReply();
-      if (this.cache?.OriginalMessage) await this.cache?.OriginalMessage.reply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
-    }
+    const tst = this.GetBaseInfo();
+    tst.data.description += `\r\nTest - Cache Expires in: ${time(this.cache.Expire, TimestampStyles.RelativeTime)}`;
+    const reply = await interaction.editReply({ embeds: [tst, this.GetPluginInfo(), this.GetErrorInfo()], components: [comps] });
+    this.msgId = reply.id;
+    Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));
   }
 
   //! User Context Menu Messages
@@ -109,4 +106,11 @@ export class RPHProcessor {
 
   //! AutoHelper Messages
   async SendAutoReply() {}
+
+  //! Send To User
+  async SendToUser() {
+    this.cache = Cache.getProcess(this.msgId)!;
+    await this.cache.Interaction.deleteReply().catch(() => {});
+    if (this.cache.OriginalMessage) await this.cache.OriginalMessage.reply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
+  }
 }

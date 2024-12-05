@@ -43,16 +43,18 @@ export abstract class Cache {
 
   //! Special Caches
   static async removeExpired() {
-    this.processCache.forEach((cache, key) => {
+    this.processCache.forEach(async (cache, key) => {
       if (cache.Expire <= new Date()) {
+        await cache.Cleanup();
         this.processCache.delete(key);
       }
     });
   }
 
-  static saveProcess(messageId: string, process: ProcessCache<ProcessorType>) {
+  static saveProcess(messageId: string, process: ProcessCache<ProcessorType>): ProcessCache<ProcessorType> {
     if (this.processCache.has(messageId)) this.processCache.get(messageId)?.Update(process);
     else this.processCache.set(messageId, process);
+    return process;
   }
 
   static getProcess(messageId: string): ProcessCache<ProcessorType> | undefined {

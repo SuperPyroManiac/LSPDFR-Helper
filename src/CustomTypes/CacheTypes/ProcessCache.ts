@@ -1,15 +1,15 @@
 import { addMinutes } from 'date-fns';
-import { Interaction, Message } from 'discord.js';
+import { ButtonInteraction, ContextMenuCommandInteraction, Message } from 'discord.js';
 import { Logger } from '../../Functions/Messages/Logger';
 import { ProcessorType } from '../../Cache';
 
 export class ProcessCache<T extends ProcessorType> {
-  public Expire = addMinutes(new Date(), 15);
+  public Expire = addMinutes(new Date(), 5);
   public OriginalMessage!: Message;
-  public Interaction: Interaction;
+  public Interaction: ContextMenuCommandInteraction | ButtonInteraction;
   public Processor: T;
 
-  constructor(originalMessage: Message, interaction: Interaction, processor: T) {
+  constructor(originalMessage: Message, interaction: ContextMenuCommandInteraction | ButtonInteraction, processor: T) {
     this.Interaction = interaction;
     this.OriginalMessage = originalMessage;
     this.Processor = processor;
@@ -30,5 +30,9 @@ export class ProcessCache<T extends ProcessorType> {
   public static IsCacheAvailable(cache: ProcessCache<ProcessorType> | undefined): boolean {
     if (!cache || !cache.Processor || !cache.Processor.log || !cache.OriginalMessage) return false;
     return true;
+  }
+
+  public async Cleanup() {
+    !this.Interaction.isAutocomplete() && (await this.Interaction.deleteReply().catch(() => {}));
   }
 }

@@ -1,10 +1,12 @@
 import { Cache } from '../Cache';
 import { EmbedCreator } from './Messages/EmbedCreator';
 import { Logger } from './Messages/Logger';
+import { Timer } from './Timer';
 
 export abstract class Startup {
   static async Init() {
     await Startup.PrepCache();
+    await Timer.startTimer();
     await Startup.SendMessages();
   }
 

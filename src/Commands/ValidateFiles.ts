@@ -65,14 +65,12 @@ export class ValidateFilesCommand extends Command {
       await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)], ephemeral: true });
       let rphProc: RPHProcessor;
       const cache = Cache.getProcess(targetMessage.id);
-      if (ProcessCache.IsCacheAvailable(cache)) {
-        cache!.Interaction = interaction as Interaction;
-        rphProc = cache!.Processor;
-      } else {
+      if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor;
+      else {
         rphProc = new RPHProcessor(await RPHValidator.validate(attach!.url), targetMessage.id);
-        Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction as Interaction, rphProc));
+        Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, rphProc));
       }
-      await rphProc.SendServerContextReply();
+      await rphProc.SendServerContextReply(interaction);
     }
   }
 }
