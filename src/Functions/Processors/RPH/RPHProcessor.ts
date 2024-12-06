@@ -1,4 +1,12 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ContextMenuCommandInteraction, EmbedBuilder, Interaction, time, TimestampStyles } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ContextMenuCommandInteraction,
+  EmbedBuilder,
+  Message,
+  MessageContextMenuCommandInteraction,
+} from 'discord.js';
 import { Cache, ProcessorType } from '../../../Cache';
 import { PluginType } from '../../../CustomTypes/Enums/PluginType';
 import { State } from '../../../CustomTypes/Enums/State';
@@ -7,6 +15,7 @@ import { EmbedCreator } from '../../Messages/EmbedCreator';
 import { ProcessCache } from '../../../CustomTypes/CacheTypes/ProcessCache';
 import { Level } from '../../../CustomTypes/Enums/Level';
 import { RphSendToUser } from '../../../interaction-handlers/_CustomIds';
+import { inlineCodeBlock } from '@sapphire/utilities';
 
 export class RPHProcessor {
   log: RPHLog;
@@ -44,13 +53,8 @@ export class RPHProcessor {
       text: `GTA: ${this.gtaVer} - LSPDFR: ${this.lspdfrVer} - RPH: ${this.rphVer} - Processing Time: ${this.log.elapsedTime}MS`,
     });
 
-    if (this.log.logModified) {
-      //TODO: Add mod log shit
-      return emb;
-    }
-
-    if (this.log.errors.length === 0 && this.removePlugins?.length === 0) {
-      emb.addFields({ name: 'No Problems Detected!', value: 'If you continue to have issues, this likely may be a mods folder issue!' });
+    if (!this.log.lspdfrVersion) {
+      emb.data.description += `\r\n${process.env.ALERT} **__LSPDFR Did Not Load!__**\r\n>>> -# LSPDFR is not running in the provided log. It is very likely you have an issue with your mods folder! It could also be caused by an .ASI script, or ScriptHookVDotNet if you have that!`;
     }
 
     return emb;
@@ -65,38 +69,49 @@ export class RPHProcessor {
     if (this.currentPlugins?.length && !this.outdatedPlugins?.length && !this.removePlugins?.length && this.log.lspdfrVersion)
       plugEmb.data.description += `\r\n${process.env.SUCCESS} **__All Plugins Up To Date!:__**\r\n> -# Good job! This helps ensure your game runs well.\r\n`;
     if (!this.currentPlugins?.length && !this.outdatedPlugins?.length && !this.removePlugins?.length && this.log.lspdfrVersion)
-      plugEmb.data.description += `\r\n${process.env.INFO} **__No Plugins Loaded!__**\r\n> -# You do not appear to have any LSPDFR plugins installed. No info can be provided here.\r\n`;
+      plugEmb.data.description += `\r\n${process.env.INFO} **__No Plugins Loaded!__**\r\n> -# You do not appear to have any LSPDFR plugins installed. No plugin info can be provided here.\r\n`;
     if (!this.log.lspdfrVersion)
-      plugEmb.data.description += `\r\n${process.env.ALERT} **__LSPDFR Not Loaded!__**\r\n> -# This is likely due to a mod conflict or a missing mod. Check the mod list for more info!\r\n`;
+      plugEmb.data.description += `\r\n${process.env.INFO} **__LSPDFR Not Loaded!__**\r\n> -# LSPDFR is not loaded in this log! No plugin info can be provided here.\r\n`;
     if (!this.currentPlugins?.length) this.currentPlugins = '**None**';
     if (!this.rphPlugins?.length) this.rphPlugins = '**None**';
     return plugEmb;
   }
 
   private GetErrorInfo(): EmbedBuilder {
-    const errEmb = EmbedCreator.Support('__Error Information:__\r\n*This shows common issues that were detected.*\r\n\r\n');
+    const errEmb = EmbedCreator.Support('__Error Information:__\r\n*This shows common issues that were detected.*\r\n');
     const update = this.log.errors.some((x) => x.level === Level.CRITICAL);
+    let cnt = 0;
     for (const err of this.log.errors) {
-      //if (update && err.level !== Level.CRITICAL) continue;
+      if (cnt >= 10) {
+        errEmb.addFields({
+          name: `${process.env.ERROR} Too Many Errors!`,
+          value: '> You have more errors than we can display at once! Fix the shown ones, then send a new log.',
+        });
+        return errEmb;
+      }
+      //TODO: if (update && err.level !== Level.CRITICAL) continue;
       errEmb.addFields({
         //prettier-ignore
-        name: `${err.level === Level.XTRA ? process.env.INFO : err.level === Level.WARN ? process.env.WARNING : process.env.ALERT}___ *${err.level} ID: ${err.id}* Possible Solutions:___`,
+        name: `${err.level === Level.XTRA ? process.env.INFO : err.level === Level.WARN ? process.env.WARNING : process.env.ALERT}___ ${inlineCodeBlock(`${err.level} ID: ${err.id}`)} Possible Fix:___`,
         value: `>>> ${err.solution}`,
       });
       errEmb.data.fields?.sort((a, b) => a.name.localeCompare(b.name));
+      cnt++;
     }
+
+    if (this.log.errors.length === 0)
+      errEmb.data.description += `\r\n${process.env.INFO} **__No Error Found!__**\r\n>>> -# No errors were detected by the bot. If you continue to have issues it may be an issue with a script or the mods folder!`;
     return errEmb;
   }
 
   //! Server Context Menu Messages
-  async SendServerContextReply(interaction: ContextMenuCommandInteraction) {
+  async SendServerContextReply(interaction: MessageContextMenuCommandInteraction, userCmd = false) {
     this.cache = Cache.getProcess(this.msgId)!;
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(RphSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
-
-    const tst = this.GetBaseInfo();
-    tst.data.description += `\r\nTest - Cache Expires in: ${time(this.cache.Expire, TimestampStyles.RelativeTime)}`;
-    const reply = await interaction.editReply({ embeds: [tst, this.GetPluginInfo(), this.GetErrorInfo()], components: [comps] });
+    let reply: Message;
+    if (userCmd) reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
+    else reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()], components: [comps] });
     this.msgId = reply.id;
     Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));
   }

@@ -21,13 +21,7 @@ export abstract class RPHValidator {
 
     if (!rawLog.includes('Started new log on') || !rawLog.includes('Cleaning temp folder')) {
       log.logModified = true;
-      log.errors.push(
-        Object.assign(new Error(), {
-          id: 666,
-          level: Level.CRITICAL,
-          solution: '**This log has been modified! It is invalid and will not be checked!**',
-        })
-      );
+      log.elapsedTime = '0';
       return log;
     }
 

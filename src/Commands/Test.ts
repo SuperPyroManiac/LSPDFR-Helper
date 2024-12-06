@@ -1,23 +1,14 @@
 import { Command } from '@sapphire/framework';
-import {
-  ApplicationCommandType,
-  ApplicationIntegrationType,
-  Attachment,
-  ContextMenuCommandType,
-  Integration,
-  Interaction,
-  Message,
-  MessageContextMenuCommandInteraction,
-} from 'discord.js';
-import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
-import { Logger } from '../Functions/Messages/Logger';
-import { Cache } from '../Cache';
+import { ApplicationCommandType, ApplicationIntegrationType, Attachment, ContextMenuCommandType, Message, MessageContextMenuCommandInteraction } from 'discord.js';
 import { ProcessCache } from '../CustomTypes/CacheTypes/ProcessCache';
+import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
+import { Reports } from '../Functions/Messages/Reports';
 import { RPHProcessor } from '../Functions/Processors/RPH/RPHProcessor';
 import { RPHValidator } from '../Functions/Processors/RPH/RPHValidator';
-import { Reports } from '../Functions/Messages/Reports';
+import { Cache } from '../Cache';
+import { Logger } from '../Functions/Messages/Logger';
 
-export class ValidateFilesCommand extends Command {
+export class TestCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
     super(context, { ...options, description: 'Validate the selected files.' });
   }
@@ -25,9 +16,9 @@ export class ValidateFilesCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerContextMenuCommand((builder) =>
       builder
-        .setName('Validate Files')
+        .setName('Test')
         .setType(ApplicationCommandType.Message as ContextMenuCommandType)
-        .setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
+        .setIntegrationTypes([ApplicationIntegrationType.UserInstall])
     );
   }
 
@@ -83,7 +74,7 @@ export class ValidateFilesCommand extends Command {
         Reports.modifiedLog(interaction, attach!);
         return;
       }
-      await rphProc.SendServerContextReply(interaction).catch(async (e) => {
+      await rphProc.SendServerContextReply(interaction, true).catch(async (e) => {
         await Logger.ErrLog(`Failed to process file!\r\n${e}`);
         await interaction.editReply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
       });
