@@ -8,7 +8,7 @@ import { RPHValidator } from '../Functions/Processors/RPH/RPHValidator';
 import { Cache } from '../Cache';
 import { Logger } from '../Functions/Messages/Logger';
 
-export class TestCommand extends Command {
+export class UserValidateFilesCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
     super(context, { ...options, description: 'Validate the selected files.' });
   }
@@ -16,7 +16,7 @@ export class TestCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerContextMenuCommand((builder) =>
       builder
-        .setName('Test')
+        .setName('USER Validate Files')
         .setType(ApplicationCommandType.Message as ContextMenuCommandType)
         .setIntegrationTypes([ApplicationIntegrationType.UserInstall])
     );
