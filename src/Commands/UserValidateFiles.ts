@@ -41,7 +41,6 @@ export class UserValidateFilesCommand extends Command {
       }
 
       if (!acceptedTypes.some((x) => attach!.name.toLowerCase().includes(x))) {
-        this.container.logger.warn(`${attach.name.toLowerCase()} Types: ${acceptedTypes.join(', ')}`);
         // prettier-ignore
         await interaction.reply({embeds: [EmbedCreator.Error('__No Valid File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')], ephemeral: true});
         return;
