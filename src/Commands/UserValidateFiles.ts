@@ -7,6 +7,7 @@ import { RPHProcessor } from '../Functions/Processors/RPH/RPHProcessor';
 import { RPHValidator } from '../Functions/Processors/RPH/RPHValidator';
 import { Cache } from '../Cache';
 import { Logger } from '../Functions/Messages/Logger';
+import { XMLProcessor } from '../Functions/Processors/XML/XMLProcessor';
 
 export class UserValidateFilesCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -23,26 +24,28 @@ export class UserValidateFilesCommand extends Command {
   }
 
   public override async contextMenuRun(interaction: MessageContextMenuCommandInteraction) {
+    await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)], ephemeral: true });
+
     const targetMessage: Message = interaction.targetMessage;
     const acceptedTypes = ['ragepluginhook', 'els.log', 'asiloader.log', 'scripthookvdotnet.log', '.xml', '.meta'];
     let attach: Attachment | undefined;
 
     if (targetMessage.attachments.size === 0) {
       // prettier-ignore
-      await interaction.reply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')], ephemeral: true});
+      await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
       return;
     } else if (targetMessage.attachments.size === 1) {
       attach = targetMessage.attachments.first();
 
       if (!attach) {
         // prettier-ignore
-        await interaction.reply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')], ephemeral: true});
+        await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
         return;
       }
 
       if (!acceptedTypes.some((x) => attach!.name.toLowerCase().includes(x))) {
         // prettier-ignore
-        await interaction.reply({embeds: [EmbedCreator.Error('__No Valid File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')], ephemeral: true});
+        await interaction.editReply({embeds: [EmbedCreator.Error('__No Valid File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
         return;
       }
 
@@ -56,7 +59,13 @@ export class UserValidateFilesCommand extends Command {
       }
     } else if (targetMessage.attachments.size > 1) {
       // prettier-ignore
-      await interaction.reply({embeds: [EmbedCreator.Error('__Multiple Files Found!__\r\n>>> The selected message must include only a single valid log type! The multi selector is implimented yet.')]});
+      await interaction.editReply({embeds: [EmbedCreator.Error('__Multiple Files Found!__\r\n>>> The selected message must include only a single valid log type! The multi selector is implimented yet.')]});
+      return;
+    }
+
+    if (attach!.name.toLowerCase().endsWith('.xml') || attach!.name.toLowerCase().endsWith('.meta')) {
+      const xmlProc = new XMLProcessor(attach!.url);
+      await xmlProc.SendReply(interaction);
       return;
     }
 

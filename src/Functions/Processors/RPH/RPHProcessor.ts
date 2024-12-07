@@ -55,7 +55,20 @@ export class RPHProcessor {
 
     if (!this.log.lspdfrVersion) {
       emb.data.description += `\r\n${process.env.ALERT} **__LSPDFR Did Not Load!__**\r\n>>> -# LSPDFR is not running in the provided log. It is very likely you have an issue with your mods folder! It could also be caused by an .ASI script, or ScriptHookVDotNet if you have that!`;
+      return emb;
     }
+
+    //prettier-ignore
+    if (!this.outdatedPlugins?.length && !this.removePlugins?.length && !this.log.errors.some(error => error.level === Level.CRITICAL || error.level === Level.SEVERE)) {
+      emb.data.description += `\r\n${process.env.SUCCESS} **__No Issues Detected!__**\r\n>>> -# LSPDFR loaded successfully and no errors were detected. If you do have issues, it would most likely be related to the mods folder.`;
+    return emb;
+    }
+
+    emb.data.description +=
+      `\r\n${process.env.INFO} **__Log Processed!__**\r\n>>> -# Log was successfully processed.\r\n\r\n` +
+      `**LSPDFR Plugins:** ${this.log.current.filter((x) => x.type !== PluginType.RPH).length + this.log.outdated.filter((x) => x.type !== PluginType.RPH).length}\r\n` +
+      `**RPH Plugins:** ${this.log.current.filter((x) => x.type === PluginType.RPH).length}\r\n` +
+      `**Possible Issues:** ${this.log.errors.length}\r\n`;
 
     return emb;
   }
@@ -92,7 +105,7 @@ export class RPHProcessor {
       //TODO: if (update && err.level !== Level.CRITICAL) continue;
       errEmb.addFields({
         //prettier-ignore
-        name: `${err.level === Level.XTRA ? process.env.INFO : err.level === Level.WARN ? process.env.WARNING : process.env.ALERT}___ ${inlineCodeBlock(`${err.level} ID: ${err.id}`)} Possible Fix:___`,
+        name: `${err.level === Level.XTRA ? process.env.INFO : err.level === Level.WARN ? process.env.WARNING : process.env.ALERT} ___${inlineCodeBlock(`${err.level} ID: ${err.id}`)} Possible Fix:___`,
         value: `>>> ${err.solution}`,
       });
       errEmb.data.fields?.sort((a, b) => a.name.localeCompare(b.name));

@@ -20,7 +20,7 @@ export abstract class Reports {
 
   static async largeLog(interaction: MessageContextMenuCommandInteraction, attach: Attachment, extra = false) {
     if (extra) {
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [
           EmbedCreator.Error(
             '__Oversized Log__\r\n>>> ' +
@@ -32,7 +32,7 @@ export abstract class Reports {
         ],
       });
     } else {
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [
           EmbedCreator.Error(
             '__Oversized Log__\r\n>>> ' +
