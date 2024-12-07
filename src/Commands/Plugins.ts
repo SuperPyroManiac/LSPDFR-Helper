@@ -33,25 +33,56 @@ export class PluginsCommand extends Subcommand {
     registry.registerChatInputCommand((builder) =>
       builder
         .setName('plugins')
-        .setDescription('Plugin commands')
-        .addSubcommand((command) => command.setName('add').setDescription('Adds a plugin to the database!'))
-        .addSubcommand((command) => command.setName('edit').setDescription('Edits a plugin in the database!'))
-        .addSubcommand((command) => command.setName('remove').setDescription('Removes a plugin from the database!'))
-        .addSubcommand((command) => command.setName('export').setDescription('Exports all plugins to json file!'))
+        .setDescription('Manage plugins for your database')
+        .addSubcommand((command) => command.setName('add').setDescription('Add a plugin to the database'))
+        .addSubcommand((command) => command.setName('edit').setDescription('Edit a plugin in the database'))
+        .addSubcommand((command) => command.setName('remove').setDescription('Remove a plugin from the database'))
+        .addSubcommand((command) => command.setName('export').setDescription('Export all plugins to a JSON file'))
     );
   }
 
-  public async pluginsAdd(interaction: Subcommand.ChatInputCommandInteraction) {}
-  public async pluginsEdit(interaction: Subcommand.ChatInputCommandInteraction) {}
-  public async pluginsRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
+  public async pluginsAdd(interaction: Subcommand.ChatInputCommandInteraction) {
+    await interaction.reply({
+      content: 'The add plugin functionality is under development!',
+      ephemeral: true,
+    });
+  }
+
+  public async pluginsEdit(interaction: Subcommand.ChatInputCommandInteraction) {
+    await interaction.reply({
+      content: 'The edit plugin functionality is under development!',
+      ephemeral: true,
+    });
+  }
+
+  public async pluginsRemove(interaction: Subcommand.ChatInputCommandInteraction) {
+    await interaction.reply({
+      content: 'The remove plugin functionality is under development!',
+      ephemeral: true,
+    });
+  }
 
   public async pluginsExport(interaction: Subcommand.ChatInputCommandInteraction) {
-    Logger.BotLog(EmbedCreator.Warning(`__Exported ${Cache.getPlugins().length} Plugins!__\r\nRequested by ${interaction.user.tag} in <#${interaction.channelId}>`));
-    return await interaction.reply({
-      embeds: [EmbedCreator.Success(`__Exported ${Cache.getPlugins().length} Plugins!__\r\n-# Ensure these do not get leaked!`)],
+    const plugins = Cache.getPlugins();
+    const pluginCount = plugins.length;
+
+
+    Logger.BotLog(
+      EmbedCreator.Warning(
+        `__Exported ${pluginCount} Plugins!__\r\nRequested by ${interaction.user.tag} in <#${interaction.channelId}>`
+      )
+    );
+
+    // Reply with the file
+    await interaction.reply({
+      embeds: [
+        EmbedCreator.Success(
+          `__Exported ${pluginCount} Plugins!__\r\nMake sure this file does not get leaked!`
+        ),
+      ],
       files: [
         {
-          attachment: Buffer.from(JSON.stringify(Cache.getPlugins(), null, 2), 'utf-8'),
+          attachment: Buffer.from(JSON.stringify(plugins, null, 2), 'utf-8'),
           name: 'plugins.json',
         },
       ],
