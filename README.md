@@ -32,4 +32,4 @@ This project has a strict license. - see the LICENSE file for details.
 - [Documentation](https://dsc.pyrosfun.com/helper) in progress...
 
 ---
-Made by SuperPyroManiac for the LSPDFR Community
+*Made by SuperPyroManiac for the LSPDFR Community.*
