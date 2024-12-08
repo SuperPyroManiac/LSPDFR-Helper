@@ -33,6 +33,6 @@ export class ProcessCache<T extends ProcessorType> {
   }
 
   public async Cleanup() {
-    !this.Interaction.isAutocomplete() && (await this.Interaction.deleteReply().catch(() => {}));
+    await this.Interaction.deleteReply().catch(() => {});
   }
 }
