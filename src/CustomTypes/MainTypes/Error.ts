@@ -11,6 +11,6 @@ export class Error {
   pluginList: Plugin[] = [];
 
   clone(): Error {
-    return JSON.parse(JSON.stringify(this));
+    return Object.assign(new Error(), JSON.parse(JSON.stringify(this)));
   }
 }
