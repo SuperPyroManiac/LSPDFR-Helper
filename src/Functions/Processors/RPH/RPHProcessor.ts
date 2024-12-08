@@ -109,13 +109,13 @@ export class RPHProcessor {
     return errEmb;
   }
 
-  //! Server Context Menu Messages
-  async SendServerContextReply(interaction: MessageContextMenuCommandInteraction, userCmd = false) {
+  //! Server Context Menu Messagess
+  async SendServerContextReply(interaction: MessageContextMenuCommandInteraction) {
     this.cache = Cache.getProcess(this.msgId)!;
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(RphSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
-    if (userCmd) reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
+    if (!interaction.guild) reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
     else reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()], components: [comps] });
     this.msgId = reply.id;
     Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));

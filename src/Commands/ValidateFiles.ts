@@ -1,5 +1,14 @@
 import { Command } from '@sapphire/framework';
-import { ApplicationCommandType, ApplicationIntegrationType, Attachment, ContextMenuCommandType, Message, MessageContextMenuCommandInteraction } from 'discord.js';
+import {
+  ApplicationCommandType,
+  ApplicationIntegrationType,
+  Attachment,
+  ButtonBuilder,
+  ButtonStyle,
+  ContextMenuCommandType,
+  Message,
+  MessageContextMenuCommandInteraction,
+} from 'discord.js';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { Logger } from '../Functions/Messages/Logger';
 import { Cache } from '../Cache';
@@ -8,6 +17,8 @@ import { RPHProcessor } from '../Functions/Processors/RPH/RPHProcessor';
 import { RPHValidator } from '../Functions/Processors/RPH/RPHValidator';
 import { Reports } from '../Functions/Messages/Reports';
 import { XMLProcessor } from '../Functions/Processors/XML/XMLProcessor';
+import { UsersValidation } from '../Functions/Validations/Users';
+import { ActionRowBuilder } from '@discordjs/builders';
 
 export class ValidateFilesCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -19,16 +30,34 @@ export class ValidateFilesCommand extends Command {
       builder
         .setName('Validate Files')
         .setType(ApplicationCommandType.Message as ContextMenuCommandType)
-        .setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
+        .setIntegrationTypes([ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall])
     );
   }
 
   public override async contextMenuRun(interaction: MessageContextMenuCommandInteraction) {
-    await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)] });
+    await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)], ephemeral: true });
 
     const targetMessage: Message = interaction.targetMessage;
+    const sender = Cache.getUser(interaction.user.id);
     const acceptedTypes = ['ragepluginhook', 'els.log', 'asiloader.log', 'scripthookvdotnet.log', '.xml', '.meta'];
     let attach: Attachment | undefined;
+
+    if (!sender) await UsersValidation.AddMissing();
+    if (sender!.banned) {
+      await interaction.editReply({
+        embeds: [
+          EmbedCreator.Error(
+            `__Banned!__\r\n-# You are banned from using this bot!\r\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.`
+          ),
+        ],
+        components: [
+          new ActionRowBuilder<ButtonBuilder>().addComponents([
+            new ButtonBuilder().setURL('https://dsc.pyrosfun.com/').setLabel('Pyros Discord').setStyle(ButtonStyle.Link),
+          ]),
+        ],
+      });
+      return;
+    }
 
     if (targetMessage.attachments.size === 0) {
       // prettier-ignore
