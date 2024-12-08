@@ -8,17 +8,12 @@ import { ButtonStyle } from 'discord.js';
 import { Logger } from '../Messages/Logger';
 
 export abstract class ServerValidation {
-  private static runningAdd = false;
-  private static runningRem = false;
-
   static async Verify() {
-    await this.AddMissing();
-    await this.RemoveMissing();
+    this.AddMissing();
+    this.RemoveMissing();
   }
 
   static async AddMissing(): Promise<number> {
-    if (this.runningAdd) return 0;
-    this.runningAdd = true;
     let cnt = 0;
     for (const server of Array.from(container.client.guilds.cache.values())) {
       const ch = server.systemChannel;
@@ -99,13 +94,10 @@ export abstract class ServerValidation {
       }
     }
     if (cnt > 0) Cache.updateServers((await DBManager.getServers()) ?? []);
-    this.runningAdd = false;
     return cnt;
   }
 
   static async RemoveMissing(): Promise<number> {
-    if (this.runningRem) return 0;
-    this.runningRem = true;
     let cnt = 0;
 
     for (const server of Cache.getServers().filter((x) => x.enabled === true)) {
@@ -123,7 +115,6 @@ export abstract class ServerValidation {
       }
     }
     if (cnt > 0) Cache.updateServers((await DBManager.getServers()) ?? []);
-    this.runningRem = false;
     return cnt;
   }
 }

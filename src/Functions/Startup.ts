@@ -3,13 +3,15 @@ import { EmbedCreator } from './Messages/EmbedCreator';
 import { Logger } from './Messages/Logger';
 import { Timer } from './Timer';
 import { ServerValidation } from './Validations/Servers';
+import { UsersValidation } from './Validations/Users';
 
 export abstract class Startup {
   static async Init() {
     Timer.startTimer();
     await Startup.PrepCache();
     await Startup.SendMessages();
-    await ServerValidation.Verify(); //TODO
+    ServerValidation.Verify(); //TODO
+    UsersValidation.Verify(); //TODO
   }
 
   private static async PrepCache() {

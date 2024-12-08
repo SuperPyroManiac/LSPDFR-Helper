@@ -170,6 +170,21 @@ export abstract class DBManager {
     });
   }
 
+  static async createUsers(users: User[]): Promise<void> {
+    this.handleDbOperation(async () => {
+      await prisma.users.createMany({
+        data: users.map((user) => ({
+          id: user.id,
+          name: user.name,
+          banned: user.banned,
+          botEditor: user.botEditor,
+          botAdmin: user.botAdmin,
+        })),
+        skipDuplicates: true,
+      });
+    });
+  }
+
   static async createUser(user: User): Promise<void> {
     this.handleDbOperation(async () => {
       await prisma.users.create({
