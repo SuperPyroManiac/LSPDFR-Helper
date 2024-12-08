@@ -34,7 +34,7 @@ export abstract class PluginValidation {
         `> **Previous Version:** \`${plug.version}\`\r\n` +
         `> **New Version:** \`${webPlug.file_version}\`\r\n` +
         `> **Type:** \`${plug.type}\` | **State:** \`${plug.state}\`\r\n` +
-        `> **EA Version?:** \`${plug.eaVersion && plug.eaVersion !== '0'}\`\r\n`;
+        `> **EA Version?:** \`${Boolean(plug.eaVersion && plug.eaVersion !== '0')}\`\r\n`;
 
       plug.version = webPlug.file_version;
       await DBManager.editPlugin(plug);
