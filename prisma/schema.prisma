@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+enum PluginType {
+  LSPDFR
+  RPH
+  ASI
+  SHV
+  SHVDN
+  LIBRARY
+}
+
+enum State {
+  NORMAL
+  EXTERNAL
+  BROKEN
+  IGNORE
+}
+
+enum Level {
+  PMSG
+  PIMG
+  XTRA
+  WARN
+  SEVERE
+  CRITICAL
+}
+
+model plugins {
+  name        String     @id @db.VarChar(255)
+  dname       String     @db.Text
+  description String?    @db.Text
+  version     String?    @db.VarChar(100)
+  eaVersion   String?    @db.VarChar(100)
+  id          Int?
+  link        String?    @db.Text
+  type        PluginType
+  state       State
+}
+
+model errors {
+  id          Int     @id @default(autoincrement())
+  pattern     String? @db.Text
+  solution    String? @db.Text
+  description String? @db.Text
+  stringMatch Boolean
+  level       Level
+}
+
+model cases {
+  id         String   @id @db.VarChar(255)
+  ownerId    String
+  channelId  String
+  serverId   String
+  open       Boolean
+  createDate DateTime
+  expireDate DateTime
+}
+
+model servers {
+  id           String  @id
+  name         String  @db.Text
+  ownerId      String
+  enabled      Boolean @default(true)
+  banned       Boolean @default(false)
+  autoSupport  Boolean @default(true)
+  ahCases      Boolean @default(true)
+  ahChId       String  @default("0")
+  ahMonChId    String  @default("0")
+  announceChId String  @default("0")
+  updateChId   String  @default("0")
+}
+
+model users {
+  id        String  @id
+  name      String  @db.Text
+  banned    Boolean @default(false)
+  botEditor Boolean @default(false)
+  botAdmin  Boolean @default(false)
+}

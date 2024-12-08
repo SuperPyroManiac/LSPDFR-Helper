@@ -4,6 +4,5 @@ config.json
 .prettierrc
 .prettierignore
 .eslintrc.json
-prisma/*
 dist/*
 .vscode/*
