@@ -1,4 +1,3 @@
-import * as cheerio from 'cheerio';
 import { Cache } from '../../Cache';
 import { State } from '../../CustomTypes/Enums/State';
 import { EmbedCreator } from '../Messages/EmbedCreator';
@@ -37,12 +36,6 @@ export abstract class PluginValidation {
         `> **Type:** \`${plug.type}\` | **State:** \`${plug.state}\`\r\n` +
         `> **EA Version?:** \`${plug.eaVersion && plug.eaVersion !== '0'}\`\r\n`;
 
-      //   if (plug.link) {
-      //     const thumbs = await this.getImagesFromUrl(plug.link);
-      //     if (thumbs.length > 0) emb.setImage(thumbs[0]);
-      //   }
-      //TODO Get images
-
       plug.version = webPlug.file_version;
       await DBManager.editPlugin(plug);
       cnt++;
@@ -76,27 +69,5 @@ export abstract class PluginValidation {
       }
     }
     return allPlugins;
-  }
-
-  private static async getImagesFromUrl(url: string): Promise<string[]> {
-    const response = await fetch(url);
-    const html = await response.text();
-    const $ = cheerio.load(html);
-
-    const imageUrls: string[] = [];
-
-    // Get all images with src attribute
-    $('img').each((_, element) => {
-      const src = $(element).attr('src');
-      if (src) imageUrls.push(src);
-    });
-
-    // Get background images from data-background-src
-    $('[data-background-src]').each((_, element) => {
-      const bgSrc = $(element).attr('data-background-src');
-      if (bgSrc) imageUrls.push(bgSrc);
-    });
-
-    return imageUrls;
   }
 }
