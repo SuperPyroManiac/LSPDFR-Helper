@@ -1,17 +1,12 @@
+import * as cron from 'node-cron';
 import { Cache } from '../Cache';
 import { PluginValidation } from './Validations/Plugins';
 
 export abstract class Timer {
-  private static timer: NodeJS.Timeout;
-
-  static async startTimer() {
-    this.timer = setInterval(async () => {
-      await this.runEveryTenSeconds();
-    }, 10000);
-  }
-
-  private static async runEveryTenSeconds() {
-    await Cache.removeExpired();
-    PluginValidation.CheckUpdates();
+  static startTimer() {
+    cron.schedule('*/10 * * * * *', async () => {
+      await Cache.removeExpired();
+      PluginValidation.CheckUpdates();
+    });
   }
 }
