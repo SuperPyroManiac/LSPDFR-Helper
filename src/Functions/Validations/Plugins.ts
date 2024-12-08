@@ -12,12 +12,14 @@ interface LSPDFRPlugin {
 
 export abstract class PluginValidation {
   public static async CheckUpdates() {
-    const webPlugs = await this.getPlugins();
+    const webPlugs = await this.getPlugins().catch(() => {
+      return;
+    });
     const plugs = Cache.getPlugins();
     const emb = EmbedCreator.Info(`__Plugin Updates__\r\n-# A new version of the plugins listed have been found!\r\n`);
     let cnt = 0;
 
-    for (const webPlug of webPlugs) {
+    for (const webPlug of webPlugs!) {
       const plug = plugs.filter((plug) => plug.id == webPlug.file_id)[0];
       if (!plug || plug.id == 0 || plug.state === State.IGNORE || plug.state === State.EXTERNAL) continue;
       webPlug.file_version = webPlug.file_version.split(' ')[0].trim();
