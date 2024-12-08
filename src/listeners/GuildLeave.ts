@@ -1,5 +1,5 @@
 import { Events, Listener } from '@sapphire/framework';
-import { Client, Guild } from 'discord.js';
+import { Guild } from 'discord.js';
 import { Cache } from '../Cache';
 import { DBManager } from '../Functions/DBManager';
 import { Logger } from '../Functions/Messages/Logger';
@@ -16,9 +16,10 @@ export class GuildLeaveListener extends Listener {
   public async run(guild: Guild) {
     const server = Cache.getServer(guild.id);
     if (!server) return;
-    const owner = await guild.fetchOwner();
     server.enabled = false;
+    const owner = await guild.fetchOwner();
     await DBManager.editServer(server);
+    Cache.updateServers((await DBManager.getServers()) ?? []);
     await Logger.ServerLog(
       EmbedCreator.Info(
         `__Server Removed!__\r\n>>> ` +
@@ -28,6 +29,5 @@ export class GuildLeaveListener extends Listener {
           `**Owner:** ${owner.user.username} (${owner.user.id})`
       ).setThumbnail(guild.iconURL())
     );
-    Cache.updateServers((await DBManager.getServers()) ?? []);
   }
 }

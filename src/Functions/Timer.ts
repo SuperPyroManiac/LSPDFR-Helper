@@ -5,10 +5,14 @@ import { ServerValidation } from './Validations/Servers';
 
 export abstract class Timer {
   static startTimer() {
-    cron.schedule('*/10 * * * * *', async () => {
-      Cache.removeExpired();
-      PluginValidation.CheckUpdates();
-      ServerValidation.Verify();
-    });
+    cron.schedule(
+      '*/10 * * * * *',
+      async () => {
+        Cache.removeExpired();
+        PluginValidation.CheckUpdates();
+        ServerValidation.Verify();
+      },
+      { runOnInit: false }
+    );
   }
 }

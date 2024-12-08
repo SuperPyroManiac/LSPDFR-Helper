@@ -8,12 +8,17 @@ import { ButtonStyle } from 'discord.js';
 import { Logger } from '../Messages/Logger';
 
 export abstract class ServerValidation {
+  private static runningAdd = false;
+  private static runningRem = false;
+
   static async Verify() {
-    this.AddMissing();
-    this.RemoveMissing();
+    await this.AddMissing();
+    await this.RemoveMissing();
   }
 
   static async AddMissing(): Promise<number> {
+    if (this.runningAdd) return 0;
+    this.runningAdd = true;
     let cnt = 0;
     for (const server of Array.from(container.client.guilds.cache.values())) {
       const ch = server.systemChannel;
@@ -93,15 +98,20 @@ export abstract class ServerValidation {
         continue;
       }
     }
-    Cache.updateServers((await DBManager.getServers()) ?? []);
+    if (cnt > 0) Cache.updateServers((await DBManager.getServers()) ?? []);
+    this.runningAdd = false;
     return cnt;
   }
 
   static async RemoveMissing(): Promise<number> {
+    if (this.runningRem) return 0;
+    this.runningRem = true;
     let cnt = 0;
 
-    for (const server of Cache.getServers().filter((x) => x.enabled)) {
+    for (const server of Cache.getServers().filter((x) => x.enabled === true)) {
       if (!container.client.guilds.cache.has(server.id)) {
+        const serv = await DBManager.getServer(server.id);
+        if (serv?.enabled === false) continue;
         server.enabled = false;
         await DBManager.editServer(server);
         await Logger.ServerLog(
@@ -112,7 +122,8 @@ export abstract class ServerValidation {
         cnt++;
       }
     }
-    Cache.updateServers((await DBManager.getServers()) ?? []);
+    if (cnt > 0) Cache.updateServers((await DBManager.getServers()) ?? []);
+    this.runningRem = false;
     return cnt;
   }
 }

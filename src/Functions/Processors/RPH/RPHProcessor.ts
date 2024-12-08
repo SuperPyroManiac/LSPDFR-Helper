@@ -1,12 +1,4 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ContextMenuCommandInteraction,
-  EmbedBuilder,
-  Message,
-  MessageContextMenuCommandInteraction,
-} from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, MessageContextMenuCommandInteraction } from 'discord.js';
 import { Cache, ProcessorType } from '../../../Cache';
 import { PluginType } from '../../../CustomTypes/Enums/PluginType';
 import { State } from '../../../CustomTypes/Enums/State';
