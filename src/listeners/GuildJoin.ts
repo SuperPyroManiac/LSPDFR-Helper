@@ -1,5 +1,9 @@
 import { Events, Listener } from '@sapphire/framework';
 import { Client, Guild } from 'discord.js';
+import { ServerValidation } from '../Functions/Validations/Servers';
+import { Cache } from '../Cache';
+import { DBManager } from '../Functions/DBManager';
+import { Server } from 'http';
 
 export class GuildJoinListener extends Listener {
   public constructor(context: Listener.LoaderContext, options: Listener.Options) {
@@ -9,7 +13,7 @@ export class GuildJoinListener extends Listener {
     });
   }
 
-  public run(guild: Guild) {
-    console.log(`Joined guild ${guild.name}!`);
+  public async run(guild: Guild) {
+    ServerValidation.AddMissing();
   }
 }

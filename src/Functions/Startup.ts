@@ -2,12 +2,14 @@ import { Cache } from '../Cache';
 import { EmbedCreator } from './Messages/EmbedCreator';
 import { Logger } from './Messages/Logger';
 import { Timer } from './Timer';
+import { ServerValidation } from './Validations/Servers';
 
 export abstract class Startup {
   static async Init() {
     Timer.startTimer();
     await Startup.PrepCache();
     await Startup.SendMessages();
+    await ServerValidation.Verify(); //TODO
   }
 
   private static async PrepCache() {

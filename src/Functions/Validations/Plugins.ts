@@ -41,6 +41,7 @@ export abstract class PluginValidation {
       cnt++;
     }
     if (cnt > 0) {
+      Cache.updatePlugins((await DBManager.getPlugins()) ?? []);
       await Logger.BotLog(emb);
     }
   }
