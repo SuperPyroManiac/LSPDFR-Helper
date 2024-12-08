@@ -1,11 +1,11 @@
 {
   "name": "LSPDFRHelper",
   "version": "1.0.0",
-  "main": "dist/Main.js",
+  "main": "dist/main.js",
   "scripts": {
-    "dev": "rimraf dist && tsc && node dist/Main.js",
+    "dev": "rimraf dist && tsc && node dist/main.js",
     "build": "rimraf dist && tsc",
-    "start": "node dist/Main.js",
+    "start": "node dist/main.js",
     "format": "prettier --write ."
   },
   "keywords": [],
