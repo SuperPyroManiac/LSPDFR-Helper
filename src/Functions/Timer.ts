@@ -3,24 +3,29 @@ import { Cache } from '../Cache';
 import { PluginValidation } from './Validations/Plugins';
 import { ServerValidation } from './Validations/Servers';
 import { UsersValidation } from './Validations/Users';
+import { Logger } from './Messages/Logger';
 
 export abstract class Timer {
   static startTimer() {
+    // Every 10 seconds
     cron.schedule(
       '*/10 * * * * *',
       () => {
-        Cache.removeExpired();
-        PluginValidation.CheckUpdates();
-        ServerValidation.Verify();
+        Cache.removeExpired().catch((e) => Logger.ErrLog(`Cache cleanup failed:\r\n${e}`));
+        PluginValidation.CheckUpdates().catch((e) => Logger.ErrLog(`Plugin check failed:\r\n${e}`));
+        ServerValidation.Verify().catch((e) => Logger.ErrLog(`Server validation failed:\r\n${e}`));
       },
-      { runOnInit: false }
+      {
+        runOnInit: false,
+      }
     );
 
+    // Every minute
     cron.schedule(
       '* * * * *',
-      async () => {
-        await UsersValidation.Verify();
-        await Cache.resetCache();
+      () => {
+        UsersValidation.Verify().catch((e) => Logger.ErrLog(`User validation failed:\r\n${e}`));
+        Cache.resetCache().catch((e) => Logger.ErrLog(`Cache reset failed:\r\n${e}`));
       },
       {
         runOnInit: false,
