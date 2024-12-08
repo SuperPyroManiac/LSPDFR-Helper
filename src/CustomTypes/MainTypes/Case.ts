@@ -1,7 +1,7 @@
 import { addDays } from 'date-fns';
 
 export class Case {
-  id!: string;
+  id: string;
   ownerId?: string;
   channelId?: string;
   serverId?: string;
