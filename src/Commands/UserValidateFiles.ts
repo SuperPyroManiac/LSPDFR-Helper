@@ -70,7 +70,6 @@ export class UserValidateFilesCommand extends Command {
     }
 
     if (attach!.name.toLowerCase().includes('ragepluginhook')) {
-      await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)], ephemeral: true });
       let rphProc: RPHProcessor;
       const cache = Cache.getProcess(targetMessage.id);
       if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor;

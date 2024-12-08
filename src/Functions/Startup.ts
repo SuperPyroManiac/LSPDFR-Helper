@@ -2,6 +2,7 @@ import { Cache } from '../Cache';
 import { EmbedCreator } from './Messages/EmbedCreator';
 import { Logger } from './Messages/Logger';
 import { Timer } from './Timer';
+import { PluginValidation } from './Validations/Plugins';
 
 export abstract class Startup {
   static async Init() {
