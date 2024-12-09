@@ -30,14 +30,16 @@ export class ErrorsCommand extends Subcommand {
   }
 
   registerApplicationCommands(registry: Subcommand.Registry) {
-    registry.registerChatInputCommand((builder) =>
-      builder
-        .setName('errors')
-        .setDescription('Error commands')
-        .addSubcommand((command) => command.setName('add').setDescription('Adds an error to the database!'))
-        .addSubcommand((command) => command.setName('edit').setDescription('Edits an error in the database!'))
-        .addSubcommand((command) => command.setName('remove').setDescription('Removes an error from the database!'))
-        .addSubcommand((command) => command.setName('export').setDescription('Exports all errors to a json file!'))
+    registry.registerChatInputCommand(
+      (builder) =>
+        builder
+          .setName('errors')
+          .setDescription('Error commands')
+          .addSubcommand((command) => command.setName('add').setDescription('Adds an error to the database!'))
+          .addSubcommand((command) => command.setName('edit').setDescription('Edits an error in the database!'))
+          .addSubcommand((command) => command.setName('remove').setDescription('Removes an error from the database!'))
+          .addSubcommand((command) => command.setName('export').setDescription('Exports all errors to a json file!')),
+      { guildIds: [process.env.MAIN_SERVER as string] }
     );
   }
 

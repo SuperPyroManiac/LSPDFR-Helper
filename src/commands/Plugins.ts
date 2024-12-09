@@ -30,14 +30,16 @@ export class PluginsCommand extends Subcommand {
   }
 
   registerApplicationCommands(registry: Subcommand.Registry) {
-    registry.registerChatInputCommand((builder) =>
-      builder
-        .setName('plugins')
-        .setDescription('Plugin commands')
-        .addSubcommand((command) => command.setName('add').setDescription('Adds a plugin to the database!'))
-        .addSubcommand((command) => command.setName('edit').setDescription('Edits a plugin in the database!'))
-        .addSubcommand((command) => command.setName('remove').setDescription('Removes a plugin from the database!'))
-        .addSubcommand((command) => command.setName('export').setDescription('Exports all plugins to a json file!'))
+    registry.registerChatInputCommand(
+      (builder) =>
+        builder
+          .setName('plugins')
+          .setDescription('Plugin commands')
+          .addSubcommand((command) => command.setName('add').setDescription('Adds a plugin to the database!'))
+          .addSubcommand((command) => command.setName('edit').setDescription('Edits a plugin in the database!'))
+          .addSubcommand((command) => command.setName('remove').setDescription('Removes a plugin from the database!'))
+          .addSubcommand((command) => command.setName('export').setDescription('Exports all plugins to a json file!')),
+      { guildIds: [process.env.MAIN_SERVER as string] }
     );
   }
 
