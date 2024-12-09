@@ -3,13 +3,12 @@ import { Level } from '../../../CustomTypes/Enums/Level';
 import { PluginType } from '../../../CustomTypes/Enums/PluginType';
 import { State } from '../../../CustomTypes/Enums/State';
 import { RPHLog } from '../../../CustomTypes/LogTypes/RPHLog';
-import { Error } from '../../../CustomTypes/MainTypes/Error';
 import { Plugin } from '../../../CustomTypes/MainTypes/Plugin';
 import { RPHAdvancedErrors } from './RPHAdvancedErrors';
 
 export abstract class RPHValidator {
   static async validate(attachmenturl: string): Promise<RPHLog> {
-    const rawLog = await (await fetch(attachmenturl)).text();
+    const rawLog = (await (await fetch(attachmenturl)).text()).replaceAll('\r\n', '\n');
     const unSorted: Plugin[] = [];
     let log = new RPHLog();
 
@@ -88,7 +87,7 @@ export abstract class RPHValidator {
         if (rawLog.includes(error.pattern!)) log.errors.push(error);
       }
 
-      const errMatch = Array.from(rawLog.matchAll(new RegExp(error.pattern!, 'g')));
+      const errMatch = Array.from(rawLog.matchAll(new RegExp(error.pattern!, 'gm')));
 
       for (const match of errMatch) {
         const newError = error.clone();
