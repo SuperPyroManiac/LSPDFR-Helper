@@ -1,0 +1,42 @@
+name: Deploy Discord Bot
+
+on:
+  push:
+    branches:
+      - master
+      - Develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Executing Remote Deployment
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        script: |
+          BRANCH_NAME="${{ github.ref_name }}"
+
+          if [ "$BRANCH_NAME" == "master" ]; then  # Changed to 'master'
+            DEPLOY_PATH="/home/github/LSPDFR-Helper/Main"
+            PM2_NAME="MainBot"
+            GIT_BRANCH="master"  # Added this line
+          elif [ "$BRANCH_NAME" == "Develop" ]; then  # Capital D
+            DEPLOY_PATH="/home/github/LSPDFR-Helper/Dev"
+            PM2_NAME="DevBot"
+            GIT_BRANCH="Develop"  # Added this line
+          else
+            echo "Unknown branch. Skipping deployment."
+            exit 1
+          fi
+          cd "$DEPLOY_PATH"
+          rm -rf LSPDFR-Helper
+          git clone --branch "$GIT_BRANCH" https://github.com/SuperPyroManiac/LSPDFR-Helper.git
+          cd LSPDFR-Helper
+          npm ci
+          npm run build
+          pm2 delete "$PM2_NAME" || true
+          pm2 start npm --name "$PM2_NAME" -- start
