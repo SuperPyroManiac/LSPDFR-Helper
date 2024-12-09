@@ -23,7 +23,7 @@ export abstract class Startup {
   }
 
   private static async SendMessages() {
-    const emb = EmbedCreator.Success(`__LSPDFR Helper Loaded!__\r\n`);
+    const emb = EmbedCreator.Success(`__LSPDFR Helper Initialized!__\r\n`);
     //TODO Git Info
     emb.data.description +=
       `> Cached Servers: ${Cache.getServers().length}\r\n` +
