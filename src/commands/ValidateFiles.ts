@@ -36,28 +36,9 @@ export class ValidateFilesCommand extends Command {
 
   public override async contextMenuRun(interaction: MessageContextMenuCommandInteraction) {
     await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)], ephemeral: true });
-
     const targetMessage: Message = interaction.targetMessage;
-    const sender = Cache.getUser(interaction.user.id);
     const acceptedTypes = ['ragepluginhook', 'els.log', 'asiloader.log', 'scripthookvdotnet.log', '.xml', '.meta'];
     let attach: Attachment | undefined;
-
-    if (!sender) await UsersValidation.AddMissing();
-    if (sender!.banned) {
-      await interaction.editReply({
-        embeds: [
-          EmbedCreator.Error(
-            `__Banned!__\r\n-# You are banned from using this bot!\r\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.`
-          ),
-        ],
-        components: [
-          new ActionRowBuilder<ButtonBuilder>().addComponents([
-            new ButtonBuilder().setURL('https://dsc.pyrosfun.com/').setLabel('Pyros Discord').setStyle(ButtonStyle.Link),
-          ]),
-        ],
-      });
-      return;
-    }
 
     if (targetMessage.attachments.size === 0) {
       // prettier-ignore
