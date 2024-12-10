@@ -21,3 +21,11 @@ export class BotAdminPrecondition extends AllFlowsPrecondition {
     return usr.botAdmin === true ? this.ok() : this.error({ message: '__No Permission__\r\n>>> You do not have permission to use this command!' });
   }
 }
+
+declare module '@sapphire/framework' {
+  interface Preconditions {
+    BotAdmin: never;
+  }
+}
+
+export default undefined;

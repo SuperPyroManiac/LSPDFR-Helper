@@ -18,7 +18,7 @@ export abstract class AhChannel {
       '\n' +
       '\n\n> __Managed by: SuperPyroManiac & Hammer__\n-# More information at: https://dsc.PyrosFun.com';
     const server = Cache.getServer(serverId);
-    if (!server || !server.ahChId || !server.autoSupport) return;
+    if (!server || !server.ahChId || server.ahChId === '0' || !server.autoSupport) return;
     const ch = await server.getGuild()?.channels.fetch(server.ahChId);
     if (!ch || !ch.isTextBased()) return;
     const emb = EmbedCreator.Support('__LSPDFR AutoHelper__');

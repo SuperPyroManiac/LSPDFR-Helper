@@ -21,3 +21,11 @@ export class ServerManagerPrecondition extends AllFlowsPrecondition {
     return this.error({ message: '__No Permission__\r\n>>> You do not have permission to use this command!' });
   }
 }
+
+declare module '@sapphire/framework' {
+  interface Preconditions {
+    ServerManager: never;
+  }
+}
+
+export default undefined;
