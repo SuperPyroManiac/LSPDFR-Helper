@@ -21,11 +21,11 @@ export abstract class CaseMonitor {
         break;
       }
       emb.addFields({
-        name: `__<#${c.id}>__`,
+        name: `__<#${c.channelId}>__`,
         value: `>>> Author: <@${c.ownerId}>\nCreated: ${time(c.createDate, TimestampStyles.RelativeTime)} | AutoClose: ${time(c.expireDate, TimestampStyles.RelativeTime)}`,
       });
     }
-    if (emb.data.fields?.length === 0) emb.addFields({ name: 'No Cases', value: 'There are no open cases!' });
+    if (!emb.data.fields) emb.addFields({ name: 'No Cases', value: 'There are no open cases!' });
 
     await msg.edit({ embeds: [emb] });
   }
