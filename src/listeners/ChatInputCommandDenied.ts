@@ -24,8 +24,7 @@ export class ChatInputCommandDenied extends Listener<typeof Events.ChatInputComm
       ],
       ephemeral: true,
     };
-    if (error.message != 'banned')
-      replyMsg = { embeds: [EmbedCreator.Error(`__No Permission!__\r\n>>> You do not have permission to use this command!`)], components: [], ephemeral: true };
+    if (error.message != 'banned') replyMsg = { embeds: [EmbedCreator.Error(error.message)], components: [], ephemeral: true };
 
     if (interaction.deferred || interaction.replied) return interaction.editReply(replyMsg);
     return interaction.reply(replyMsg);
