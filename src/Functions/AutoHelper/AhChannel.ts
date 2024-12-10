@@ -30,7 +30,7 @@ export abstract class AhChannel {
       components: [
         new ActionRowBuilder<ButtonBuilder>().addComponents([
           new ButtonBuilder().setCustomId(AhOpenCase).setLabel('Open Case').setStyle(ButtonStyle.Success),
-          new ButtonBuilder().setURL('https://dsc.pyrosfun.com/').setLabel('Bot Website').setStyle(ButtonStyle.Link),
+          new ButtonBuilder().setURL('https://www.pyrosfun.com/').setLabel('Bot Website').setStyle(ButtonStyle.Link),
           new ButtonBuilder().setURL('https://www.paypal.com/donate/?hosted_button_id=XPVRV3WJKGFW2').setLabel('Donations').setStyle(ButtonStyle.Link),
         ]),
       ],

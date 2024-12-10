@@ -1,14 +1,5 @@
 import { Command } from '@sapphire/framework';
-import {
-  ApplicationCommandType,
-  ApplicationIntegrationType,
-  Attachment,
-  ButtonBuilder,
-  ButtonStyle,
-  ContextMenuCommandType,
-  Message,
-  MessageContextMenuCommandInteraction,
-} from 'discord.js';
+import { ApplicationCommandType, ApplicationIntegrationType, Attachment, ContextMenuCommandType, Message, MessageContextMenuCommandInteraction } from 'discord.js';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { Logger } from '../Functions/Messages/Logger';
 import { Cache } from '../Cache';
@@ -17,8 +8,6 @@ import { RPHProcessor } from '../Functions/Processors/RPH/RPHProcessor';
 import { RPHValidator } from '../Functions/Processors/RPH/RPHValidator';
 import { Reports } from '../Functions/Messages/Reports';
 import { XMLProcessor } from '../Functions/Processors/XML/XMLProcessor';
-import { UsersValidation } from '../Functions/Validations/Users';
-import { ActionRowBuilder } from '@discordjs/builders';
 
 export class ValidateFilesCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {

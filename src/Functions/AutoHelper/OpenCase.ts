@@ -7,12 +7,12 @@ import { DBManager } from '../DBManager';
 import { CaseMonitor } from './CaseMonitor';
 
 export abstract class OpenCase {
-  static async Create(userId: string, guildId: string): Promise<boolean> {
+  static async Create(userId: string, guildId: string): Promise<Case | undefined> {
     const caseId = this.generateCaseId();
     const server = Cache.getServer(guildId);
-    if (!server || !server.getGuild() || !server.ahChId) return false;
+    if (!server || !server.getGuild() || !server.ahChId) return;
     const ahCh = await server.getGuild()?.channels.fetch(server.ahChId);
-    if (!ahCh || ahCh.type !== 0) return false;
+    if (!ahCh || ahCh.type !== 0) return;
     const ch = await ahCh.threads.create({
       name: `AutoHelper - Case: ${caseId}`,
       autoArchiveDuration: ThreadAutoArchiveDuration.ThreeDays,
@@ -50,7 +50,7 @@ export abstract class OpenCase {
     Cache.updateCases((await DBManager.getCases()) ?? []);
 
     await CaseMonitor.Update(newCase.serverId);
-    return true;
+    return newCase;
   }
 
   private static generateCaseId(): string {
