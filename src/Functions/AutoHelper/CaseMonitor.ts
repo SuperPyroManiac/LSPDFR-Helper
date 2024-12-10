@@ -8,7 +8,7 @@ export abstract class CaseMonitor {
     if (!server || !server.ahMonChId) return;
     const ch = server.getGuild()?.channels.cache.get(server.ahMonChId);
     if (!ch || !ch.isTextBased()) return;
-    let msg = ch.messages.cache.find((x) => x.embeds[0]?.description?.includes('Open AutoHelper Cases'));
+    let msg = ch.messages.cache.find((x) => x.embeds[0]?.description?.includes('AutoHelper Cases'));
     if (!msg) msg = await ch.send({ embeds: [EmbedCreator.Loading('__Starting...__')] });
     const cases = Cache.getCases()
       .filter((x) => x.serverId === serverId && x.open)
