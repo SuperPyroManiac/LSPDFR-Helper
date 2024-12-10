@@ -2,6 +2,7 @@ import { Cache } from '../../Cache';
 import { Case } from '../../CustomTypes/MainTypes/Case';
 import { DBManager } from '../DBManager';
 import { EmbedCreator } from '../Messages/EmbedCreator';
+import { CaseMonitor } from './CaseMonitor';
 
 export abstract class CloseCase {
   static async Close(ac: Case, force: boolean = false): Promise<boolean> {
@@ -21,7 +22,7 @@ export abstract class CloseCase {
     await ch.setLocked(true);
     await ch.setArchived(true);
 
-    //TODO: Update Monitor
+    await CaseMonitor.Update(ac.serverId);
     return true;
   }
 }

@@ -6,7 +6,7 @@ export class Case {
   id: string;
   ownerId?: string;
   channelId?: string;
-  serverId?: string;
+  serverId!: string;
   open: boolean = true;
   createDate: Date = new Date();
   expireDate: Date = addDays(new Date(), 1);
@@ -17,6 +17,10 @@ export class Case {
 
   clone(): Case {
     return Object.assign(new Case(), JSON.parse(JSON.stringify(this)));
+  }
+
+  isExpired(): boolean {
+    return this.expireDate < new Date();
   }
 
   getAhChannel(): ThreadChannel | undefined {

@@ -4,6 +4,7 @@ import { EmbedCreator } from '../Messages/EmbedCreator';
 import { AhMarkComplete } from '../../interaction-handlers/_CustomIds';
 import { Case } from '../../CustomTypes/MainTypes/Case';
 import { DBManager } from '../DBManager';
+import { CaseMonitor } from './CaseMonitor';
 
 export abstract class OpenCase {
   static async Create(userId: string, guildId: string): Promise<boolean> {
@@ -48,7 +49,7 @@ export abstract class OpenCase {
     await DBManager.createCase(newCase);
     Cache.updateCases((await DBManager.getCases()) ?? []);
 
-    //TODO: Update Monitor
+    await CaseMonitor.Update(newCase.serverId);
     return true;
   }
 

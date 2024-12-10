@@ -2,6 +2,8 @@ import { Cache } from '../Cache';
 import { EmbedCreator } from './Messages/EmbedCreator';
 import { Logger } from './Messages/Logger';
 import { Timer } from './Timer';
+import { AutoHelperValidation } from './Validations/AutoHelper';
+import { CaseValidation } from './Validations/Cases';
 import { ServerValidation } from './Validations/Servers';
 import { UsersValidation } from './Validations/Users';
 
@@ -14,10 +16,12 @@ export abstract class Startup {
 
   static async Init() {
     await Cache.resetCache();
+    AutoHelperValidation.ValidateMsgs();
     this.newServers = await ServerValidation.AddMissing();
     this.remServers = await ServerValidation.RemoveMissing();
     this.newUsers = await UsersValidation.AddMissing();
     this.updateUsers = await UsersValidation.UpdateNames();
+    this.closedCases = await CaseValidation.VerifyOpenCases();
     Timer.startTimer();
     await Startup.SendMessages();
   }
