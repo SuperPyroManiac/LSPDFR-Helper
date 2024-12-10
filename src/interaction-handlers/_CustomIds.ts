@@ -1,7 +1,8 @@
 // RPH log analysis events
-export const RphGetPluginInfo = 'RphPluginInfo';
-export const RphGetErrorInfo = 'RphErrorInfo';
+export const RphGetPluginInfo = 'RphGetPluginInfo';
+export const RphGetErrorInfo = 'RphGetErrorInfo';
 export const RphSendToUser = 'RphSendToUser';
 
 // AutoHelper
-export const AhMarkComplete = 'AhComplete';
+export const AhOpenCase = 'AhOpenCase';
+export const AhMarkComplete = 'AhMarkComplete';
