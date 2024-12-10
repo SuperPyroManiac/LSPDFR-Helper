@@ -57,17 +57,27 @@ export abstract class PluginValidation {
       let hasMorePages = true;
 
       while (hasMorePages) {
-        const response = await fetch(
-          `https://www.lcpdfr.com/applications/downloadsng/interface/api.php?do=getAllVersions&categoryId=${categoryId}&page=${currentPage}`
-        );
-        const data = await response.json();
+        try {
+          const response = await fetch(
+            `https://www.lcpdfr.com/applications/downloadsng/interface/api.php?do=getAllVersions&categoryId=${categoryId}&page=${currentPage}`
+          );
 
-        if (data.results && data.results.length > 0) {
-          allPlugins = [...allPlugins, ...data.results];
-          currentPage++;
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        } else {
-          hasMorePages = false;
+          if (!response.ok) return [];
+
+          const contentType = response.headers.get('content-type');
+          if (!contentType?.includes('application/json')) return [];
+
+          const data = await response.json();
+
+          if (data.results && data.results.length > 0) {
+            allPlugins = [...allPlugins, ...data.results];
+            currentPage++;
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          } else {
+            hasMorePages = false;
+          }
+        } catch {
+          return [];
         }
       }
     }
