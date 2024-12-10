@@ -1,4 +1,6 @@
+import { container } from '@sapphire/framework';
 import { addDays } from 'date-fns';
+import { ThreadChannel } from 'discord.js';
 
 export class Case {
   id: string;
@@ -15,5 +17,9 @@ export class Case {
 
   clone(): Case {
     return Object.assign(new Case(), JSON.parse(JSON.stringify(this)));
+  }
+
+  getAhChannel(): ThreadChannel | undefined {
+    return this.channelId ? (container.client.channels.cache.get(this.channelId) as ThreadChannel) : undefined;
   }
 }
