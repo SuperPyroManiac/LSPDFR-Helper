@@ -11,7 +11,6 @@ export class ChatInputCommandDenied extends Listener<typeof Events.ChatInputComm
   }
 
   public run(error: UserError, { interaction }: ChatInputCommandDeniedPayload) {
-    console.log('IT WORKS');
     let replyMsg = {
       embeds: [
         EmbedCreator.Error(
