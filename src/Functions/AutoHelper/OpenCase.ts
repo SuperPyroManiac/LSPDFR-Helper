@@ -26,7 +26,6 @@ export abstract class OpenCase {
             '> - RagePluginHook.log\n' +
             '> - ELS.log\n' +
             '> - asiloader.log\n' +
-            '> - ScriptHookVDotNet.log\n' +
             '> - .xml and .meta files\n\n' +
             '-# Do not abuse the bot by spamming it or sending altered logs. Your access may be revoked for detected abuse.\n\n' +
             '__This bot is maintained by https://dsc.PyrosFun.com__'
