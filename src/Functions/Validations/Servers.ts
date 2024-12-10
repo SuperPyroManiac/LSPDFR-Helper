@@ -93,7 +93,6 @@ export abstract class ServerValidation {
         continue;
       }
     }
-    if (cnt > 0) Cache.updateServers((await DBManager.getServers()) ?? []);
     return cnt;
   }
 
@@ -114,7 +113,6 @@ export abstract class ServerValidation {
         cnt++;
       }
     }
-    if (cnt > 0) Cache.updateServers((await DBManager.getServers()) ?? []);
     return cnt;
   }
 }

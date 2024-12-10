@@ -47,7 +47,6 @@ export abstract class OpenCase {
     newCase.channelId = ch.id;
     newCase.serverId = guildId;
     await DBManager.createCase(newCase);
-    Cache.updateCases((await DBManager.getCases()) ?? []);
 
     await CaseMonitor.Update(newCase.serverId);
     return newCase;

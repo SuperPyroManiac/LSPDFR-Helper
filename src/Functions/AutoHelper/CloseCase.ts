@@ -10,7 +10,6 @@ export abstract class CloseCase {
     ac.open = false;
     ac.expireDate = new Date();
     DBManager.editCase(ac);
-    Cache.updateCases((await DBManager.getCases()) ?? []);
     if (force) return true;
 
     const ch = ac.getAhChannel();

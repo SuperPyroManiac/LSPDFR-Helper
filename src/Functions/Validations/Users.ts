@@ -31,7 +31,6 @@ export abstract class UsersValidation {
 
     if (newUsers.length > 0) {
       await DBManager.createUsers(newUsers);
-      Cache.updateUsers((await DBManager.getUsers()) ?? []);
     }
     return newUsers.length;
   }
@@ -56,10 +55,6 @@ export abstract class UsersValidation {
         await DBManager.editUser(cachedUser);
         updateCount++;
       }
-    }
-
-    if (updateCount > 0) {
-      Cache.updateUsers((await DBManager.getUsers()) ?? []);
     }
 
     return updateCount;

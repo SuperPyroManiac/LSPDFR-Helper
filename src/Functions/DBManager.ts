@@ -5,6 +5,7 @@ import { Logger } from './Messages/Logger';
 import { Case } from '../CustomTypes/MainTypes/Case';
 import { User } from '../CustomTypes/MainTypes/User';
 import { Server } from '../CustomTypes/MainTypes/Server';
+import { Cache } from '../Cache';
 const prisma = new PrismaClient();
 
 export abstract class DBManager {
@@ -51,6 +52,7 @@ export abstract class DBManager {
         },
       });
     });
+    Cache.updatePlugins((await this.getPlugins()) ?? []);
   }
 
   static async editPlugin(plugin: Plugin): Promise<void> {
@@ -60,12 +62,14 @@ export abstract class DBManager {
         data: plugin,
       });
     });
+    Cache.updatePlugins((await this.getPlugins()) ?? []);
   }
 
   static async deletePlugin(name: string): Promise<void> {
     this.handleDbOperation(async () => {
       await prisma.plugins.delete({ where: { name } });
     });
+    Cache.updatePlugins((await this.getPlugins()) ?? []);
   }
 
   static async getErrors(): Promise<Error[] | null> {
@@ -94,6 +98,7 @@ export abstract class DBManager {
         },
       });
     });
+    Cache.updateErrors((await this.getErrors()) ?? []);
   }
 
   static async editError(error: Error): Promise<void> {
@@ -103,12 +108,14 @@ export abstract class DBManager {
         data: error,
       });
     });
+    Cache.updateErrors((await this.getErrors()) ?? []);
   }
 
   static async deleteError(id: number): Promise<void> {
     this.handleDbOperation(async () => {
       await prisma.errors.delete({ where: { id } });
     });
+    Cache.updateErrors((await this.getErrors()) ?? []);
   }
 
   static async getCases(): Promise<Case[] | null> {
@@ -139,6 +146,7 @@ export abstract class DBManager {
         },
       });
     });
+    Cache.updateCases((await this.getCases()) ?? []);
   }
 
   static async editCase(caseItem: Case): Promise<void> {
@@ -148,12 +156,14 @@ export abstract class DBManager {
         data: caseItem,
       });
     });
+    Cache.updateCases((await this.getCases()) ?? []);
   }
 
   static async deleteCase(id: string): Promise<void> {
     this.handleDbOperation(async () => {
       await prisma.cases.delete({ where: { id } });
     });
+    Cache.updateCases((await this.getCases()) ?? []);
   }
 
   static async getUsers(): Promise<User[] | null> {
@@ -183,6 +193,7 @@ export abstract class DBManager {
         skipDuplicates: true,
       });
     });
+    Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
   static async createUser(user: User): Promise<void> {
@@ -197,6 +208,7 @@ export abstract class DBManager {
         },
       });
     });
+    Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
   static async editUser(user: User): Promise<void> {
@@ -206,12 +218,14 @@ export abstract class DBManager {
         data: user,
       });
     });
+    Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
   static async deleteUser(id: string): Promise<void> {
     this.handleDbOperation(async () => {
       await prisma.users.delete({ where: { id } });
     });
+    Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
   static async getServers(): Promise<Server[] | null> {
@@ -246,6 +260,7 @@ export abstract class DBManager {
         },
       });
     });
+    Cache.updateServers((await this.getServers()) ?? []);
   }
 
   static async editServer(server: Server): Promise<void> {
@@ -255,11 +270,13 @@ export abstract class DBManager {
         data: server,
       });
     });
+    Cache.updateServers((await this.getServers()) ?? []);
   }
 
   static async deleteServer(id: string): Promise<void> {
     this.handleDbOperation(async () => {
       await prisma.servers.delete({ where: { id } });
     });
+    Cache.updateServers((await this.getServers()) ?? []);
   }
 }
