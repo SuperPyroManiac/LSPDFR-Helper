@@ -76,7 +76,7 @@ export class ButtonInteractions extends InteractionHandler {
         await interaction.editReply({
           embeds: [
             EmbedCreator.Error(
-              `__There was an error!__\n>>> The case you are trying to close could not be found! This should never happen. Please let the bot devs know!`
+              `__There was an error!__\n>>> The case you are trying to close could not be found! This is likely due to the cache not being updated yet! Try again in a minute.`
             ),
           ],
         });

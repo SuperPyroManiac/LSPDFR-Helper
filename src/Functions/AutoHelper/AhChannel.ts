@@ -22,7 +22,7 @@ export abstract class AhChannel {
     const ch = await server.getGuild()?.channels.fetch(server.ahChId);
     if (!ch || !ch.isTextBased()) return;
     const emb = EmbedCreator.Support('__LSPDFR AutoHelper__');
-    let msg = ch.messages.cache.find((x) => x.embeds[0]?.description?.includes('LSPDFR AutoHelper'));
+    let msg = (await ch.messages.fetch({ limit: 10 })).find((x) => x.embeds[0]?.description?.includes('LSPDFR AutoHelper'));
     if (!msg) msg = await ch.send({ embeds: [EmbedCreator.Loading('__Starting...__')] });
     emb.data.description += description;
     await msg.edit({
