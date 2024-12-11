@@ -11,7 +11,7 @@ import { ELSValidator } from '../Functions/Processors/ELS/ELSValidator';
 import { ELSProcessor } from '../Functions/Processors/ELS/ELSProcessor';
 import { ASIProcessor } from '../Functions/Processors/ASI/ASIProcessor';
 import { ASIValidator } from '../Functions/Processors/ASI/ASIValidator';
-import { differenceInMinutes } from 'date-fns';
+import { addDays, differenceInMinutes } from 'date-fns';
 import { DBManager } from '../Functions/DBManager';
 
 export class MessageCreateListener extends Listener {
@@ -34,10 +34,9 @@ export class MessageCreateListener extends Listener {
     const acceptedTypes = ['ragepluginhook', 'els', 'asiloader', '.xml', '.meta'];
 
     const currentTime = new Date();
-    if (differenceInMinutes(currentTime, cs.expireDate) >= 30) {
-      cs.expireDate = currentTime;
+    if (differenceInMinutes(cs.expireDate, currentTime) <= 1435) {
+      cs.expireDate = addDays(currentTime, 1);
       DBManager.editCase(cs);
-      console.log('Case timer done');
     }
 
     //TODO: Text and IMG recog - Fuzzy alt fast-fuzzy | IMG has direct port
