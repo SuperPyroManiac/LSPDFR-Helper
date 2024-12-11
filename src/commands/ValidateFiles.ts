@@ -24,33 +24,31 @@ export class ValidateFilesCommand extends Command {
   }
 
   public override async contextMenuRun(interaction: MessageContextMenuCommandInteraction) {
-    await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)], ephemeral: true });
     const targetMessage: Message = interaction.targetMessage;
-    const acceptedTypes = ['ragepluginhook', 'els.log', 'asiloader.log', 'scripthookvdotnet.log', '.xml', '.meta'];
+    const acceptedTypes = ['ragepluginhook', 'els.log', 'asiloader.log', '.xml', '.meta'];
     let attach: Attachment | undefined;
 
     if (targetMessage.attachments.size === 0) {
       // prettier-ignore
-      await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
+      await interaction.reply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')], ephemeral: true});
       return;
     } else if (targetMessage.attachments.size === 1) {
       attach = targetMessage.attachments.first();
 
       if (!attach) {
         // prettier-ignore
-        await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
+        await interaction.reply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')], ephemeral: true});
         return;
       }
 
       if (!acceptedTypes.some((x) => attach!.name.toLowerCase().includes(x))) {
         // prettier-ignore
-        await interaction.editReply({embeds: [EmbedCreator.Error('__No Valid File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
+        await interaction.reply({embeds: [EmbedCreator.Error('__No Valid File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')], ephemeral: true});
         return;
       }
 
       if (attach.size / 1000000 > 10) {
         Reports.largeLog(interaction, attach, true);
-        //TODO: ADD BLACKLIST FUNCTION
         return;
       } else if (attach.size / 1000000 > 3) {
         Reports.largeLog(interaction, attach);
@@ -58,9 +56,11 @@ export class ValidateFilesCommand extends Command {
       }
     } else if (targetMessage.attachments.size > 1) {
       // prettier-ignore
-      await interaction.editReply({embeds: [EmbedCreator.Error('__Multiple Files Found!__\r\n>>> The selected message must include only a single valid log type! The multi selector is implimented yet.')]});
+      await interaction.reply({embeds: [EmbedCreator.Error('__Multiple Files Found!__\r\n>>> The selected message must include only a single valid log type! The multi selector is implimented yet.')], ephemeral: true});
       return;
     }
+
+    await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)], ephemeral: true });
 
     if (attach!.name.toLowerCase().endsWith('.xml') || attach!.name.toLowerCase().endsWith('.meta')) {
       const xmlProc = new XMLProcessor(attach!.url);
@@ -76,10 +76,7 @@ export class ValidateFilesCommand extends Command {
         rphProc = new RPHProcessor(await RPHValidator.validate(attach!.url), targetMessage.id);
         Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, rphProc));
       }
-      if (rphProc.log.logModified) {
-        Reports.modifiedLog(interaction, attach!);
-        return;
-      }
+      if (rphProc.log.logModified) return Reports.modifiedLog(interaction, attach!);
       await rphProc.SendServerContextReply(interaction).catch(async (e) => {
         await Logger.ErrLog(`Failed to process file!\r\n${e}`);
         await interaction.editReply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });

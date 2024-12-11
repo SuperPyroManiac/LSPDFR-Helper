@@ -110,15 +110,19 @@ export class RPHProcessor {
   }
 
   //! Server Context Menu Messagess
-  async SendServerContextReply(interaction: MessageContextMenuCommandInteraction) {
+  async SendServerContextReply(interaction: MessageContextMenuCommandInteraction | Message) {
     this.cache = Cache.getProcess(this.msgId)!;
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(RphSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
-    if (!interaction.guild) reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
-    else reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()], components: [comps] });
-    this.msgId = reply.id;
-    Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));
+    if (interaction instanceof MessageContextMenuCommandInteraction) {
+      if (!interaction.guild) reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
+      else reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()], components: [comps] });
+      this.msgId = reply.id;
+      Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));
+    } else {
+      interaction.reply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
+    }
   }
 
   //! User Context Menu Messages
