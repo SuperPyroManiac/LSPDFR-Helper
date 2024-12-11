@@ -75,7 +75,7 @@ export class SetupCommand extends Command {
                 .setRequired(true),
             ]),
           ]);
-        interaction.showModal(mdl);
+        await interaction.showModal(mdl);
       }
     });
 
