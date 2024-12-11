@@ -19,11 +19,13 @@
     "@sapphire/plugin-logger": "^4.0.2",
     "@sapphire/plugin-subcommands": "^7.0.1",
     "@sapphire/utilities": "^3.18.1",
+    "@types/express": "^5.0.0",
     "@types/node-cron": "^3.0.11",
     "@types/xml2js": "^0.4.14",
     "date-fns": "^4.1.0",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "node-cron": "^3.0.3",
     "xml2js": "^0.6.2"
   },

@@ -1,4 +1,5 @@
 import { Cache } from '../Cache';
+import { APIManager } from '../Web/APIManager';
 import { EmbedCreator } from './Messages/EmbedCreator';
 import { Logger } from './Messages/Logger';
 import { Timer } from './Timer';
@@ -16,6 +17,7 @@ export abstract class Startup {
 
   static async Init() {
     await Cache.resetCache();
+    APIManager.init();
     AutoHelperValidation.ValidateMsgs();
     this.newServers = await ServerValidation.AddMissing();
     this.remServers = await ServerValidation.RemoveMissing();
