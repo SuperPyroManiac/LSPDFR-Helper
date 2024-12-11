@@ -16,16 +16,17 @@ export class ButtonInteractions extends InteractionHandler {
   }
 
   public async run(interaction: ButtonInteraction) {
-    const cache = Cache.getProcess(interaction.message.id);
+    const pCache = Cache.getProcess(interaction.message.id);
+    const iCache = Cache.getInteraction(interaction.user.id, interaction.id);
 
     if (interaction.customId == RphSendToUser) {
-      if (!cache) {
+      if (!pCache) {
         await interaction.reply({
           embeds: [EmbedCreator.Alert(`__Cache Expired!__\n>>> The data for this has expired!\n-# Cached results expire after 5 minutes.`)],
           ephemeral: true,
         });
       } else {
-        await cache.Processor!.SendToUser().catch(async (e) => {
+        await pCache.Processor!.SendToUser().catch(async (e) => {
           await Logger.ErrLog(`Failed to send message to user!\n${e}`);
           await interaction.reply({
             embeds: [EmbedCreator.Error(`__Failed to send message to user!__\n>>> This issue has been reported to the bot developer!`)],
@@ -36,13 +37,13 @@ export class ButtonInteractions extends InteractionHandler {
     }
 
     if (interaction.customId === SetupButton) {
-      if (!cache) {
+      if (!iCache) {
         await interaction.reply({
           embeds: [EmbedCreator.Alert(`__Cache Expired!__\n>>> The data for this has expired!\n-# Cached results expire after 5 minutes.`)],
           ephemeral: true,
         });
       } else {
-        await cache.Interaction.deleteReply().catch(() => {});
+        await iCache.Interaction.deleteReply().catch(() => {});
         const mdl = new ModalBuilder()
           .setCustomId(SetupModal)
           .setTitle('Bot Settings')

@@ -17,6 +17,7 @@ import { DBManager } from '../Functions/DBManager';
 import { AhChannel } from '../Functions/AutoHelper/AhChannel';
 import { CaseMonitor } from '../Functions/AutoHelper/CaseMonitor';
 import { ProcessCache } from '../CustomTypes/CacheTypes/ProcessCache';
+import { InteractionCache } from '../CustomTypes/CacheTypes/InteractionCache';
 
 export class SetupCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -52,6 +53,6 @@ export class SetupCommand extends Command {
       ephemeral: true,
     });
     const msg = await imsg.fetch();
-    Cache.saveProcess(msg.id, new ProcessCache<undefined>(msg, interaction, undefined));
+    Cache.saveInteraction(interaction.user.id, interaction.id, new InteractionCache(msg, interaction));
   }
 }
