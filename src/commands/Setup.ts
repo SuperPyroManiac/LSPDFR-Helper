@@ -13,6 +13,8 @@ import { Cache } from '../Cache';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { SetupAhCh, SetupAhMnCh, SetupButton, SetupModal } from '../interaction-handlers/_CustomIds';
 import { DBManager } from '../Functions/DBManager';
+import { AhChannel } from '../Functions/AutoHelper/AhChannel';
+import { CaseMonitor } from '../Functions/AutoHelper/CaseMonitor';
 
 export class SetupCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -90,7 +92,9 @@ export class SetupCommand extends Command {
         servr.ahChId = ahChId;
         servr.ahMonChId = ahMonChId;
         await DBManager.editServer(servr);
-        interaction.editReply({
+        await AhChannel.UpdateCaseMsg(interaction.guildId!);
+        await CaseMonitor.Update(interaction.guildId!);
+        await interaction.editReply({
           embeds: [
             EmbedCreator.Question(
               '__LSPDFR Helper Setup__\n-# Updated your settings!\n\n' +
