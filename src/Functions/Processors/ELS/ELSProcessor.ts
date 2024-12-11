@@ -26,7 +26,7 @@ export class ELSProcessor {
 
   private GetBaseInfo(): EmbedBuilder {
     const embed = EmbedCreator.Support('__ELS.log Info__').setFooter({
-      text: `ELS Version: ${this.log.elsVersion} - AdvancedHookV installed: ${this.log.ahvFound ? '✓' : '❌'}`,
+      text: `ELS Version: ${this.log.elsVersion} - AdvancedHookV installed: ${this.log.ahvFound ? '✓' : '❌'} - Processing Time: ${this.log.elapsedTime}MS`,
     });
 
     if (this.log.faultyElsVcf) {

@@ -2,10 +2,9 @@ import { ELSLog } from '../../../CustomTypes/LogTypes/ELSLog';
 
 export abstract class ELSValidator {
   public static async validate(attachmentUrl: string): Promise<ELSLog> {
+    const wholeLog = await (await fetch(attachmentUrl)).text();
     const log = new ELSLog();
     log.downloadLink = attachmentUrl;
-
-    const wholeLog = await (await fetch(attachmentUrl)).text();
 
     const versionMatch = /VER\s+\[ ([0-9.]+) \]/.exec(wholeLog);
     log.elsVersion = versionMatch ? versionMatch[1] : undefined;
@@ -36,6 +35,9 @@ export abstract class ELSValidator {
         log.faultyElsVcf = matches[matches.length - 1][1];
       }
     }
+
+    log.validaterCompletedAt = new Date();
+    log.elapsedTime = (new Date().getTime() - log.validaterStartedAt.getTime()).toString();
 
     return log;
   }

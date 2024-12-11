@@ -10,6 +10,8 @@ import { Reports } from '../Functions/Messages/Reports';
 import { XMLProcessor } from '../Functions/Processors/XML/XMLProcessor';
 import { ELSProcessor } from '../Functions/Processors/ELS/ELSProcessor';
 import { ELSValidator } from '../Functions/Processors/ELS/ELSValidator';
+import { ASIProcessor } from '../Functions/Processors/ASI/ASIProcessor';
+import { ASIValidator } from '../Functions/Processors/ASI/ASIValidator';
 
 export class ValidateFilesCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -95,6 +97,21 @@ export class ValidateFilesCommand extends Command {
         Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, elsProc));
       }
       await elsProc.SendReply(interaction).catch(async (e) => {
+        await Logger.ErrLog(`Failed to process file!\r\n${e}`);
+        await interaction.editReply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
+      });
+      return;
+    }
+
+    if (attach!.name.toLowerCase().includes('asiloader')) {
+      let asiProc: ASIProcessor;
+      const cache = Cache.getProcess(targetMessage.id);
+      if (ProcessCache.IsCacheAvailable(cache)) asiProc = cache!.Processor as ASIProcessor;
+      else {
+        asiProc = new ASIProcessor(await ASIValidator.validate(attach!.url), targetMessage.id);
+        Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, asiProc));
+      }
+      await asiProc.SendReply(interaction).catch(async (e) => {
         await Logger.ErrLog(`Failed to process file!\r\n${e}`);
         await interaction.editReply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
       });

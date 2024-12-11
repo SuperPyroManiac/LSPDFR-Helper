@@ -6,10 +6,11 @@ import { Plugin } from './CustomTypes/MainTypes/Plugin';
 import { Server } from './CustomTypes/MainTypes/Server';
 import { User } from './CustomTypes/MainTypes/User';
 import { DBManager } from './Functions/DBManager';
+import { ASIProcessor } from './Functions/Processors/ASI/ASIProcessor';
 import { ELSProcessor } from './Functions/Processors/ELS/ELSProcessor';
 import { RPHProcessor } from './Functions/Processors/RPH/RPHProcessor';
 
-export type ProcessorType = RPHProcessor | ELSProcessor;
+export type ProcessorType = RPHProcessor | ELSProcessor | ASIProcessor;
 export abstract class Cache {
   private static processCache = new Map<string, ProcessCache<ProcessorType>>();
   private static interactionCache = new Map<string, InteractionCache>();

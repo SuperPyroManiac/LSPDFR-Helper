@@ -9,6 +9,8 @@ import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { XMLProcessor } from '../Functions/Processors/XML/XMLProcessor';
 import { ELSValidator } from '../Functions/Processors/ELS/ELSValidator';
 import { ELSProcessor } from '../Functions/Processors/ELS/ELSProcessor';
+import { ASIProcessor } from '../Functions/Processors/ASI/ASIProcessor';
+import { ASIValidator } from '../Functions/Processors/ASI/ASIValidator';
 
 export class MessageCreateListener extends Listener {
   public constructor(context: Listener.LoaderContext, options: Listener.Options) {
@@ -55,7 +57,11 @@ export class MessageCreateListener extends Listener {
             await msg.reply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
           });
         } else if (fileName.includes('asiloader')) {
-          //TODO: ASI LOADER
+          const asiProc = new ASIProcessor(await ASIValidator.validate(a.url), msg.id);
+          await asiProc.SendReply(msg).catch(async (e) => {
+            await Logger.ErrLog(`Failed to process file!\r\n${e}`);
+            await msg.reply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
+          });
         }
 
         if (a.name.endsWith('.xml') || a.name.endsWith('.meta')) {
