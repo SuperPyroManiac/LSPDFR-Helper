@@ -8,6 +8,8 @@ import { RPHProcessor } from '../Functions/Processors/RPH/RPHProcessor';
 import { RPHValidator } from '../Functions/Processors/RPH/RPHValidator';
 import { Reports } from '../Functions/Messages/Reports';
 import { XMLProcessor } from '../Functions/Processors/XML/XMLProcessor';
+import { ELSProcessor } from '../Functions/Processors/ELS/ELSProcessor';
+import { ELSValidator } from '../Functions/Processors/ELS/ELSValidator';
 
 export class ValidateFilesCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -25,7 +27,7 @@ export class ValidateFilesCommand extends Command {
 
   public override async contextMenuRun(interaction: MessageContextMenuCommandInteraction) {
     const targetMessage: Message = interaction.targetMessage;
-    const acceptedTypes = ['ragepluginhook', 'els.log', 'asiloader.log', '.xml', '.meta'];
+    const acceptedTypes = ['ragepluginhook', 'els', 'asiloader', '.xml', '.meta'];
     let attach: Attachment | undefined;
 
     if (targetMessage.attachments.size === 0) {
@@ -71,13 +73,28 @@ export class ValidateFilesCommand extends Command {
     if (attach!.name.toLowerCase().includes('ragepluginhook')) {
       let rphProc: RPHProcessor;
       const cache = Cache.getProcess(targetMessage.id);
-      if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor!;
+      if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor as RPHProcessor;
       else {
         rphProc = new RPHProcessor(await RPHValidator.validate(attach!.url), targetMessage.id);
         Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, rphProc));
       }
       if (rphProc.log.logModified) return Reports.modifiedLog(interaction, attach!);
-      await rphProc.SendServerContextReply(interaction).catch(async (e) => {
+      await rphProc.SendReply(interaction).catch(async (e) => {
+        await Logger.ErrLog(`Failed to process file!\r\n${e}`);
+        await interaction.editReply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
+      });
+      return;
+    }
+
+    if (attach!.name.toLowerCase().includes('els')) {
+      let elsProc: ELSProcessor;
+      const cache = Cache.getProcess(targetMessage.id);
+      if (ProcessCache.IsCacheAvailable(cache)) elsProc = cache!.Processor as ELSProcessor;
+      else {
+        elsProc = new ELSProcessor(await ELSValidator.validate(attach!.url), targetMessage.id);
+        Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, elsProc));
+      }
+      await elsProc.SendReply(interaction).catch(async (e) => {
         await Logger.ErrLog(`Failed to process file!\r\n${e}`);
         await interaction.editReply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
       });

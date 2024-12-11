@@ -7,6 +7,8 @@ import { RPHValidator } from '../Functions/Processors/RPH/RPHValidator';
 import { Logger } from '../Functions/Messages/Logger';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { XMLProcessor } from '../Functions/Processors/XML/XMLProcessor';
+import { ELSValidator } from '../Functions/Processors/ELS/ELSValidator';
+import { ELSProcessor } from '../Functions/Processors/ELS/ELSProcessor';
 
 export class MessageCreateListener extends Listener {
   public constructor(context: Listener.LoaderContext, options: Listener.Options) {
@@ -25,7 +27,7 @@ export class MessageCreateListener extends Listener {
   private async ahChannels(msg: Message) {
     const cs = Cache.getCases().find((c) => c.channelId === msg.channelId && c.open);
     if (!cs || msg.author.id !== cs?.ownerId) return;
-    const acceptedTypes = ['ragepluginhook', 'els.log', 'asiloader.log', '.xml', '.meta'];
+    const acceptedTypes = ['ragepluginhook', 'els', 'asiloader', '.xml', '.meta'];
 
     //TODO: Text and IMG recog - Fuzzy alt fast-fuzzy | IMG has direct port
     if (msg.attachments.size === 0) return;
@@ -38,27 +40,27 @@ export class MessageCreateListener extends Listener {
         return;
       }
       if (acceptedTypes.some((x) => a.name.toLowerCase().includes(x))) {
-        switch (a.name.toLowerCase()) {
-          case 'ragepluginhook.log':
-            const rphProc = new RPHProcessor(await RPHValidator.validate(a.url), msg.id);
-            if (rphProc.log.logModified) return Reports.modifiedLog(msg, a);
-            await rphProc.SendServerContextReply(msg).catch(async (e) => {
-              await Logger.ErrLog(`Failed to process file!\r\n${e}`);
-              await msg.reply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
-            });
-            return;
-
-          case 'els.log':
-            return;
-
-          case 'asiloader.log':
-            return;
+        const fileName = a.name.toLowerCase();
+        if (fileName.includes('ragepluginhook')) {
+          const rphProc = new RPHProcessor(await RPHValidator.validate(a.url), msg.id);
+          if (rphProc.log.logModified) return Reports.modifiedLog(msg, a);
+          await rphProc.SendReply(msg).catch(async (e) => {
+            await Logger.ErrLog(`Failed to process file!\r\n${e}`);
+            await msg.reply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
+          });
+        } else if (fileName.includes('els')) {
+          const elsProc = new ELSProcessor(await ELSValidator.validate(a.url), msg.id);
+          await elsProc.SendReply(msg).catch(async (e) => {
+            await Logger.ErrLog(`Failed to process file!\r\n${e}`);
+            await msg.reply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
+          });
+        } else if (fileName.includes('asiloader')) {
+          //TODO: ASI LOADER
         }
 
         if (a.name.endsWith('.xml') || a.name.endsWith('.meta')) {
           const xmlProc = new XMLProcessor(a.url);
           await xmlProc.SendReply(msg);
-          return;
         }
       }
     });
