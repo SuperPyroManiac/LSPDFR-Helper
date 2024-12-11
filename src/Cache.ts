@@ -7,7 +7,7 @@ import { User } from './CustomTypes/MainTypes/User';
 import { DBManager } from './Functions/DBManager';
 import { RPHProcessor } from './Functions/Processors/RPH/RPHProcessor';
 
-export type ProcessorType = RPHProcessor;
+export type ProcessorType = RPHProcessor | undefined;
 export abstract class Cache {
   private static processCache = new Map<string, ProcessCache<ProcessorType>>();
   private static pluginCache = new Map<string, Plugin>();

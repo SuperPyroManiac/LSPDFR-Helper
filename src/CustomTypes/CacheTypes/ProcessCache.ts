@@ -2,14 +2,15 @@ import { addMinutes } from 'date-fns';
 import { ButtonInteraction, ContextMenuCommandInteraction, Message } from 'discord.js';
 import { Logger } from '../../Functions/Messages/Logger';
 import { ProcessorType } from '../../Cache';
+import { Command } from '@sapphire/framework';
 
 export class ProcessCache<T extends ProcessorType> {
   public Expire = addMinutes(new Date(), 5);
   public OriginalMessage!: Message;
-  public Interaction: ContextMenuCommandInteraction | ButtonInteraction;
+  public Interaction: ContextMenuCommandInteraction | ButtonInteraction | Command.ChatInputCommandInteraction;
   public Processor: T;
 
-  constructor(originalMessage: Message, interaction: ContextMenuCommandInteraction | ButtonInteraction, processor: T) {
+  constructor(originalMessage: Message, interaction: ContextMenuCommandInteraction | ButtonInteraction | Command.ChatInputCommandInteraction, processor: T) {
     this.Interaction = interaction;
     this.OriginalMessage = originalMessage;
     this.Processor = processor;

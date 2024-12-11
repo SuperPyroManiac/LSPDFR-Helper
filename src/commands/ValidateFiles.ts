@@ -71,7 +71,7 @@ export class ValidateFilesCommand extends Command {
     if (attach!.name.toLowerCase().includes('ragepluginhook')) {
       let rphProc: RPHProcessor;
       const cache = Cache.getProcess(targetMessage.id);
-      if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor;
+      if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor!;
       else {
         rphProc = new RPHProcessor(await RPHValidator.validate(attach!.url), targetMessage.id);
         Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, rphProc));

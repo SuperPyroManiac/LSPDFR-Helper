@@ -1,6 +1,6 @@
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
-import { type ButtonInteraction } from 'discord.js';
-import { AhMarkComplete, AhOpenCase, RphSendToUser } from './_CustomIds';
+import { ActionRowBuilder, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, type ButtonInteraction } from 'discord.js';
+import { AhMarkComplete, AhOpenCase, RphSendToUser, SetupAhCh, SetupAhMnCh, SetupButton, SetupModal } from './_CustomIds';
 import { Cache } from '../Cache';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { Logger } from '../Functions/Messages/Logger';
@@ -25,13 +25,46 @@ export class ButtonInteractions extends InteractionHandler {
           ephemeral: true,
         });
       } else {
-        await cache.Processor.SendToUser().catch(async (e) => {
+        await cache.Processor!.SendToUser().catch(async (e) => {
           await Logger.ErrLog(`Failed to send message to user!\n${e}`);
           await interaction.reply({
             embeds: [EmbedCreator.Error(`__Failed to send message to user!__\n>>> This issue has been reported to the bot developer!`)],
             ephemeral: true,
           });
         });
+      }
+    }
+
+    if (interaction.customId === SetupButton) {
+      if (!cache) {
+        await interaction.reply({
+          embeds: [EmbedCreator.Alert(`__Cache Expired!__\n>>> The data for this has expired!\n-# Cached results expire after 5 minutes.`)],
+          ephemeral: true,
+        });
+      } else {
+        await cache.Interaction.deleteReply().catch(() => {});
+        const mdl = new ModalBuilder()
+          .setCustomId(SetupModal)
+          .setTitle('Bot Settings')
+          .addComponents([
+            new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents([
+              new TextInputBuilder()
+                .setCustomId(SetupAhCh)
+                .setLabel('AutoHelper Channel ID')
+                .setStyle(TextInputStyle.Short)
+                .setPlaceholder('0 to disable')
+                .setRequired(true),
+            ]),
+            new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents([
+              new TextInputBuilder()
+                .setCustomId(SetupAhMnCh)
+                .setLabel('AutoHelper Monitor Channel ID')
+                .setStyle(TextInputStyle.Short)
+                .setPlaceholder('0 to disable')
+                .setRequired(true),
+            ]),
+          ]);
+        await interaction.showModal(mdl);
       }
     }
 
