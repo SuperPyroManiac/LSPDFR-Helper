@@ -1,4 +1,4 @@
-import { MessageContextMenuCommandInteraction, Attachment, Message } from 'discord.js';
+import { MessageContextMenuCommandInteraction, Attachment, Message, StringSelectMenuInteraction } from 'discord.js';
 import { EmbedCreator } from './EmbedCreator';
 import { Logger } from './Logger';
 import { Cache } from '../../Cache';
@@ -6,20 +6,32 @@ import { UsersValidation } from '../Validations/Users';
 import { DBManager } from '../DBManager';
 
 export abstract class Reports {
-  static async modifiedLog(interaction: MessageContextMenuCommandInteraction | Message, attach: Attachment) {
-    await interaction.reply({
-      embeds: [
-        EmbedCreator.Error(
-          '__Modified Log__\r\n>>> ' +
-            '-# This log is invalid!\r\n' +
-            'The selected log has been modified and will not be processed.\r\n' +
-            'For more information you can join the bots support server at https://dsc.PyrosFun.com'
-        ),
-      ],
-      ephemeral: true,
-    });
+  static async modifiedLog(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction, attach: Attachment) {
+    if (interaction instanceof StringSelectMenuInteraction) {
+      await interaction.editReply({
+        embeds: [
+          EmbedCreator.Error(
+            '__Modified Log__\r\n>>> ' +
+              '-# This log is invalid!\r\n' +
+              'The selected log has been modified and will not be processed.\r\n' +
+              'For more information you can join the bots support server at https://dsc.PyrosFun.com'
+          ),
+        ],
+      });
+    } else {
+      await interaction.reply({
+        embeds: [
+          EmbedCreator.Error(
+            '__Modified Log__\r\n>>> ' +
+              '-# This log is invalid!\r\n' +
+              'The selected log has been modified and will not be processed.\r\n' +
+              'For more information you can join the bots support server at https://dsc.PyrosFun.com'
+          ),
+        ],
+        ephemeral: true,
+      });
+    }
     await this.sendAbuseMsg('Modified log', interaction, attach);
-    return;
   }
 
   static async largeLog(interaction: MessageContextMenuCommandInteraction | Message, attach: Attachment, extra = false) {
@@ -59,7 +71,7 @@ export abstract class Reports {
     return;
   }
 
-  private static async sendAbuseMsg(reason: string, interaction: MessageContextMenuCommandInteraction | Message, attach: Attachment) {
+  private static async sendAbuseMsg(reason: string, interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction, attach: Attachment) {
     let chName = 'User CMD';
     if (interaction.channel && !interaction.channel.isDMBased()) chName = interaction.channel.name;
     const emb = EmbedCreator.Alert(

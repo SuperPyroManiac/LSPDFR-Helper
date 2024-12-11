@@ -1,4 +1,13 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, inlineCode, Message, MessageContextMenuCommandInteraction } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  inlineCode,
+  Message,
+  MessageContextMenuCommandInteraction,
+  StringSelectMenuInteraction,
+} from 'discord.js';
 import { ASILog } from '../../../CustomTypes/LogTypes/ASILog';
 import { ProcessCache } from '../../../CustomTypes/CacheTypes/ProcessCache';
 import { Cache, ProcessorType } from '../../../Cache';
@@ -45,18 +54,18 @@ export class ASIProcessor {
   }
 
   //! Server Message
-  async SendReply(interaction: MessageContextMenuCommandInteraction | Message) {
+  async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
     this.cache = Cache.getProcess(this.msgId)!;
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
-    if (interaction instanceof MessageContextMenuCommandInteraction) {
+    if (interaction instanceof Message) {
+      interaction.reply({ embeds: [this.GetBaseInfo()] });
+    } else {
       if (!interaction.guild) reply = await interaction.editReply({ embeds: [this.GetBaseInfo()] });
       else reply = await interaction.editReply({ embeds: [this.GetBaseInfo()], components: [comps] });
       this.msgId = reply.id;
       Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));
-    } else {
-      interaction.reply({ embeds: [this.GetBaseInfo()] });
     }
   }
 

@@ -1,5 +1,15 @@
 import { Command } from '@sapphire/framework';
-import { ApplicationCommandType, ApplicationIntegrationType, Attachment, ContextMenuCommandType, Message, MessageContextMenuCommandInteraction } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ApplicationCommandType,
+  ApplicationIntegrationType,
+  Attachment,
+  ContextMenuCommandType,
+  Message,
+  MessageContextMenuCommandInteraction,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+} from 'discord.js';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { Logger } from '../Functions/Messages/Logger';
 import { Cache } from '../Cache';
@@ -12,6 +22,8 @@ import { ELSProcessor } from '../Functions/Processors/ELS/ELSProcessor';
 import { ELSValidator } from '../Functions/Processors/ELS/ELSValidator';
 import { ASIProcessor } from '../Functions/Processors/ASI/ASIProcessor';
 import { ASIValidator } from '../Functions/Processors/ASI/ASIValidator';
+import { Log } from '../CustomTypes/LogTypes/Log';
+import { LogMultiSelect } from '../interaction-handlers/_CustomIds';
 
 export class ValidateFilesCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -59,8 +71,27 @@ export class ValidateFilesCommand extends Command {
         return;
       }
     } else if (targetMessage.attachments.size > 1) {
-      // prettier-ignore
-      await interaction.reply({embeds: [EmbedCreator.Warning('__Multiple Valid Files!__\r\n>>> -# Please select the file you want to check!')], ephemeral: true});
+      await interaction.reply({ embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)], ephemeral: true });
+
+      const validAttachments = Array.from(targetMessage.attachments.values()).filter((attachment) =>
+        acceptedTypes.some((type) => attachment.name.toLowerCase().includes(type))
+      );
+
+      await interaction.editReply({
+        embeds: [EmbedCreator.Warning('__Multiple Valid Files!__\r\n>>> Please select the one you would like to be validated!')],
+        components: [
+          new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+            new StringSelectMenuBuilder()
+              .setCustomId(LogMultiSelect)
+              .setPlaceholder('Select a file to analyze')
+              .addOptions(
+                validAttachments.map((attachment) => new StringSelectMenuOptionBuilder().setLabel(attachment.name).setValue(`${targetMessage.id}%${attachment.id}`))
+              )
+          ),
+        ],
+      });
+
+      Cache.saveProcess(interaction.id, new ProcessCache(targetMessage, interaction));
       return;
     }
 

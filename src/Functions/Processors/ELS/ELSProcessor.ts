@@ -7,6 +7,7 @@ import {
   inlineCode,
   Message,
   MessageContextMenuCommandInteraction,
+  StringSelectMenuInteraction,
 } from 'discord.js';
 import { ELSLog } from '../../../CustomTypes/LogTypes/ELSLog';
 import { ProcessCache } from '../../../CustomTypes/CacheTypes/ProcessCache';
@@ -71,7 +72,7 @@ export class ELSProcessor {
   }
 
   //! Server Message
-  async SendReply(interaction: MessageContextMenuCommandInteraction | Message) {
+  async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
     const embs = [this.GetBaseInfo(), this.GetVCFInfo()];
     if (!this.log.invalidElsVcfs.length && !this.log.validElsVcfs.length) embs.splice(1, 1);
     if (this.log.faultyElsVcf) embs.splice(1, 1);
@@ -80,13 +81,13 @@ export class ELSProcessor {
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
-    if (interaction instanceof MessageContextMenuCommandInteraction) {
+    if (interaction instanceof Message) {
+      interaction.reply({ embeds: embs });
+    } else {
       if (!interaction.guild) reply = await interaction.editReply({ embeds: embs });
       else reply = await interaction.editReply({ embeds: embs, components: [comps] });
       this.msgId = reply.id;
       Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));
-    } else {
-      interaction.reply({ embeds: embs });
     }
   }
 
