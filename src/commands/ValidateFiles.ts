@@ -60,7 +60,7 @@ export class ValidateFilesCommand extends Command {
       }
     } else if (targetMessage.attachments.size > 1) {
       // prettier-ignore
-      await interaction.reply({embeds: [EmbedCreator.Error('__Multiple Files Found!__\r\n>>> The selected message must include only a single valid log type! The multi selector is implimented yet.')], ephemeral: true});
+      await interaction.reply({embeds: [EmbedCreator.Warning('__Multiple Valid Files!__\r\n>>> -# Please select the file you want to check!')], ephemeral: true});
       return;
     }
 

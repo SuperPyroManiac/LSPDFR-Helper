@@ -24,39 +24,8 @@ export class MessageCreateListener extends Listener {
 
   public async run(msg: Message) {
     if (Cache.getCases().some((c) => c.channelId === msg.channelId && c.open)) {
-      await this.autoReplies(msg);
       await this.ahChannels(msg);
     }
-  }
-
-  private async autoReplies(msg: Message) {
-    if (msg.attachments.size === 0) return;
-    let dlMsg = false;
-    for (const a of msg.attachments.values()) {
-      if (a.name.endsWith('.rcr')) {
-        await msg.reply({
-          embeds: [
-            EmbedCreator.Support(
-              '__LSPDFR AutoHelper__\r\n>>> This file is not supported! Please send `RagePluginHook.log` from your main GTA directory instead. Not the logs folder.'
-            ),
-          ],
-        });
-      }
-      if (a.name.endsWith('.exe') || a.name.endsWith('.dll') || a.name.endsWith('.asi')) {
-        await msg.reply({ embeds: [EmbedCreator.Error(`__LSPDFR AutoHelper__\r\n${msg.author}\r\n>>> Do not upload executable files!\r\nFile: ${a.name}`)] });
-        dlMsg = true;
-      }
-      if (a.name === 'message.txt') {
-        await msg.reply({
-          embeds: [
-            EmbedCreator.Support(
-              "__LSPDFR AutoHelper__\r\n>>> Please don't copy and paste the log! Please send `RagePluginHook.log` from your main GTA directory instead by dragging it into Discord."
-            ),
-          ],
-        });
-      }
-    }
-    if (dlMsg) await msg.delete().catch(() => {});
   }
 
   private async ahChannels(msg: Message) {
@@ -68,19 +37,27 @@ export class MessageCreateListener extends Listener {
     if (differenceInMinutes(currentTime, cs.expireDate) >= 30) {
       cs.expireDate = currentTime;
       DBManager.editCase(cs);
+      console.log('Case timer done');
     }
 
     //TODO: Text and IMG recog - Fuzzy alt fast-fuzzy | IMG has direct port
     if (msg.attachments.size === 0) return;
     msg.attachments.forEach(async (a) => {
-      if (a.size / 1000000 > 10) {
-        Reports.largeLog(msg, a, true);
-        return;
-      } else if (a.size / 1000000 > 3) {
-        Reports.largeLog(msg, a);
-        return;
+      //prettier-ignore
+      {
+        if (a.name.endsWith('.rcr')) await msg.reply({embeds: [EmbedCreator.Support('__LSPDFR AutoHelper__\r\n>>> This file is not supported! Please send `RagePluginHook.log` from your main GTA directory instead. Not the logs folder.'),],});
+        if (a.name.endsWith('.exe') || a.name.endsWith('.dll') || a.name.endsWith('.asi')) await msg.reply({ embeds: [EmbedCreator.Error(`__LSPDFR AutoHelper__\r\n${msg.author}\r\n>>> Do not upload executable files!\r\nFile: ${a.name}`)] });
+        if (a.name === 'message.txt') await msg.reply({embeds: [EmbedCreator.Support("__LSPDFR AutoHelper__\r\n>>> Please don't copy and paste the log! Please send `RagePluginHook.log` from your main GTA directory instead by dragging it into Discord."),],});
       }
+
       if (acceptedTypes.some((x) => a.name.toLowerCase().includes(x))) {
+        if (a.size / 1000000 > 10) {
+          Reports.largeLog(msg, a, true);
+          return;
+        } else if (a.size / 1000000 > 3) {
+          Reports.largeLog(msg, a);
+          return;
+        }
         const fileName = a.name.toLowerCase();
         if (fileName.includes('ragepluginhook') && fileName.endsWith('.log')) {
           const rphProc = new RPHProcessor(await RPHValidator.validate(a.url), msg.id);
