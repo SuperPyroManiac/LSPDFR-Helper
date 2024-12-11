@@ -1,5 +1,5 @@
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
-import type { ButtonInteraction } from 'discord.js';
+import { type ButtonInteraction } from 'discord.js';
 import { AhMarkComplete, AhOpenCase, RphSendToUser } from './_CustomIds';
 import { Cache } from '../Cache';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
