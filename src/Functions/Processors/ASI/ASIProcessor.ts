@@ -14,11 +14,13 @@ import { Cache, ProcessorType } from '../../../Cache';
 import { EmbedCreator } from '../../Messages/EmbedCreator';
 import { LogSendToUser } from '../../../interaction-handlers/_CustomIds';
 import { PluginType } from '../../../CustomTypes/Enums/PluginType';
+import { Logger } from '../../Messages/Logger';
 
 export class ASIProcessor {
   log: ASILog;
   msgId: string;
   private cache!: ProcessCache<ProcessorType>;
+  private pluginInfoSent = false;
 
   constructor(log: ASILog, msgId: string) {
     this.log = log;
@@ -56,6 +58,9 @@ export class ASIProcessor {
   //! Server Message
   async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
     this.cache = Cache.getProcess(this.msgId)!;
+    this.pluginInfoSent ||
+      ((this.pluginInfoSent = true), await Logger.PluginInfo(this.log.missing, [], this.log.downloadLink!, await interaction.channel?.messages.fetch(this.msgId)!));
+
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
