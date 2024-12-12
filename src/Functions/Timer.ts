@@ -25,9 +25,19 @@ export abstract class Timer {
     cron.schedule(
       '* * * * *',
       () => {
-        UsersValidation.Verify().catch((e) => Logger.ErrLog(`User validation failed:\r\n${e}`));
         CaseValidation.VerifyOpenCases().catch((e) => Logger.ErrLog(`Case validation failed:\r\n${e}`));
         Cache.resetCache().catch((e) => Logger.ErrLog(`Cache reset failed:\r\n${e}`));
+      },
+      {
+        runOnInit: false,
+      }
+    );
+
+    // Every 60 minutes
+    cron.schedule(
+      '0 */1 * * *',
+      () => {
+        UsersValidation.Verify().catch((e) => Logger.ErrLog(`User validation failed:\r\n${e}`));
       },
       {
         runOnInit: false,
