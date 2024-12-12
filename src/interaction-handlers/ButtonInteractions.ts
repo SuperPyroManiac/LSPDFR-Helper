@@ -17,7 +17,7 @@ export class ButtonInteractions extends InteractionHandler {
 
   public async run(interaction: ButtonInteraction) {
     const pCache = Cache.getProcess(interaction.message.id);
-    const iCache = Cache.getInteraction(interaction.user.id, interaction.id);
+    const iCache = Cache.getInteraction(interaction.user.id, interaction.message.id);
 
     if (interaction.customId == LogSendToUser) {
       if (!pCache) {

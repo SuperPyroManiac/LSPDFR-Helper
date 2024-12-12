@@ -120,14 +120,14 @@ export abstract class Cache {
     return this.processCache.get(messageId);
   }
 
-  private static getInteractionKey = (userId: string, interactionId: string): string => `${userId}%${interactionId}`;
+  private static getInteractionKey = (userId: string, msgId: string): string => `${userId}%${msgId}`;
 
-  static saveInteraction(userId: string, interactionId: string, newCache: InteractionCache) {
-    const key = this.getInteractionKey(userId, interactionId);
+  static saveInteraction(userId: string, msgId: string, newCache: InteractionCache) {
+    const key = this.getInteractionKey(userId, msgId);
     this.interactionCache.set(key, newCache);
   }
 
-  static getInteraction(userId: string, interactionId: string): InteractionCache | undefined {
-    return this.interactionCache.get(this.getInteractionKey(userId, interactionId));
+  static getInteraction(userId: string, msgId: string): InteractionCache | undefined {
+    return this.interactionCache.get(this.getInteractionKey(userId, msgId));
   }
 }
