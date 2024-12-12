@@ -1,5 +1,6 @@
 import express from 'express';
 import { VersionChecker } from './VersionChecker';
+import { ErrorReport } from './ErrorReport';
 
 export class APIManager {
   private static app = express();
@@ -11,6 +12,7 @@ export class APIManager {
     this.startServer();
 
     VersionChecker.init();
+    ErrorReport.init();
   }
 
   private static setupRoutes() {
