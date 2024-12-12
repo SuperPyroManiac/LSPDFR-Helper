@@ -39,6 +39,6 @@ export class SetupCommand extends Command {
       ephemeral: true,
     });
     const msg = await imsg.fetch();
-    Cache.saveInteraction(interaction.user.id, interaction.id, new InteractionCache(msg, interaction));
+    Cache.saveInteraction(interaction.user.id, msg.id, new InteractionCache(msg, interaction));
   }
 }
