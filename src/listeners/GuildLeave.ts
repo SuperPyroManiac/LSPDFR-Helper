@@ -19,7 +19,6 @@ export class GuildLeaveListener extends Listener {
     server.enabled = false;
     const owner = await guild.fetchOwner();
     await DBManager.editServer(server);
-    Cache.updateServers((await DBManager.getServers()) ?? []);
     await Logger.ServerLog(
       EmbedCreator.Info(
         `__Server Removed!__\r\n>>> ` +

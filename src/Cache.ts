@@ -1,3 +1,4 @@
+import { InteractionCache } from './CustomTypes/CacheTypes/InteractionCache';
 import { ProcessCache } from './CustomTypes/CacheTypes/ProcessCache';
 import { Case } from './CustomTypes/MainTypes/Case';
 import { Error } from './CustomTypes/MainTypes/Error';
@@ -5,11 +6,14 @@ import { Plugin } from './CustomTypes/MainTypes/Plugin';
 import { Server } from './CustomTypes/MainTypes/Server';
 import { User } from './CustomTypes/MainTypes/User';
 import { DBManager } from './Functions/DBManager';
+import { ASIProcessor } from './Functions/Processors/ASI/ASIProcessor';
+import { ELSProcessor } from './Functions/Processors/ELS/ELSProcessor';
 import { RPHProcessor } from './Functions/Processors/RPH/RPHProcessor';
 
-export type ProcessorType = RPHProcessor;
+export type ProcessorType = RPHProcessor | ELSProcessor | ASIProcessor;
 export abstract class Cache {
   private static processCache = new Map<string, ProcessCache<ProcessorType>>();
+  private static interactionCache = new Map<string, InteractionCache>();
   private static pluginCache = new Map<string, Plugin>();
   private static errorCache = new Map<number, Error>();
   private static caseCache = new Map<string, Case>();
@@ -97,6 +101,13 @@ export abstract class Cache {
         this.processCache.delete(key);
       }
     });
+
+    this.interactionCache.forEach(async (cache, key) => {
+      if (cache.Expire <= new Date()) {
+        await cache.Cleanup();
+        this.processCache.delete(key);
+      }
+    });
   }
 
   static saveProcess(messageId: string, process: ProcessCache<ProcessorType>): ProcessCache<ProcessorType> {
@@ -107,5 +118,16 @@ export abstract class Cache {
 
   static getProcess(messageId: string): ProcessCache<ProcessorType> | undefined {
     return this.processCache.get(messageId);
+  }
+
+  private static getInteractionKey = (userId: string, interactionId: string): string => `${userId}%${interactionId}`;
+
+  static saveInteraction(userId: string, interactionId: string, newCache: InteractionCache) {
+    const key = this.getInteractionKey(userId, interactionId);
+    this.interactionCache.set(key, newCache);
+  }
+
+  static getInteraction(userId: string, interactionId: string): InteractionCache | undefined {
+    return this.interactionCache.get(this.getInteractionKey(userId, interactionId));
   }
 }

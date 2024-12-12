@@ -12,12 +12,12 @@ interface LSPDFRPlugin {
 
 export abstract class PluginValidation {
   public static async CheckUpdates() {
-    const webPlugs = await this.getPlugins().catch(() => {
-      return;
-    });
+    const webPlugs = await this.getPlugins().catch();
     const plugs = Cache.getPlugins();
     const emb = EmbedCreator.Info(`__Plugin Updates__\r\n-# A new version of the plugins listed have been found!\r\n`);
     let cnt = 0;
+
+    if (!webPlugs || !webPlugs.length) return;
 
     for (const webPlug of webPlugs!) {
       const plug = plugs.filter((plug) => plug.id == webPlug.file_id)[0];
@@ -43,7 +43,6 @@ export abstract class PluginValidation {
       cnt++;
     }
     if (cnt > 0) {
-      Cache.updatePlugins((await DBManager.getPlugins()) ?? []);
       await Logger.BotLog(emb);
     }
   }
@@ -57,17 +56,27 @@ export abstract class PluginValidation {
       let hasMorePages = true;
 
       while (hasMorePages) {
-        const response = await fetch(
-          `https://www.lcpdfr.com/applications/downloadsng/interface/api.php?do=getAllVersions&categoryId=${categoryId}&page=${currentPage}`
-        );
-        const data = await response.json();
+        try {
+          const response = await fetch(
+            `https://www.lcpdfr.com/applications/downloadsng/interface/api.php?do=getAllVersions&categoryId=${categoryId}&page=${currentPage}`
+          );
 
-        if (data.results && data.results.length > 0) {
-          allPlugins = [...allPlugins, ...data.results];
-          currentPage++;
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        } else {
-          hasMorePages = false;
+          if (!response.ok) return [];
+
+          const contentType = response.headers.get('content-type');
+          if (!contentType?.includes('application/json')) return [];
+
+          const data = await response.json();
+
+          if (data.results && data.results.length > 0) {
+            allPlugins = [...allPlugins, ...data.results];
+            currentPage++;
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          } else {
+            hasMorePages = false;
+          }
+        } catch {
+          return [];
         }
       }
     }

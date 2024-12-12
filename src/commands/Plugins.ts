@@ -30,14 +30,16 @@ export class PluginsCommand extends Subcommand {
   }
 
   registerApplicationCommands(registry: Subcommand.Registry) {
-    registry.registerChatInputCommand((builder) =>
-      builder
-        .setName('plugins')
-        .setDescription('Plugin commands')
-        .addSubcommand((command) => command.setName('add').setDescription('Adds a plugin to the database!'))
-        .addSubcommand((command) => command.setName('edit').setDescription('Edits a plugin in the database!'))
-        .addSubcommand((command) => command.setName('remove').setDescription('Removes a plugin from the database!'))
-        .addSubcommand((command) => command.setName('export').setDescription('Exports all plugins to json file!'))
+    registry.registerChatInputCommand(
+      (builder) =>
+        builder
+          .setName('plugins')
+          .setDescription('Plugin commands')
+          .addSubcommand((command) => command.setName('add').setDescription('Adds a plugin to the database!'))
+          .addSubcommand((command) => command.setName('edit').setDescription('Edits a plugin in the database!'))
+          .addSubcommand((command) => command.setName('remove').setDescription('Removes a plugin from the database!'))
+          .addSubcommand((command) => command.setName('export').setDescription('Exports all plugins to a json file!')),
+      { guildIds: [process.env.MAIN_SERVER as string] }
     );
   }
 
@@ -46,7 +48,9 @@ export class PluginsCommand extends Subcommand {
   public async pluginsRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
 
   public async pluginsExport(interaction: Subcommand.ChatInputCommandInteraction) {
-    Logger.BotLog(EmbedCreator.Warning(`__Exported ${Cache.getPlugins().length} Plugins!__\r\nRequested by ${interaction.user.tag} in <#${interaction.channelId}>`));
+    Logger.BotLog(
+      EmbedCreator.Warning(`__Exported ${Cache.getPlugins().length} Plugins!__\r\n> Requested by ${interaction.user.tag} in <#${interaction.channelId}>`)
+    );
     return await interaction.reply({
       embeds: [EmbedCreator.Success(`__Exported ${Cache.getPlugins().length} Plugins!__\r\n-# Ensure these do not get leaked!`)],
       files: [
