@@ -12,7 +12,6 @@ export abstract class AhChannel {
       "\n> - Do not send modified logs. To 'test' the bot is not a valid excuse." +
       '\n> - Do not upload logs or files greater than **__3MB__**.' +
       '\n> - Do not spam cases. You can upload multiple logs to a single case.' +
-      '\n> - Proxy support is frowned upon. Ideally you should have the user upload their log directly.' +
       `\n\n## ${process.env.QUESTION!} __Other Info__` +
       '\n> Anyone can join and assist in cases, using /JoinCase' +
       `\n> You can add this bot to your server regardless of size! You may also use its commands in ***any*** server by adding it to your account! Just click the user then select 'add app'!` +

@@ -1,6 +1,5 @@
 import { codeBlock } from 'discord.js';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
-import { Logger } from '../Functions/Messages/Logger';
 import { APIManager } from './APIManager';
 import { container } from '@sapphire/framework';
 
