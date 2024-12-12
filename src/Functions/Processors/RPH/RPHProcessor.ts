@@ -86,7 +86,7 @@ export class RPHProcessor {
     const errEmb = EmbedCreator.Support('__Error Information:__\n*This shows common issues that were detected.*\n');
     const update = this.log.errors.some((x) => x.level === Level.CRITICAL);
     let cnt = 0;
-    for (const err of this.log.errors) {
+    for (const err of this.log.errors.filter((x) => x.level !== Level.XTRA)) {
       if (cnt >= 10) {
         errEmb.addFields({
           name: `${process.env.ERROR} Too Many Errors!`,
@@ -94,7 +94,7 @@ export class RPHProcessor {
         });
         return errEmb;
       }
-      //TODO: if (update && err.level !== Level.CRITICAL) continue;
+      if (update && err.level !== Level.CRITICAL) continue;
       errEmb.addFields({
         //prettier-ignore
         name: `${err.level === Level.XTRA ? process.env.INFO : err.level === Level.WARN ? process.env.WARNING : process.env.ALERT} ___${inlineCodeBlock(`${err.level} ID: ${err.id}`)} Possible Fix:___`,

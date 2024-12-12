@@ -18,12 +18,22 @@ export abstract class Startup {
   static async Init() {
     await Cache.resetCache();
     APIManager.init();
+
+    const [newServers, remServers, newUsers, updateUsers, closedCases] = await Promise.all([
+      ServerValidation.AddMissing(),
+      ServerValidation.RemoveMissing(),
+      UsersValidation.AddMissing(),
+      UsersValidation.UpdateNames(),
+      CaseValidation.VerifyOpenCases(),
+    ]);
+
+    this.newServers = newServers;
+    this.remServers = remServers;
+    this.newUsers = newUsers;
+    this.updateUsers = updateUsers;
+    this.closedCases = closedCases;
+
     AutoHelperValidation.ValidateMsgs();
-    this.newServers = await ServerValidation.AddMissing();
-    this.remServers = await ServerValidation.RemoveMissing();
-    this.newUsers = await UsersValidation.AddMissing();
-    this.updateUsers = await UsersValidation.UpdateNames();
-    this.closedCases = await CaseValidation.VerifyOpenCases();
     Timer.startTimer();
     await Startup.SendMessages();
   }
