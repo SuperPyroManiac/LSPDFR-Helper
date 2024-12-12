@@ -2,7 +2,8 @@ import { container } from '@sapphire/framework';
 import { Cache } from '../../Cache';
 import { User } from '../../CustomTypes/MainTypes/User';
 import { DBManager } from '../DBManager';
-import { GuildMember } from 'discord.js';
+import { codeBlock, GuildMember } from 'discord.js';
+import { Logger } from '../Messages/Logger';
 
 export abstract class UsersValidation {
   static async Verify() {
@@ -15,9 +16,12 @@ export abstract class UsersValidation {
     const newUsers = [];
 
     for (const servers of container.client.guilds.cache.values()) {
-      const users = await servers.members.fetch();
-      for (const user of Array.from(users.values())) {
-        allUsers.add(user);
+      try {
+        const users = await servers.members.fetch({ time: 60000 });
+        users.forEach((user) => allUsers.add(user));
+      } catch (error) {
+        Logger.ErrLog(`Failed to fetch members for server ${servers.id}\n${codeBlock(String(error))}`);
+        continue;
       }
     }
 
@@ -39,15 +43,16 @@ export abstract class UsersValidation {
     let updateCount = 0;
     let allUsers = new Set<GuildMember>();
 
-    // Collect all current users from guilds
     for (const servers of container.client.guilds.cache.values()) {
-      const users = await servers.members.fetch();
-      for (const user of Array.from(users.values())) {
-        allUsers.add(user);
+      try {
+        const users = await servers.members.fetch({ time: 60000 });
+        users.forEach((user) => allUsers.add(user));
+      } catch (error) {
+        Logger.ErrLog(`Failed to fetch members for server ${servers.id}\n${codeBlock(String(error))}`);
+        continue;
       }
     }
 
-    // Check for name changes
     for (const member of allUsers) {
       const cachedUser = Cache.getUser(member.id);
       if (cachedUser && cachedUser.name !== member.user.username) {

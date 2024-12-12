@@ -74,12 +74,13 @@ export abstract class Reports {
     if (interaction.channel && !interaction.channel.isDMBased()) chName = interaction.channel.name;
     const fileSize = (attach.size / 1000000).toFixed(2);
 
-    const embedDescription = `__Possible Abuse__\n>>>
-        **User:** ${interaction.member?.user.username ?? 'Unknown'} (${interaction.member?.user.id ?? 'Unknown'})\n
-        **Server:** ${interaction.guild?.name ?? 'DM'} (${interaction.guild?.id ?? 'N/A'})\n
-        **Channel:** ${chName} (${interaction.channel?.id ?? 'N/A'})\n
-        **Log Size:** ${fileSize}MB\n
-        **Reason:** ${reason}\n`;
+    const embedDescription =
+      '__Possible Abuse__\n>>> ' +
+      `**User:** ${interaction.member?.user.username ?? 'Unknown'} (${interaction.member?.user.id ?? 'Unknown'})\n` +
+      `**Server:** ${interaction.guild?.name ?? 'DM'} (${interaction.guild?.id ?? 'N/A'})\n` +
+      `**Channel:** ${chName} (${interaction.channel?.id ?? 'N/A'})\n` +
+      `**Log Size:** ${fileSize}MB\n` +
+      `**Reason:** ${reason}\n`;
 
     const emb = EmbedCreator.Alert(embedDescription);
     await Logger.UserLog(emb, attach);

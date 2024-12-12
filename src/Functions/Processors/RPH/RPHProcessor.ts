@@ -8,6 +8,7 @@ import { ProcessCache } from '../../../CustomTypes/CacheTypes/ProcessCache';
 import { Level } from '../../../CustomTypes/Enums/Level';
 import { LogSendToUser } from '../../../interaction-handlers/_CustomIds';
 import { inlineCodeBlock } from '@sapphire/utilities';
+import { Logger } from '../../Messages/Logger';
 
 export class RPHProcessor {
   log: RPHLog;
@@ -16,12 +17,11 @@ export class RPHProcessor {
   private currentPlugins?: string;
   private outdatedPlugins?: string;
   private removePlugins?: string;
-  private missingPlugins?: string; //TODO
-  private updatedPlugins?: string;
   private rphPlugins?: string;
   private gtaVer = '❌';
   private lspdfrVer = '❌';
   private rphVer = '❌';
+  private pluginInfoSent = false;
 
   constructor(log: RPHLog, mesgId: string) {
     this.log = log;
@@ -32,8 +32,6 @@ export class RPHProcessor {
     this.outdatedPlugins = log.outdated.map((x) => x.linkedName()).join('**,** ');
     this.rphPlugins = log.current.filter((x) => x.type === PluginType.RPH).map((x) => x.dname).join('**,** ');
     this.removePlugins = log.current.filter((x) => x.state === State.BROKEN || x.type === PluginType.LIBRARY).map((x) => x.dname).join('**,** ');
-    this.missingPlugins = log.missing.map((x) => `${x.name} (${x.version})`).join('**,** ');
-    this.updatedPlugins = log.newVersion.map((x) => `${x.name} (${x.version})`).join('**,** ');
     this.gtaVer = Cache.getPlugin('GrandTheftAuto5')?.version === log.gtaVersion ? '✓' : '❌';
     this.lspdfrVer = Cache.getPlugin('LSPDFR')?.version === log.lspdfrVersion ? '✓' : '❌';
     this.rphVer = Cache.getPlugin('RagePluginHook')?.version === log.rphVersion ? '✓' : '❌';
@@ -112,6 +110,9 @@ export class RPHProcessor {
   //! Server Message
   async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
     this.cache = Cache.getProcess(this.msgId)!;
+    this.pluginInfoSent ||
+      ((this.pluginInfoSent = true),
+      await Logger.PluginInfo(this.log.missing, this.log.newVersion, this.log.downloadLink!, await interaction.channel?.messages.fetch(this.msgId)!));
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
