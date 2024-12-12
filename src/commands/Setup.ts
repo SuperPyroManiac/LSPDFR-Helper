@@ -1,27 +1,13 @@
-import { Command, Events } from '@sapphire/framework';
-import {
-  ActionRowBuilder,
-  ApplicationIntegrationType,
-  ButtonBuilder,
-  ButtonInteraction,
-  ButtonStyle,
-  ModalActionRowComponentBuilder,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-} from 'discord.js';
+import { Command } from '@sapphire/framework';
+import { ActionRowBuilder, ApplicationIntegrationType, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Cache } from '../Cache';
 import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
-import { SetupAhCh, SetupAhMnCh, SetupButton, SetupModal } from '../interaction-handlers/_CustomIds';
-import { DBManager } from '../Functions/DBManager';
-import { AhChannel } from '../Functions/AutoHelper/AhChannel';
-import { CaseMonitor } from '../Functions/AutoHelper/CaseMonitor';
-import { ProcessCache } from '../CustomTypes/CacheTypes/ProcessCache';
+import { SetupButton } from '../interaction-handlers/_CustomIds';
 import { InteractionCache } from '../CustomTypes/CacheTypes/InteractionCache';
 
 export class SetupCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
-    super(context, { ...options });
+    super(context, { ...options, preconditions: ['ServerManager'] });
   }
   private originalInteraction: Command.ChatInputCommandInteraction | null = null;
 
