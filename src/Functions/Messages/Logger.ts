@@ -49,7 +49,7 @@ export abstract class Logger {
   }
 
   static async UserLog(message: EmbedBuilder | string, attachment?: Attachment): Promise<void> {
-    const ch = container.client.channels.cache.get(process.env.BOT_LOG_CHANNEL!);
+    const ch = container.client.channels.cache.get(process.env.USER_LOG_CHANNEL!);
     if (attachment && attachment.size / 1000000 > 24) {
       if (typeof message === 'string') message == message + `\r\nFile Too Large To Upload: ${hyperlink('Link', attachment.url)}`;
       else if (message instanceof EmbedBuilder)
