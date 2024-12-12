@@ -1,4 +1,5 @@
 import express from 'express';
+import { VersionChecker } from './VersionChecker';
 
 export class APIManager {
   private static app = express();
@@ -8,7 +9,8 @@ export class APIManager {
     if (process.env.MAIN_SERVER !== '736140566311600138') return;
     this.setupRoutes();
     this.startServer();
-    console.log('Web API Started!');
+
+    VersionChecker.init();
   }
 
   private static setupRoutes() {
