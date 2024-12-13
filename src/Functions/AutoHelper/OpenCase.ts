@@ -7,7 +7,7 @@ import { DBManager } from '../DBManager';
 import { CaseMonitor } from './CaseMonitor';
 
 export class OpenCase {
-  static async Create(userId: string, guildId: string): Promise<Case | undefined> {
+  public static async Create(userId: string, guildId: string): Promise<Case | undefined> {
     const caseId = this.generateCaseId();
     const server = Cache.getServer(guildId);
     if (!server || !server.getGuild() || !server.ahChId) return;

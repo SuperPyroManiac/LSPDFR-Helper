@@ -3,15 +3,15 @@ import type { ChatInputCommandInteraction, ContextMenuCommandInteraction, Messag
 import { Cache } from '../Cache';
 
 export class BotEditorPrecondition extends AllFlowsPrecondition {
-  public override chatInputRun(interaction: ChatInputCommandInteraction) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction) {
     return this.checkEditor(interaction.user.id);
   }
 
-  public override contextMenuRun(interaction: ContextMenuCommandInteraction) {
+  public override async contextMenuRun(interaction: ContextMenuCommandInteraction) {
     return this.checkEditor(interaction.user.id);
   }
 
-  public override messageRun(message: Message) {
+  public override async messageRun(message: Message) {
     return this.checkEditor(message.author.id);
   }
 

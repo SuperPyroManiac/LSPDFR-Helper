@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/promise-function-async */
 import { AllFlowsPrecondition } from '@sapphire/framework';
 import { PermissionsBitField, type ChatInputCommandInteraction, type ContextMenuCommandInteraction } from 'discord.js';
 
 export class ServerManagerPrecondition extends AllFlowsPrecondition {
-  public override chatInputRun(interaction: ChatInputCommandInteraction) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction) {
     return this.checkServerManager(interaction);
   }
 
-  public override contextMenuRun(interaction: ContextMenuCommandInteraction) {
+  public override async contextMenuRun(interaction: ContextMenuCommandInteraction) {
     return this.checkServerManager(interaction);
   }
 

@@ -7,7 +7,7 @@ export class InteractionCache {
   public DiscordMessage!: Message;
   public Interaction: ContextMenuCommandInteraction | ButtonInteraction | Command.ChatInputCommandInteraction;
 
-  constructor(originalMessage: Message, interaction: ContextMenuCommandInteraction | ButtonInteraction | Command.ChatInputCommandInteraction) {
+  public constructor(originalMessage: Message, interaction: ContextMenuCommandInteraction | ButtonInteraction | Command.ChatInputCommandInteraction) {
     this.Interaction = interaction;
     this.DiscordMessage = originalMessage;
   }

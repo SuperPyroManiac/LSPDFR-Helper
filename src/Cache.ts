@@ -112,8 +112,8 @@ export class Cache {
     await Promise.all([...processPromises, ...interactionPromises]);
   }
 
-  public static saveProcess(messageId: string, process: ProcessCache<ProcessorType>): ProcessCache<ProcessorType> {
-    if (this.processCache.has(messageId)) this.processCache.get(messageId)?.Update(process);
+  public static async saveProcess(messageId: string, process: ProcessCache<ProcessorType>): Promise<ProcessCache<ProcessorType>> {
+    if (this.processCache.has(messageId)) await this.processCache.get(messageId)?.Update(process);
     else this.processCache.set(messageId, process);
     return process;
   }

@@ -36,12 +36,12 @@ export class MessageCreateListener extends Listener {
     const currentTime = new Date();
     if (differenceInMinutes(cs.expireDate, currentTime) <= 1435) {
       cs.expireDate = addDays(currentTime, 1);
-      DBManager.editCase(cs);
+      await DBManager.editCase(cs);
     }
 
     //TODO: Text and IMG recog - Fuzzy alt fast-fuzzy | IMG has direct port
     if (msg.attachments.size === 0) return;
-    msg.attachments.forEach(async (a) => {
+    for (const a of msg.attachments.values()) {
       //prettier-ignore
       {
         if (a.name.endsWith('.rcr')) await msg.reply({embeds: [EmbedCreator.Support('__LSPDFR AutoHelper__\r\n>>> This file is not supported! Please send `RagePluginHook.log` from your main GTA directory instead. Not the logs folder.'),],});
@@ -51,10 +51,10 @@ export class MessageCreateListener extends Listener {
 
       if (acceptedTypes.some((x) => a.name.toLowerCase().includes(x))) {
         if (a.size / 1000000 > 10) {
-          Reports.largeLog(msg, a, true);
+          await Reports.largeLog(msg, a, true);
           return;
         } else if (a.size / 1000000 > 3) {
-          Reports.largeLog(msg, a);
+          await Reports.largeLog(msg, a);
           return;
         }
         const fileName = a.name.toLowerCase();
@@ -63,19 +63,19 @@ export class MessageCreateListener extends Listener {
           if (rphProc.log.logModified) return Reports.modifiedLog(msg, a);
           await rphProc.SendReply(msg).catch(async (e) => {
             await Logger.ErrLog(`Failed to process file!\r\n${e}`);
-            await msg.reply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
+            await msg.reply({ embeds: [EmbedCreator.Error('__Failed to process file!__\r\n>>> The error has been sent to the bot developer!')] });
           });
         } else if (fileName.includes('els') && fileName.endsWith('.log')) {
           const elsProc = new ELSProcessor(await ELSValidator.validate(a.url), msg.id);
           await elsProc.SendReply(msg).catch(async (e) => {
             await Logger.ErrLog(`Failed to process file!\r\n${e}`);
-            await msg.reply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
+            await msg.reply({ embeds: [EmbedCreator.Error('__Failed to process file!__\r\n>>> The error has been sent to the bot developer!')] });
           });
         } else if (fileName.includes('asiloader') && fileName.endsWith('.log')) {
           const asiProc = new ASIProcessor(await ASIValidator.validate(a.url), msg.id);
           await asiProc.SendReply(msg).catch(async (e) => {
             await Logger.ErrLog(`Failed to process file!\r\n${e}`);
-            await msg.reply({ embeds: [EmbedCreator.Error(`__Failed to process file!__\r\n>>> The error has been sent to the bot developer!`)] });
+            await msg.reply({ embeds: [EmbedCreator.Error('__Failed to process file!__\r\n>>> The error has been sent to the bot developer!')] });
           });
         }
 
@@ -84,6 +84,6 @@ export class MessageCreateListener extends Listener {
           await xmlProc.SendReply(msg);
         }
       }
-    });
+    }
   }
 }

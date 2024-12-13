@@ -8,12 +8,12 @@ import { ButtonStyle } from 'discord.js';
 import { Logger } from '../Messages/Logger';
 
 export class ServerValidation {
-  static async Verify() {
-    this.AddMissing();
-    this.RemoveMissing();
+  public static async Verify() {
+    void this.AddMissing();
+    void this.RemoveMissing();
   }
 
-  static async AddMissing(): Promise<number> {
+  public static async AddMissing(): Promise<number> {
     let cnt = 0;
     for (const server of Array.from(container.client.guilds.cache.values())) {
       const ch = server.systemChannel;
@@ -21,13 +21,13 @@ export class ServerValidation {
       let cachedServ = Cache.getServer(server.id);
 
       const emb = EmbedCreator.Success(
-        `__LSPDFR Helper Added!__\r\n` +
-          `-# This bot is able to read a multitude of different log types and even provide support autonomously!\r\n\r\n` +
-          `Created by SuperPyroManiac with the help of Hammer using data collected from ULSS, RPH, and DG.\r\n` +
-          `To contribute or for more information, you may visit the PF Discord or GitHub.\r\n\r\n` +
-          `To get started, simply use the /Setup command. This will allow you to configure the bots channels and autohelper.\r\n` +
-          `A web interface is currently in development to replace this, but for now you may run the command at any time to adjust its settings.\r\n\r\n` +
-          `*You may delete this message or click the buttons below for more info!*`
+        '__LSPDFR Helper Added!__\r\n' +
+          '-# This bot is able to read a multitude of different log types and even provide support autonomously!\r\n\r\n' +
+          'Created by SuperPyroManiac with the help of Hammer using data collected from ULSS, RPH, and DG.\r\n' +
+          'To contribute or for more information, you may visit the PF Discord or GitHub.\r\n\r\n' +
+          'To get started, simply use the /Setup command. This will allow you to configure the bots channels and autohelper.\r\n' +
+          'A web interface is currently in development to replace this, but for now you may run the command at any time to adjust its settings.\r\n\r\n' +
+          '*You may delete this message or click the buttons below for more info!*'
       );
       emb.setThumbnail('https://i.imgur.com/jxODw4N.png');
       const comps = new ActionRowBuilder<ButtonBuilder>();
@@ -43,7 +43,7 @@ export class ServerValidation {
         await ch?.send({ embeds: [emb], components: [comps] });
         await Logger.ServerLog(
           EmbedCreator.Success(
-            `__Server Added!__\r\n>>> ` +
+            '__Server Added!__\r\n>>> ' +
               `**Server Name:** ${server.name}\r\n` +
               `**Server Id:** ${server.id}\r\n` +
               `**Members:** ${server.memberCount}\r\n` +
@@ -64,7 +64,7 @@ export class ServerValidation {
         await server.leave();
         await Logger.ServerLog(
           EmbedCreator.Error(
-            `__Server Banned!__\r\n>>> ` +
+            '__Server Banned!__\r\n>>> ' +
               `**Server Name:** ${server.name}\r\n` +
               `**Server Id:** ${server.id}\r\n` +
               `**Members:** ${server.memberCount}\r\n` +
@@ -78,11 +78,11 @@ export class ServerValidation {
 
       if (!cachedServ.enabled) {
         cachedServ.enabled = true;
-        DBManager.editServer(cachedServ);
+        await DBManager.editServer(cachedServ);
         await ch?.send({ embeds: [emb], components: [comps] });
         await Logger.ServerLog(
           EmbedCreator.Success(
-            `__Server Added!__\r\n>>> ` +
+            '__Server Added!__\r\n>>> ' +
               `**Server Name:** ${server.name}\r\n` +
               `**Server Id:** ${server.id}\r\n` +
               `**Members:** ${server.memberCount}\r\n` +
@@ -96,7 +96,7 @@ export class ServerValidation {
     return cnt;
   }
 
-  static async RemoveMissing(): Promise<number> {
+  public static async RemoveMissing(): Promise<number> {
     let cnt = 0;
 
     for (const server of Cache.getServers().filter((x) => x.enabled === true)) {
@@ -107,7 +107,7 @@ export class ServerValidation {
         await DBManager.editServer(server);
         await Logger.ServerLog(
           EmbedCreator.Info(
-            `__Server Removed!__\r\n>>> ` + `**Server Name:** ${server.name}\r\n` + `**Server Id:** ${server.id}\r\n` + `**Owner Id:** ${server.ownerId}`
+            '__Server Removed!__\r\n>>> ' + `**Server Name:** ${server.name}\r\n` + `**Server Id:** ${server.id}\r\n` + `**Owner Id:** ${server.ownerId}`
           )
         );
         cnt++;

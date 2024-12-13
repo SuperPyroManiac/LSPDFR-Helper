@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient, Prisma } from '@prisma/client';
 import { Plugin } from '../CustomTypes/MainTypes/Plugin';
 import { Error } from '../CustomTypes/MainTypes/Error';
@@ -14,29 +15,29 @@ export class DBManager {
       return await operation();
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        Logger.ErrLog(`Database error: ${error.code} - ${error.message}`);
+        await Logger.ErrLog(`Database error: ${error.code} - ${error.message}`);
       } else {
-        Logger.ErrLog(`Unexpected database error: ${error}`);
+        await Logger.ErrLog(`Unexpected database error: ${error}`);
       }
       return null;
     }
   }
 
-  static async getPlugins(): Promise<Plugin[] | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getPlugins(): Promise<Plugin[] | null> {
+    return this.handleDbOperation(async () => {
       const results = await prisma.plugins.findMany();
       return results.map((result) => Object.assign(new Plugin(), result));
     });
   }
 
-  static async getPlugin(name: string): Promise<Plugin | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getPlugin(name: string): Promise<Plugin | null> {
+    return this.handleDbOperation(async () => {
       const result = await prisma.plugins.findUnique({ where: { name } });
       return result ? Object.assign(new Plugin(), result) : null;
     });
   }
 
-  static async createPlugin(plugin: Plugin): Promise<void> {
+  public static async createPlugin(plugin: Plugin): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.plugins.create({
         data: {
@@ -55,7 +56,7 @@ export class DBManager {
     Cache.updatePlugins((await this.getPlugins()) ?? []);
   }
 
-  static async editPlugin(plugin: Plugin): Promise<void> {
+  public static async editPlugin(plugin: Plugin): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.plugins.update({
         where: { name: plugin.name },
@@ -65,28 +66,28 @@ export class DBManager {
     Cache.updatePlugins((await this.getPlugins()) ?? []);
   }
 
-  static async deletePlugin(name: string): Promise<void> {
+  public static async deletePlugin(name: string): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.plugins.delete({ where: { name } });
     });
     Cache.updatePlugins((await this.getPlugins()) ?? []);
   }
 
-  static async getErrors(): Promise<Error[] | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getErrors(): Promise<Error[] | null> {
+    return this.handleDbOperation(async () => {
       const results = await prisma.errors.findMany();
       return results.map((result) => Object.assign(new Error(), result));
     });
   }
 
-  static async getError(id: number): Promise<Error | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getError(id: number): Promise<Error | null> {
+    return this.handleDbOperation(async () => {
       const result = await prisma.errors.findUnique({ where: { id } });
       return result ? Object.assign(new Error(), result) : null;
     });
   }
 
-  static async createError(error: Error): Promise<void> {
+  public static async createError(error: Error): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.errors.create({
         data: {
@@ -101,7 +102,7 @@ export class DBManager {
     Cache.updateErrors((await this.getErrors()) ?? []);
   }
 
-  static async editError(error: Error): Promise<void> {
+  public static async editError(error: Error): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.errors.update({
         where: { id: error.id },
@@ -111,28 +112,28 @@ export class DBManager {
     Cache.updateErrors((await this.getErrors()) ?? []);
   }
 
-  static async deleteError(id: number): Promise<void> {
+  public static async deleteError(id: number): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.errors.delete({ where: { id } });
     });
     Cache.updateErrors((await this.getErrors()) ?? []);
   }
 
-  static async getCases(): Promise<Case[] | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getCases(): Promise<Case[] | null> {
+    return this.handleDbOperation(async () => {
       const results = await prisma.cases.findMany();
       return results.map((result) => Object.assign(new Case(), result));
     });
   }
 
-  static async getCase(id: string): Promise<Case | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getCase(id: string): Promise<Case | null> {
+    return this.handleDbOperation(async () => {
       const result = await prisma.cases.findUnique({ where: { id } });
       return result ? Object.assign(new Case(), result) : null;
     });
   }
 
-  static async createCase(caseItem: Case): Promise<void> {
+  public static async createCase(caseItem: Case): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.cases.create({
         data: {
@@ -149,7 +150,7 @@ export class DBManager {
     Cache.updateCases((await this.getCases()) ?? []);
   }
 
-  static async editCase(caseItem: Case): Promise<void> {
+  public static async editCase(caseItem: Case): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.cases.update({
         where: { id: caseItem.id },
@@ -159,28 +160,28 @@ export class DBManager {
     Cache.updateCases((await this.getCases()) ?? []);
   }
 
-  static async deleteCase(id: string): Promise<void> {
+  public static async deleteCase(id: string): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.cases.delete({ where: { id } });
     });
     Cache.updateCases((await this.getCases()) ?? []);
   }
 
-  static async getUsers(): Promise<User[] | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getUsers(): Promise<User[] | null> {
+    return this.handleDbOperation(async () => {
       const results = await prisma.users.findMany();
       return results.map((result) => Object.assign(new User(), result));
     });
   }
 
-  static async getUser(id: string): Promise<User | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getUser(id: string): Promise<User | null> {
+    return this.handleDbOperation(async () => {
       const result = await prisma.users.findUnique({ where: { id } });
       return result ? Object.assign(new User(), result) : null;
     });
   }
 
-  static async createUsers(users: User[]): Promise<void> {
+  public static async createUsers(users: User[]): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.users.createMany({
         data: users.map((user) => ({
@@ -196,7 +197,7 @@ export class DBManager {
     Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
-  static async createUser(user: User): Promise<void> {
+  public static async createUser(user: User): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.users.create({
         data: {
@@ -211,7 +212,7 @@ export class DBManager {
     Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
-  static async editUser(user: User): Promise<void> {
+  public static async editUser(user: User): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.users.update({
         where: { id: user.id },
@@ -221,28 +222,28 @@ export class DBManager {
     Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
-  static async deleteUser(id: string): Promise<void> {
+  public static async deleteUser(id: string): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.users.delete({ where: { id } });
     });
     Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
-  static async getServers(): Promise<Server[] | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getServers(): Promise<Server[] | null> {
+    return this.handleDbOperation(async () => {
       const results = await prisma.servers.findMany();
       return results.map((result) => Object.assign(new Server(), result));
     });
   }
 
-  static async getServer(id: string): Promise<Server | null> {
-    return await this.handleDbOperation(async () => {
+  public static async getServer(id: string): Promise<Server | null> {
+    return this.handleDbOperation(async () => {
       const result = await prisma.servers.findUnique({ where: { id } });
       return result ? Object.assign(new Server(), result) : null;
     });
   }
 
-  static async createServer(server: Server): Promise<void> {
+  public static async createServer(server: Server): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.servers.create({
         data: {
@@ -263,7 +264,7 @@ export class DBManager {
     Cache.updateServers((await this.getServers()) ?? []);
   }
 
-  static async editServer(server: Server): Promise<void> {
+  public static async editServer(server: Server): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.servers.update({
         where: { id: server.id },
@@ -273,7 +274,7 @@ export class DBManager {
     Cache.updateServers((await this.getServers()) ?? []);
   }
 
-  static async deleteServer(id: string): Promise<void> {
+  public static async deleteServer(id: string): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.servers.delete({ where: { id } });
     });

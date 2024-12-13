@@ -17,7 +17,7 @@ export class ModalInteractions extends InteractionHandler {
 
   public async run(interaction: ModalSubmitInteraction) {
     if (interaction.customId === SetupModal) {
-      await interaction.reply({ embeds: [EmbedCreator.Loading(`__Processing!__\r\n>>> Changing settings in the DB. Please wait...`)], ephemeral: true });
+      await interaction.reply({ embeds: [EmbedCreator.Loading('__Processing!__\r\n>>> Changing settings in the DB. Please wait...')], ephemeral: true });
       const ahChInput = interaction.fields.getTextInputValue(SetupAhCh);
       const ahChId = interaction.guild?.channels.cache.get(ahChInput) ? ahChInput : '0';
       const ahMonChInput = interaction.fields.getTextInputValue(SetupAhMnCh);

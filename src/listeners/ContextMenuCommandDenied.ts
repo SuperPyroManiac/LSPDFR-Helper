@@ -10,11 +10,11 @@ export class ContextMenuCommandDenied extends Listener<typeof Events.ContextMenu
     });
   }
 
-  public run(error: UserError, { interaction }: ContextMenuCommandDeniedPayload) {
+  public async run(error: UserError, { interaction }: ContextMenuCommandDeniedPayload) {
     let replyMsg = {
       embeds: [
         EmbedCreator.Error(
-          `__Banned!__\r\n-# You are banned from using this bot!\r\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.`
+          '__Banned!__\r\n-# You are banned from using this bot!\r\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.'
         ),
       ],
       components: [
@@ -25,7 +25,7 @@ export class ContextMenuCommandDenied extends Listener<typeof Events.ContextMenu
       ephemeral: true,
     };
     if (error.message != 'banned')
-      replyMsg = { embeds: [EmbedCreator.Error(`__No Permission!__\r\n>>> You do not have permission to use this command!`)], components: [], ephemeral: true };
+      replyMsg = { embeds: [EmbedCreator.Error('__No Permission!__\r\n>>> You do not have permission to use this command!')], components: [], ephemeral: true };
 
     if (interaction.deferred || interaction.replied) return interaction.editReply(replyMsg);
     return interaction.reply(replyMsg);

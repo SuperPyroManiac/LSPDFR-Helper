@@ -1,7 +1,7 @@
 export class Log {
-  msgId?: string;
-  downloadLink?: string;
-  elapsedTime?: string;
-  validaterStartedAt: Date = new Date();
-  validaterCompletedAt?: Date;
+  public msgId?: string;
+  public downloadLink?: string;
+  public elapsedTime?: string;
+  public validaterStartedAt: Date = new Date();
+  public validaterCompletedAt?: Date;
 }

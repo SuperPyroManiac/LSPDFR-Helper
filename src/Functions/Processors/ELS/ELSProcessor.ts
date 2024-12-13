@@ -86,7 +86,7 @@ export class ELSProcessor {
       if (!interaction.guild) reply = await interaction.editReply({ embeds: embs });
       else reply = await interaction.editReply({ embeds: embs, components: [comps] });
       this.msgId = reply.id;
-      Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));
+      await Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));
     }
   }
 

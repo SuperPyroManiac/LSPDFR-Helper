@@ -3,27 +3,27 @@ import { addDays } from 'date-fns';
 import { ThreadChannel } from 'discord.js';
 
 export class Case {
-  id: string;
-  ownerId?: string;
-  channelId?: string;
-  serverId!: string;
-  open: boolean = true;
-  createDate: Date = new Date();
-  expireDate: Date = addDays(new Date(), 1);
+  public id: string;
+  public ownerId?: string;
+  public channelId?: string;
+  public serverId!: string;
+  public open: boolean = true;
+  public createDate: Date = new Date();
+  public expireDate: Date = addDays(new Date(), 1);
 
-  constructor(id: string = '') {
+  public constructor(id: string = '') {
     this.id = id;
   }
 
-  clone(): Case {
+  public clone(): Case {
     return Object.assign(new Case(), JSON.parse(JSON.stringify(this)));
   }
 
-  isExpired(): boolean {
+  public isExpired(): boolean {
     return this.expireDate < new Date();
   }
 
-  getAhChannel(): ThreadChannel | undefined {
+  public getAhChannel(): ThreadChannel | undefined {
     return this.channelId ? (container.client.channels.cache.get(this.channelId) as ThreadChannel) : undefined;
   }
 }

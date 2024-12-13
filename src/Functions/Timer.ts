@@ -12,9 +12,9 @@ export class Timer {
     cron.schedule(
       '*/10 * * * * *',
       () => {
-        Cache.removeExpired().catch((e) => Logger.ErrLog(`Cache cleanup failed:\r\n${e}`));
-        PluginValidation.CheckUpdates().catch((e) => Logger.ErrLog(`Plugin check failed:\r\n${e}`));
-        ServerValidation.Verify().catch((e) => Logger.ErrLog(`Server validation failed:\r\n${e}`));
+        Cache.removeExpired().catch(async (e) => Logger.ErrLog(`Cache cleanup failed:\r\n${e}`));
+        PluginValidation.CheckUpdates().catch(async (e) => Logger.ErrLog(`Plugin check failed:\r\n${e}`));
+        ServerValidation.Verify().catch(async (e) => Logger.ErrLog(`Server validation failed:\r\n${e}`));
       },
       {
         runOnInit: false,
@@ -25,8 +25,8 @@ export class Timer {
     cron.schedule(
       '* * * * *',
       () => {
-        CaseValidation.VerifyOpenCases().catch((e) => Logger.ErrLog(`Case validation failed:\r\n${e}`));
-        Cache.resetCache().catch((e) => Logger.ErrLog(`Cache reset failed:\r\n${e}`));
+        CaseValidation.VerifyOpenCases().catch(async (e) => Logger.ErrLog(`Case validation failed:\r\n${e}`));
+        Cache.resetCache().catch(async (e) => Logger.ErrLog(`Cache reset failed:\r\n${e}`));
       },
       {
         runOnInit: false,
@@ -37,7 +37,7 @@ export class Timer {
     cron.schedule(
       '0 */1 * * *',
       () => {
-        UsersValidation.Verify().catch((e) => Logger.ErrLog(`User validation failed:\r\n${e}`));
+        UsersValidation.Verify().catch(async (e) => Logger.ErrLog(`User validation failed:\r\n${e}`));
       },
       {
         runOnInit: false,

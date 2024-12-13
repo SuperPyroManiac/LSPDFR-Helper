@@ -22,14 +22,14 @@ export class ButtonInteractions extends InteractionHandler {
     if (interaction.customId == LogSendToUser) {
       if (!pCache) {
         await interaction.reply({
-          embeds: [EmbedCreator.Alert(`__Cache Expired!__\n>>> The data for this has expired!\n-# Cached results expire after 5 minutes.`)],
+          embeds: [EmbedCreator.Alert('__Cache Expired!__\n>>> The data for this has expired!\n-# Cached results expire after 5 minutes.')],
           ephemeral: true,
         });
       } else {
         await pCache.Processor!.SendToUser().catch(async (e) => {
           await Logger.ErrLog(`Failed to send message to user!\n${e}`);
           await interaction.reply({
-            embeds: [EmbedCreator.Error(`__Failed to send message to user!__\n>>> This issue has been reported to the bot developer!`)],
+            embeds: [EmbedCreator.Error('__Failed to send message to user!__\n>>> This issue has been reported to the bot developer!')],
             ephemeral: true,
           });
         });
@@ -39,7 +39,7 @@ export class ButtonInteractions extends InteractionHandler {
     if (interaction.customId === SetupButton) {
       if (!iCache) {
         await interaction.reply({
-          embeds: [EmbedCreator.Alert(`__Cache Expired!__\n>>> The data for this has expired!\n-# Cached results expire after 5 minutes.`)],
+          embeds: [EmbedCreator.Alert('__Cache Expired!__\n>>> The data for this has expired!\n-# Cached results expire after 5 minutes.')],
           ephemeral: true,
         });
       } else {
@@ -71,13 +71,13 @@ export class ButtonInteractions extends InteractionHandler {
 
     //!NON CACHED ACTIONS
     if (interaction.customId === AhOpenCase) {
-      await interaction.reply({ embeds: [EmbedCreator.Loading(`__Creating Case!__\r\n>>> A case is being created for you. Please wait...`)], ephemeral: true });
+      await interaction.reply({ embeds: [EmbedCreator.Loading('__Creating Case!__\r\n>>> A case is being created for you. Please wait...')], ephemeral: true });
 
       if (Cache.getUser(interaction.user.id)?.banned) {
-        interaction.editReply({
+        await interaction.editReply({
           embeds: [
             EmbedCreator.Error(
-              `__Banned!__\n-# You are banned from using this bot!\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.`
+              '__Banned!__\n-# You are banned from using this bot!\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.'
             ),
           ],
         });
@@ -93,7 +93,7 @@ export class ButtonInteractions extends InteractionHandler {
       }
       if (Cache.getServer(interaction.guildId!)?.ahChId != interaction.channelId) {
         await interaction.editReply({
-          embeds: [EmbedCreator.Error(`__Server Setup Incorrectly!__\n>>> The servers AutoHelper channel ID is not set correctly. Please let server staff know!`)],
+          embeds: [EmbedCreator.Error('__Server Setup Incorrectly!__\n>>> The servers AutoHelper channel ID is not set correctly. Please let server staff know!')],
         });
         return;
       }
@@ -104,13 +104,13 @@ export class ButtonInteractions extends InteractionHandler {
     }
 
     if (interaction.customId === AhMarkComplete) {
-      await interaction.reply({ embeds: [EmbedCreator.Loading(`__Closing Case!__\r\n>>> The case is being closed. Please wait...`)], ephemeral: true });
+      await interaction.reply({ embeds: [EmbedCreator.Loading('__Closing Case!__\r\n>>> The case is being closed. Please wait...')], ephemeral: true });
       const cs = Cache.getCases().filter((x) => x.channelId === interaction.channelId)[0];
       if (!cs) {
         await interaction.editReply({
           embeds: [
             EmbedCreator.Error(
-              `__There was an error!__\n>>> The case you are trying to close could not be found! This is likely due to the cache not being updated yet! Try again in a minute.`
+              '__There was an error!__\n>>> The case you are trying to close could not be found! This is likely due to the cache not being updated yet! Try again in a minute.'
             ),
           ],
         });
@@ -119,13 +119,13 @@ export class ButtonInteractions extends InteractionHandler {
       //TODO: WE NEED TO CHECK IF THE USER IS A SERVER ADMIN OR BOT MANAGER
       if (interaction.user.id !== cs.ownerId) {
         await interaction.editReply({
-          embeds: [EmbedCreator.Error(`__Not The Owner!__\n>>> You do not own this case!`)],
+          embeds: [EmbedCreator.Error('__Not The Owner!__\n>>> You do not own this case!')],
         });
         return;
       }
       await CloseCase.Close(cs);
       await interaction.editReply({
-        embeds: [EmbedCreator.Success(`__Case Closed!__\n>>> The case has been closed successfully.`)],
+        embeds: [EmbedCreator.Success('__Case Closed!__\n>>> The case has been closed successfully.')],
       });
     }
   }
