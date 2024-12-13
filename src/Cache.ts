@@ -11,7 +11,7 @@ import { ELSProcessor } from './Functions/Processors/ELS/ELSProcessor';
 import { RPHProcessor } from './Functions/Processors/RPH/RPHProcessor';
 
 export type ProcessorType = RPHProcessor | ELSProcessor | ASIProcessor;
-export abstract class Cache {
+export class Cache {
   private static processCache = new Map<string, ProcessCache<ProcessorType>>();
   private static interactionCache = new Map<string, InteractionCache>();
   private static pluginCache = new Map<string, Plugin>();

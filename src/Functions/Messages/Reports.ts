@@ -14,8 +14,8 @@ const ERROR_MESSAGES = {
   OVERSIZED_BAN: `__Oversized Log__\n>>> -# This log is not allowed!\nThis log is much bigger than 3MB and will not be processed.\nDue to the size, you have been automatically banned. For more information you can join the bots support server at ${SUPPORT_SERVER_URL}`,
 };
 
-export abstract class Reports {
-  static async modifiedLog(interaction: ReportInteraction, attach: Attachment): Promise<void> {
+export class Reports {
+  public static async modifiedLog(interaction: ReportInteraction, attach: Attachment): Promise<void> {
     if (interaction instanceof StringSelectMenuInteraction) {
       await interaction.editReply({
         embeds: [EmbedCreator.Error(ERROR_MESSAGES.MODIFIED)],
@@ -29,9 +29,7 @@ export abstract class Reports {
     await this.sendAbuseMsg('Modified log', interaction, attach);
   }
 
-  static async largeLog(interaction: ReportInteraction, attach: Attachment, extra = false): Promise<void> {
-    const fileSize = attach.size / 1000000;
-
+  public static async largeLog(interaction: ReportInteraction, attach: Attachment, extra = false): Promise<void> {
     if (extra) {
       const response = {
         embeds: [EmbedCreator.Error(ERROR_MESSAGES.OVERSIZED_BAN)],
@@ -69,7 +67,7 @@ export abstract class Reports {
     await this.sendAbuseMsg('Oversized log', interaction, attach);
   }
 
-  static async sendAbuseMsg(reason: string, interaction: ReportInteraction, attach: Attachment): Promise<void> {
+  public static async sendAbuseMsg(reason: string, interaction: ReportInteraction, attach: Attachment): Promise<void> {
     let chName = 'User CMD';
     if (interaction.channel && !interaction.channel.isDMBased()) chName = interaction.channel.name;
     const fileSize = (attach.size / 1000000).toFixed(2);

@@ -1,6 +1,6 @@
 import { parseString } from 'xml2js';
 
-export abstract class XMLValidator {
+export class XMLValidator {
   public static async validate(path: string): Promise<string> {
     try {
       const xmlFile = await (await fetch(path)).text();

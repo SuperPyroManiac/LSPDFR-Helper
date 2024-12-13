@@ -1,15 +1,14 @@
-import { Cache } from '../../Cache';
 import { Case } from '../../CustomTypes/MainTypes/Case';
 import { DBManager } from '../DBManager';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 import { CaseMonitor } from './CaseMonitor';
 
-export abstract class CloseCase {
+export class CloseCase {
   static async Close(ac: Case, force: boolean = false): Promise<boolean> {
     if (!ac.open) return false;
     ac.open = false;
     ac.expireDate = new Date();
-    DBManager.editCase(ac);
+    await DBManager.editCase(ac);
     if (force) return true;
 
     const ch = ac.getAhChannel();

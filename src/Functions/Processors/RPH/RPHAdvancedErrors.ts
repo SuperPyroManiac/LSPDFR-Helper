@@ -1,13 +1,12 @@
 import { Cache } from '../../../Cache';
 import { Level } from '../../../CustomTypes/Enums/Level';
 import { PluginType } from '../../../CustomTypes/Enums/PluginType';
-import { State } from '../../../CustomTypes/Enums/State';
 import { RPHLog } from '../../../CustomTypes/LogTypes/RPHLog';
 import { Error } from '../../../CustomTypes/MainTypes/Error';
 import { Plugin } from '../../../CustomTypes/MainTypes/Plugin';
 
-export abstract class RPHAdvancedErrors {
-  static processAdvancedErrors(log: RPHLog, rawLog: string): RPHLog {
+export class RPHAdvancedErrors {
+  public static processAdvancedErrors(log: RPHLog, rawLog: string): RPHLog {
     //! Multi Session Check
     if ((rawLog.match(/Started loading LSPDFR/g) || []).length > 1) {
       const err = new Error();
@@ -25,7 +24,7 @@ export abstract class RPHAdvancedErrors {
       if (err1.pluginList.some((x) => x.name === match[2])) continue;
       if (log.current.some((x) => x.name === match[2])) continue;
       if (log.outdated.some((x) => x.name === match[2])) continue;
-      err1.pluginList.push(Cache.getPlugin(match[2]) ?? new Plugin(match[2]));
+      err1.pluginList.push(Cache.getPlugin(match[2]!) ?? new Plugin(match[2]));
     }
     if (err1.pluginList.length > 0) {
       err1.solution += `\r\n${err1.pluginList.map((x) => `- ${x.linkedName()}`).join('\r\n')}`;
@@ -36,7 +35,7 @@ export abstract class RPHAdvancedErrors {
     const err2 = Cache.getError(97)!.clone();
     for (const match of rawLog.matchAll(new RegExp(err2.pattern!, 'gm'))) {
       if (err2.pluginList.some((x) => x.name === match[1])) continue;
-      err2.pluginList.push(Cache.getPlugin(match[1]) ?? new Plugin(match[1]));
+      err2.pluginList.push(Cache.getPlugin(match[1]!) ?? new Plugin(match[1]));
     }
     if (err2.pluginList.length > 0) {
       err2.solution += `\r\n${err2.pluginList.map((x) => `- ${x.linkedName()}`).join('\r\n')}`;
@@ -47,7 +46,7 @@ export abstract class RPHAdvancedErrors {
     const err3 = Cache.getError(98)!.clone();
     for (const match of rawLog.matchAll(new RegExp(err3.pattern!, 'gm'))) {
       if (err3.pluginList.some((x) => x.name === match[1])) continue;
-      err3.pluginList.push(Cache.getPlugin(match[1]) ?? new Plugin(match[1]));
+      err3.pluginList.push(Cache.getPlugin(match[1]!) ?? new Plugin(match[1]));
     }
     if (err3.pluginList.length > 0) {
       err3.solution += `\r\n${err3.pluginList.map((x) => `- ${x.linkedName()}`).join('\r\n')}`;
@@ -58,7 +57,7 @@ export abstract class RPHAdvancedErrors {
     const err4 = Cache.getError(99)!.clone();
     for (const match of rawLog.matchAll(new RegExp(err4.pattern!, 'gm'))) {
       if (err4.pluginList.some((x) => x.name === match[1])) continue;
-      err4.pluginList.push(Cache.getPlugin(match[1]) ?? new Plugin(match[1]));
+      err4.pluginList.push(Cache.getPlugin(match[1]!) ?? new Plugin(match[1]));
     }
     if (err4.pluginList.length > 0) {
       err4.solution += `\r\n${err4.pluginList.map((x) => `- ${x.linkedName()}`).join('\r\n')}`;
@@ -69,7 +68,7 @@ export abstract class RPHAdvancedErrors {
     const err5 = Cache.getError(41)!.clone();
     for (const match of rawLog.matchAll(new RegExp(err5.pattern!, 'gm'))) {
       if (err5.pluginList.some((x) => x.name === match[2])) continue;
-      err5.pluginList.push(Cache.getPlugin(match[2]) ?? new Plugin(match[2]));
+      err5.pluginList.push(Cache.getPlugin(match[2]!) ?? new Plugin(match[2]));
     }
     if (err5.pluginList.length > 0) {
       err5.solution += `\r\n${err5.pluginList.map((x) => `- ${x.linkedName()}`).join('\r\n')}`;
@@ -83,7 +82,7 @@ export abstract class RPHAdvancedErrors {
     //! Exception Detection
     const err6 = new Error();
     for (const match of rawLog.matchAll(/(?:.+ at (\w*)\..+\(\))/g)) {
-      const plug = Cache.getPlugin(match[1]);
+      const plug = Cache.getPlugin(match[1]!);
       if (!plug || err6.pluginList.some((x) => x.name === plug.name)) continue;
       if (plug.type === PluginType.LSPDFR || plug.type === PluginType.RPH) err6.pluginList.push(plug);
     }
@@ -98,7 +97,6 @@ export abstract class RPHAdvancedErrors {
       if (err6.solution!.length >= 1023) err6.solution = 'Too many exceptions to list in this error! Either you send a modified log, or your game is cooked.';
       log.errors.push(err6);
     }
-
     return log;
   }
 }

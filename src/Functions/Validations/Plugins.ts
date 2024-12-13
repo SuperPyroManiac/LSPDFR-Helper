@@ -10,11 +10,11 @@ interface LSPDFRPlugin {
   file_version: string;
 }
 
-export abstract class PluginValidation {
+export class PluginValidation {
   public static async CheckUpdates() {
     const webPlugs = await this.getPlugins().catch();
     const plugs = Cache.getPlugins();
-    const emb = EmbedCreator.Info(`__Plugin Updates__\r\n-# A new version of the plugins listed have been found!\r\n`);
+    const emb = EmbedCreator.Info('__Plugin Updates__\r\n-# A new version of the plugins listed have been found!\r\n');
     let cnt = 0;
 
     if (!webPlugs || !webPlugs.length) return;
@@ -22,7 +22,7 @@ export abstract class PluginValidation {
     for (const webPlug of webPlugs!) {
       const plug = plugs.filter((plug) => plug.id == webPlug.file_id)[0];
       if (!plug || plug.id == 0 || plug.state === State.IGNORE || plug.state === State.EXTERNAL) continue;
-      webPlug.file_version = webPlug.file_version.split(' ')[0].trim();
+      webPlug.file_version = webPlug.file_version.split(' ')[0]!.trim();
       webPlug.file_version = webPlug.file_version.replace(/[^0-9.]/g, '');
       const onlineVersionSplit = webPlug.file_version.split('.');
       if (onlineVersionSplit.length == 2) webPlug.file_version += '.0.0';

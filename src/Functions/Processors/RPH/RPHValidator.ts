@@ -6,8 +6,8 @@ import { RPHLog } from '../../../CustomTypes/LogTypes/RPHLog';
 import { Plugin } from '../../../CustomTypes/MainTypes/Plugin';
 import { RPHAdvancedErrors } from './RPHAdvancedErrors';
 
-export abstract class RPHValidator {
-  static async validate(attachmenturl: string): Promise<RPHLog> {
+export class RPHValidator {
+  public static async validate(attachmenturl: string): Promise<RPHLog> {
     const rawLog = (await (await fetch(attachmenturl)).text()).replaceAll('\r\n', '\n');
     const unSorted: Plugin[] = [];
     let log = new RPHLog();
@@ -28,10 +28,10 @@ export abstract class RPHValidator {
       /(?:(?<!CalloutManager\.cs:line 738)\n.+LSPD First Response: (?!無法載入檔案或組件|\[|Creating| |Error)\W?(.{1,40}), Version=(.+), Culture=\w{1,10}, PublicKeyToken=\w{1,10})|(?:Loading plugin .+\wlugins(?:\\|\/)(.+).dll.*)/gm
     );
     for (const match of allMatch) {
-      if (match[1]?.length > 0) {
-        const plug = Cache.getPlugin(match[1]);
+      if (match[1]!.length > 0) {
+        const plug = Cache.getPlugin(match[1]!);
         if (plug) {
-          let newPlug = plug.clone();
+          const newPlug = plug.clone();
           newPlug.version = match[2];
           if (!unSorted.some((x) => x.name === newPlug.name)) unSorted.push(newPlug);
           continue;
@@ -40,14 +40,14 @@ export abstract class RPHValidator {
         continue;
       }
       //RPH Plugins
-      let rphPlug = Cache.getPlugin(match[3]);
+      const rphPlug = Cache.getPlugin(match[3]!);
       if (rphPlug && !unSorted.some((x) => x.name === rphPlug.name)) unSorted.push(rphPlug);
       if (!rphPlug && !log.missing.some((x) => x.name === match[3]))
         log.missing.push(Object.assign(new Plugin(), { name: match[3], version: 'RPH', type: PluginType.RPH }));
     }
 
     for (const logPlug of unSorted) {
-      var cachePlug = Cache.getPlugin(logPlug.name)!;
+      const cachePlug = Cache.getPlugin(logPlug.name)!;
       switch (cachePlug.state) {
         case State.NORMAL:
         case State.EXTERNAL:
@@ -93,7 +93,7 @@ export abstract class RPHValidator {
         const newError = error.clone();
 
         for (let i = 0; i <= 3; i++) {
-          newError.solution = newError.solution!.replace(`{${i}}`, match[i]);
+          newError.solution = newError.solution!.replace(`{${i}}`, match[i]!);
         }
 
         if (!log.errors.some((x) => x.solution === newError.solution)) {

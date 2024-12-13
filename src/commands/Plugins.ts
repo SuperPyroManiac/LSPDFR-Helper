@@ -29,7 +29,7 @@ export class PluginsCommand extends Subcommand {
     });
   }
 
-  registerApplicationCommands(registry: Subcommand.Registry) {
+  public override registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand(
       (builder) =>
         builder
@@ -39,19 +39,19 @@ export class PluginsCommand extends Subcommand {
           .addSubcommand((command) => command.setName('edit').setDescription('Edits a plugin in the database!'))
           .addSubcommand((command) => command.setName('remove').setDescription('Removes a plugin from the database!'))
           .addSubcommand((command) => command.setName('export').setDescription('Exports all plugins to a json file!')),
-      { guildIds: [process.env.MAIN_SERVER as string] }
+      { guildIds: [process.env['MAIN_SERVER'] as string] }
     );
   }
 
-  public async pluginsAdd(interaction: Subcommand.ChatInputCommandInteraction) {}
-  public async pluginsEdit(interaction: Subcommand.ChatInputCommandInteraction) {}
-  public async pluginsRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
+  public async pluginsAdd(_interaction: Subcommand.ChatInputCommandInteraction) {}
+  public async pluginsEdit(_interaction: Subcommand.ChatInputCommandInteraction) {}
+  public async pluginsRemove(_interaction: Subcommand.ChatInputCommandInteraction) {}
 
   public async pluginsExport(interaction: Subcommand.ChatInputCommandInteraction) {
-    Logger.BotLog(
+    await Logger.BotLog(
       EmbedCreator.Warning(`__Exported ${Cache.getPlugins().length} Plugins!__\r\n> Requested by ${interaction.user.tag} in <#${interaction.channelId}>`)
     );
-    return await interaction.reply({
+    return interaction.reply({
       embeds: [EmbedCreator.Success(`__Exported ${Cache.getPlugins().length} Plugins!__\r\n-# Ensure these do not get leaked!`)],
       files: [
         {

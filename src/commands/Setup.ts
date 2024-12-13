@@ -9,7 +9,6 @@ export class SetupCommand extends Command {
   public constructor(context: Command.LoaderContext, options: Command.Options) {
     super(context, { ...options, preconditions: ['ServerManager'] });
   }
-  private originalInteraction: Command.ChatInputCommandInteraction | null = null;
 
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand((builder) =>

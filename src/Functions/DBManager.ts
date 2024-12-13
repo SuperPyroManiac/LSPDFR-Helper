@@ -8,7 +8,7 @@ import { Server } from '../CustomTypes/MainTypes/Server';
 import { Cache } from '../Cache';
 const prisma = new PrismaClient();
 
-export abstract class DBManager {
+export class DBManager {
   private static async handleDbOperation<T>(operation: () => Promise<T>): Promise<T | null> {
     try {
       return await operation();

@@ -8,18 +8,18 @@ import { CaseValidation } from './Validations/Cases';
 import { ServerValidation } from './Validations/Servers';
 import { UsersValidation } from './Validations/Users';
 
-export abstract class Startup {
+export class Startup {
   private static newServers = 0;
   private static remServers = 0;
   private static newUsers = 0;
   private static updateUsers = 0;
   private static closedCases = 0;
 
-  static async Init() {
+  public static async Init() {
     await Cache.resetCache();
     APIManager.init();
 
-    const [newServers, remServers, newUsers, updateUsers, closedCases] = await Promise.all([
+    [this.newServers, this.remServers, this.newUsers, this.updateUsers, this.closedCases] = await Promise.all([
       ServerValidation.AddMissing(),
       ServerValidation.RemoveMissing(),
       UsersValidation.AddMissing(),
@@ -27,19 +27,13 @@ export abstract class Startup {
       CaseValidation.VerifyOpenCases(),
     ]);
 
-    this.newServers = newServers;
-    this.remServers = remServers;
-    this.newUsers = newUsers;
-    this.updateUsers = updateUsers;
-    this.closedCases = closedCases;
-
-    AutoHelperValidation.ValidateMsgs();
     Timer.startTimer();
-    await Startup.SendMessages();
+    void AutoHelperValidation.ValidateMsgs();
+    void Startup.SendMessages();
   }
 
   private static async SendMessages() {
-    const emb = EmbedCreator.Success(`__LSPDFR Helper Initialized!__\r\n`);
+    const emb = EmbedCreator.Success('__LSPDFR Helper Initialized!__\r\n');
     //TODO Git Info
     emb.data.description +=
       `> **Cached Servers:** ${Cache.getServers().length}\r\n` +
@@ -53,6 +47,6 @@ export abstract class Startup {
     if (this.updateUsers > 0) emb.data.description += `-# Found ${this.updateUsers} users to update in the DB!\r\n`;
     if (this.closedCases > 0) emb.data.description += `-# Closed ${this.closedCases} cases that failed verification!\r\n`;
 
-    Logger.BotLog(emb);
+    await Logger.BotLog(emb);
   }
 }

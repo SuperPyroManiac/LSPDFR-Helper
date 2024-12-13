@@ -1,7 +1,7 @@
 import { Case } from '../../CustomTypes/MainTypes/Case';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 
-export abstract class JoinCase {
+export class JoinCase {
   static async Join(userId: string, ac: Case): Promise<boolean> {
     const ch = ac.getAhChannel();
     if (ch?.members.cache.has(userId)) return false;

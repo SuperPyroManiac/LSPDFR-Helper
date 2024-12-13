@@ -6,7 +6,7 @@ import { Case } from '../../CustomTypes/MainTypes/Case';
 import { DBManager } from '../DBManager';
 import { CaseMonitor } from './CaseMonitor';
 
-export abstract class OpenCase {
+export class OpenCase {
   static async Create(userId: string, guildId: string): Promise<Case | undefined> {
     const caseId = this.generateCaseId();
     const server = Cache.getServer(guildId);
@@ -18,7 +18,7 @@ export abstract class OpenCase {
       autoArchiveDuration: ThreadAutoArchiveDuration.ThreeDays,
       type: ChannelType.PrivateThread,
     });
-    let msg = {
+    const msg = {
       embeds: [
         EmbedCreator.Support(
           `__AutoHelper Case: ${caseId}__\n` +
@@ -33,7 +33,7 @@ export abstract class OpenCase {
       ],
       components: [
         new ActionRowBuilder<ButtonBuilder>().addComponents([
-          new ButtonBuilder().setLabel('Mark Complete').setStyle(ButtonStyle.Success).setEmoji(process.env.SUCCESS!).setCustomId(AhMarkComplete),
+          new ButtonBuilder().setLabel('Mark Complete').setStyle(ButtonStyle.Success).setEmoji(process.env['SUCCESS']!).setCustomId(AhMarkComplete),
         ]),
       ],
     };

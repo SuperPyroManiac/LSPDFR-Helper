@@ -29,7 +29,7 @@ export class ErrorsCommand extends Subcommand {
     });
   }
 
-  registerApplicationCommands(registry: Subcommand.Registry) {
+  public override registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand(
       (builder) =>
         builder
@@ -39,17 +39,19 @@ export class ErrorsCommand extends Subcommand {
           .addSubcommand((command) => command.setName('edit').setDescription('Edits an error in the database!'))
           .addSubcommand((command) => command.setName('remove').setDescription('Removes an error from the database!'))
           .addSubcommand((command) => command.setName('export').setDescription('Exports all errors to a json file!')),
-      { guildIds: [process.env.MAIN_SERVER as string] }
+      { guildIds: [process.env['MAIN_SERVER'] as string] }
     );
   }
 
-  public async errorsAdd(interaction: Subcommand.ChatInputCommandInteraction) {}
-  public async errorsEdit(interaction: Subcommand.ChatInputCommandInteraction) {}
-  public async errorsRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
+  public async errorsAdd(_interaction: Subcommand.ChatInputCommandInteraction) {}
+  public async errorsEdit(_interaction: Subcommand.ChatInputCommandInteraction) {}
+  public async errorsRemove(_interaction: Subcommand.ChatInputCommandInteraction) {}
 
   public async errorsExport(interaction: Subcommand.ChatInputCommandInteraction) {
-    Logger.BotLog(EmbedCreator.Warning(`__Exported ${Cache.getErrors().length} Errors!__\r\n> Requested by ${interaction.user.tag} in <#${interaction.channelId}>`));
-    return await interaction.reply({
+    await Logger.BotLog(
+      EmbedCreator.Warning(`__Exported ${Cache.getErrors().length} Errors!__\r\n> Requested by ${interaction.user.tag} in <#${interaction.channelId}>`)
+    );
+    return interaction.reply({
       embeds: [EmbedCreator.Success(`__Exported ${Cache.getErrors().length} Errors!__\r\n-# Ensure these do not get leaked!`)],
       files: [
         {

@@ -10,7 +10,7 @@ export class GuildJoinListener extends Listener {
     });
   }
 
-  public async run(guild: Guild) {
+  public async run(_guild: Guild) {
     await ServerValidation.AddMissing();
   }
 }

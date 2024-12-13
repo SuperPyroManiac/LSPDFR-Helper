@@ -4,5 +4,7 @@ config.json
 .prettierrc
 .prettierignore
 .eslintrc.json
-dist/*
-.vscode/*
+eslint.config.mjs
+/dist/
+/.vscode/
+/.idea/

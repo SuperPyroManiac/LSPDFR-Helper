@@ -6,8 +6,8 @@ import { UsersValidation } from './Validations/Users';
 import { Logger } from './Messages/Logger';
 import { CaseValidation } from './Validations/Cases';
 
-export abstract class Timer {
-  static startTimer() {
+export class Timer {
+  public static startTimer() {
     // Every 10 seconds
     cron.schedule(
       '*/10 * * * * *',
