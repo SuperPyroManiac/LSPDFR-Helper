@@ -50,7 +50,7 @@ export class ASIProcessor {
   public async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
     this.cache = Cache.getProcess(this.msgId)!;
     if (!this.pluginInfoSent) {
-      await Logger.PluginInfo(this.log.missing, [], this.log.downloadLink!, await interaction.channel?.messages.fetch(this.msgId)!);
+      await Logger.PluginInfo(this.log.missing, [], this.log.downloadLink!, await interaction.channel?.messages.fetch(this.cache.OriginalMessage.id)!);
       this.pluginInfoSent = true;
     }
     const comps = new ActionRowBuilder<ButtonBuilder>();
