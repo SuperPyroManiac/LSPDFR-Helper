@@ -38,6 +38,7 @@ export class PluginValidation {
         `> **Type:** \`${plug.type}\` | **State:** \`${plug.state}\`\r\n` +
         `> **EA Version?:** \`${Boolean(plug.eaVersion && plug.eaVersion !== '0')}\`\r\n`;
 
+      if (this.compareVer(plug.version, webPlug.file_version) === 1) return;
       plug.version = webPlug.file_version;
       await DBManager.editPlugin(plug);
       cnt++;
@@ -81,5 +82,18 @@ export class PluginValidation {
       }
     }
     return allPlugins;
+  }
+
+  public static compareVer(version1: string, version2: string): number {
+    const parts1 = version1.split('.').map(Number);
+    const parts2 = version2.split('.').map(Number);
+    const length = Math.max(parts1.length, parts2.length);
+    for (let i = 0; i < length; i++) {
+      const num1 = parts1[i] || 0;
+      const num2 = parts2[i] || 0;
+      if (num1 < num2) return -1;
+      if (num1 > num2) return 1;
+    }
+    return 0;
   }
 }
