@@ -9,15 +9,15 @@ export class ProcessCache<T extends ProcessorType> {
   public Interaction: ContextMenuCommandInteraction | ButtonInteraction | StringSelectMenuInteraction;
   public Processor?: T;
 
-  constructor(originalMessage: Message, interaction: ContextMenuCommandInteraction | ButtonInteraction | StringSelectMenuInteraction, processor?: T) {
+  public constructor(originalMessage: Message, interaction: ContextMenuCommandInteraction | ButtonInteraction | StringSelectMenuInteraction, processor?: T) {
     this.Interaction = interaction;
     this.OriginalMessage = originalMessage;
     this.Processor = processor;
   }
 
-  public Update(newCache: ProcessCache<T>): ProcessCache<T> {
+  public async Update(newCache: ProcessCache<T>): Promise<ProcessCache<T>> {
     if ((this.OriginalMessage ?? newCache.OriginalMessage) != undefined && this.OriginalMessage.id != newCache.OriginalMessage.id) {
-      Logger.ErrLog(`Attempted to update process cache that belongs to a different message!\r\n${this}`);
+      await Logger.ErrLog(`Attempted to update process cache that belongs to a different message!\r\n${this}`);
       return this;
     }
 

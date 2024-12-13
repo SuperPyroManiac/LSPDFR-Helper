@@ -4,7 +4,7 @@ import { EmbedCreator } from '../Messages/EmbedCreator';
 import { CaseMonitor } from './CaseMonitor';
 
 export class CloseCase {
-  static async Close(ac: Case, force: boolean = false): Promise<boolean> {
+  public static async Close(ac: Case, force: boolean = false): Promise<boolean> {
     if (!ac.open) return false;
     ac.open = false;
     ac.expireDate = new Date();

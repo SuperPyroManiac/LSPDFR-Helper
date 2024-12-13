@@ -1,15 +1,15 @@
 export class User {
-  id: string;
-  name: string = '';
-  banned: boolean = false;
-  botEditor: boolean = false;
-  botAdmin: boolean = false;
+  public id: string;
+  public name: string = '';
+  public banned: boolean = false;
+  public botEditor: boolean = false;
+  public botAdmin: boolean = false;
 
-  constructor(id: string = '') {
+  public constructor(id: string = '') {
     this.id = id;
   }
 
-  clone(): User {
+  public clone(): User {
     return Object.assign(new User(), JSON.parse(JSON.stringify(this)));
   }
 }

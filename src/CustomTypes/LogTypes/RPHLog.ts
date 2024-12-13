@@ -3,14 +3,14 @@ import { Error } from '../MainTypes/Error';
 import { Plugin } from '../MainTypes/Plugin';
 
 export class RPHLog extends Log {
-  logPath?: string;
-  logModified?: boolean;
-  errors: Error[] = [];
-  current: Plugin[] = [];
-  outdated: Plugin[] = [];
-  missing: Plugin[] = [];
-  newVersion: Plugin[] = [];
-  gtaVersion?: string;
-  rphVersion?: string;
-  lspdfrVersion?: string;
+  public logPath?: string;
+  public logModified?: boolean;
+  public errors: Error[] = [];
+  public current: Plugin[] = [];
+  public outdated: Plugin[] = [];
+  public missing: Plugin[] = [];
+  public newVersion: Plugin[] = [];
+  public gtaVersion?: string;
+  public rphVersion?: string;
+  public lspdfrVersion?: string;
 }

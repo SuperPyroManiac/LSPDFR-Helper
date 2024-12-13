@@ -3,7 +3,7 @@ import { CloseCase } from '../AutoHelper/CloseCase';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 
 export class CaseValidation {
-  static async VerifyOpenCases(): Promise<number> {
+  public static async VerifyOpenCases(): Promise<number> {
     let cnt = 0;
     for (const cs of Cache.getCases().filter((x) => x.open)) {
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -22,7 +22,7 @@ export class CaseValidation {
         await cs.getAhChannel()?.send({
           embeds: [
             EmbedCreator.Error(
-              `__Banned!__\r\n-# You are banned from using this bot!\r\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.`
+              '__Banned!__\r\n-# You are banned from using this bot!\r\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.'
             ),
           ],
         });

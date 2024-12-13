@@ -6,13 +6,13 @@ import { codeBlock, GuildMember } from 'discord.js';
 import { Logger } from '../Messages/Logger';
 
 export class UsersValidation {
-  static async Verify() {
-    this.AddMissing();
-    this.UpdateNames();
+  public static async Verify() {
+    void this.AddMissing();
+    void this.UpdateNames();
   }
 
-  static async AddMissing(): Promise<number> {
-    let allUsers = new Set<GuildMember>();
+  public static async AddMissing(): Promise<number> {
+    const allUsers = new Set<GuildMember>();
     const newUsers = [];
 
     for (const servers of container.client.guilds.cache.values()) {
@@ -20,7 +20,7 @@ export class UsersValidation {
         const users = await servers.members.fetch({ time: 60000 });
         users.forEach((user) => allUsers.add(user));
       } catch (error) {
-        Logger.ErrLog(`Failed to fetch members for server ${servers.id}\n${codeBlock(String(error))}`);
+        await Logger.ErrLog(`Failed to fetch members for server ${servers.id}\n${codeBlock(String(error))}`);
         continue;
       }
     }
@@ -39,16 +39,16 @@ export class UsersValidation {
     return newUsers.length;
   }
 
-  static async UpdateNames(): Promise<number> {
+  public static async UpdateNames(): Promise<number> {
     let updateCount = 0;
-    let allUsers = new Set<GuildMember>();
+    const allUsers = new Set<GuildMember>();
 
     for (const servers of container.client.guilds.cache.values()) {
       try {
         const users = await servers.members.fetch({ time: 60000 });
         users.forEach((user) => allUsers.add(user));
       } catch (error) {
-        Logger.ErrLog(`Failed to fetch members for server ${servers.id}\n${codeBlock(String(error))}`);
+        await Logger.ErrLog(`Failed to fetch members for server ${servers.id}\n${codeBlock(String(error))}`);
         continue;
       }
     }

@@ -3,7 +3,7 @@ import { Cache } from '../../Cache';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 
 export class CaseMonitor {
-  static async Update(serverId: string) {
+  public static async Update(serverId: string) {
     const server = Cache.getServer(serverId);
     if (!server || !server.ahMonChId || server.ahMonChId === '0') return;
     const ch = server.getGuild()?.channels.cache.get(server.ahMonChId);
@@ -13,7 +13,7 @@ export class CaseMonitor {
     const cases = Cache.getCases()
       .filter((x) => x.serverId === serverId && x.open)
       .sort((a, b) => a.expireDate.getTime() - b.expireDate.getTime());
-    let emb = EmbedCreator.Question(`__Open AutoHelper Cases__`);
+    const emb = EmbedCreator.Question('__Open AutoHelper Cases__');
 
     for (const c of cases) {
       if (emb.data.fields?.length === 15) {

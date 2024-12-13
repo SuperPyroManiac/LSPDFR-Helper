@@ -21,7 +21,7 @@ export class GuildLeaveListener extends Listener {
     await DBManager.editServer(server);
     await Logger.ServerLog(
       EmbedCreator.Info(
-        `__Server Removed!__\r\n>>> ` +
+        '__Server Removed!__\r\n>>> ' +
           `**Server Name:** ${guild.name}\r\n` +
           `**Server Id:** ${guild.id}\r\n` +
           `**Members:** ${guild.memberCount}\r\n` +

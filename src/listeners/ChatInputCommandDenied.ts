@@ -10,11 +10,11 @@ export class ChatInputCommandDenied extends Listener<typeof Events.ChatInputComm
     });
   }
 
-  public run(error: UserError, { interaction }: ChatInputCommandDeniedPayload) {
+  public async run(error: UserError, { interaction }: ChatInputCommandDeniedPayload) {
     let replyMsg = {
       embeds: [
         EmbedCreator.Error(
-          `__Banned!__\r\n-# You are banned from using this bot!\r\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.`
+          '__Banned!__\r\n-# You are banned from using this bot!\r\n>>> It has been determined that you abused the features of this bot and your access revoked! You may dispute this by vising our Discord.'
         ),
       ],
       components: [

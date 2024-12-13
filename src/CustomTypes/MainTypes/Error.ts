@@ -2,15 +2,15 @@ import { Level } from '../Enums/Level';
 import { Plugin } from './Plugin';
 
 export class Error {
-  id!: number;
-  pattern?: string;
-  solution?: string;
-  description?: string;
-  stringMatch: boolean = false;
-  level: Level = Level.XTRA;
-  pluginList: Plugin[] = [];
+  public id!: number;
+  public pattern?: string;
+  public solution?: string;
+  public description?: string;
+  public stringMatch: boolean = false;
+  public level: Level = Level.XTRA;
+  public pluginList: Plugin[] = [];
 
-  clone(): Error {
+  public clone(): Error {
     return Object.assign(new Error(), JSON.parse(JSON.stringify(this)));
   }
 }

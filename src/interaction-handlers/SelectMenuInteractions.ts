@@ -38,7 +38,7 @@ export class SelectMenuInteractions extends InteractionHandler {
         if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor as RPHProcessor;
         else {
           rphProc = new RPHProcessor(await RPHValidator.validate(attach!.url), attachmentId!);
-          Cache.saveProcess(attachmentId!, new ProcessCache(originalMessage, interaction, rphProc));
+          await Cache.saveProcess(attachmentId!, new ProcessCache(originalMessage, interaction, rphProc));
         }
         if (rphProc.log.logModified) return Reports.modifiedLog(interaction, attach!);
         await rphProc.SendReply(interaction).catch(async (e) => {
@@ -54,7 +54,7 @@ export class SelectMenuInteractions extends InteractionHandler {
         if (ProcessCache.IsCacheAvailable(cache)) elsProc = cache!.Processor as ELSProcessor;
         else {
           elsProc = new ELSProcessor(await ELSValidator.validate(attach!.url), attachmentId!);
-          Cache.saveProcess(attachmentId!, new ProcessCache(originalMessage, interaction, elsProc));
+          await Cache.saveProcess(attachmentId!, new ProcessCache(originalMessage, interaction, elsProc));
         }
         await elsProc.SendReply(interaction).catch(async (e) => {
           await Logger.ErrLog(`Failed to process file!\r\n${e}`);
@@ -69,7 +69,7 @@ export class SelectMenuInteractions extends InteractionHandler {
         if (ProcessCache.IsCacheAvailable(cache)) asiProc = cache!.Processor as ASIProcessor;
         else {
           asiProc = new ASIProcessor(await ASIValidator.validate(attach!.url), attachmentId!);
-          Cache.saveProcess(attachmentId!, new ProcessCache(originalMessage, interaction, asiProc));
+          await Cache.saveProcess(attachmentId!, new ProcessCache(originalMessage, interaction, asiProc));
         }
         await asiProc.SendReply(interaction).catch(async (e) => {
           await Logger.ErrLog(`Failed to process file!\r\n${e}`);

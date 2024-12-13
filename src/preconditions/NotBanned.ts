@@ -10,15 +10,15 @@ export class NotBannedPrecondition extends AllFlowsPrecondition {
     });
   }
 
-  public override chatInputRun(interaction: ChatInputCommandInteraction) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction) {
     return this.checkBanned(interaction.user.id);
   }
 
-  public override contextMenuRun(interaction: ContextMenuCommandInteraction) {
+  public override async contextMenuRun(interaction: ContextMenuCommandInteraction) {
     return this.checkBanned(interaction.user.id);
   }
 
-  public override messageRun(message: Message) {
+  public override async messageRun(message: Message) {
     return this.checkBanned(message.author.id);
   }
 

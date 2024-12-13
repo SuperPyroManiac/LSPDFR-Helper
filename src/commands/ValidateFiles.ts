@@ -91,7 +91,7 @@ export class ValidateFilesCommand extends Command {
         ],
       });
 
-      Cache.saveProcess(interaction.id, new ProcessCache(targetMessage, interaction));
+      await Cache.saveProcess(interaction.id, new ProcessCache(targetMessage, interaction));
       return;
     }
 
@@ -109,7 +109,7 @@ export class ValidateFilesCommand extends Command {
       if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor as RPHProcessor;
       else {
         rphProc = new RPHProcessor(await RPHValidator.validate(attach!.url), targetMessage.id);
-        Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, rphProc));
+        await Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, rphProc));
       }
       if (rphProc.log.logModified) return Reports.modifiedLog(interaction, attach!);
       await rphProc.SendReply(interaction).catch(async (e) => {
@@ -125,7 +125,7 @@ export class ValidateFilesCommand extends Command {
       if (ProcessCache.IsCacheAvailable(cache)) elsProc = cache!.Processor as ELSProcessor;
       else {
         elsProc = new ELSProcessor(await ELSValidator.validate(attach!.url), targetMessage.id);
-        Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, elsProc));
+        await Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, elsProc));
       }
       await elsProc.SendReply(interaction).catch(async (e) => {
         await Logger.ErrLog(`Failed to process file!\r\n${e}`);
@@ -140,7 +140,7 @@ export class ValidateFilesCommand extends Command {
       if (ProcessCache.IsCacheAvailable(cache)) asiProc = cache!.Processor as ASIProcessor;
       else {
         asiProc = new ASIProcessor(await ASIValidator.validate(attach!.url), targetMessage.id);
-        Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, asiProc));
+        await Cache.saveProcess(targetMessage.id, new ProcessCache(targetMessage, interaction, asiProc));
       }
       await asiProc.SendReply(interaction).catch(async (e) => {
         await Logger.ErrLog(`Failed to process file!\r\n${e}`);
