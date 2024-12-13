@@ -16,32 +16,30 @@ const ERROR_MESSAGES = {
 
 export class Reports {
   public static async modifiedLog(interaction: ReportInteraction, attach: Attachment): Promise<void> {
-    if (interaction instanceof StringSelectMenuInteraction) {
-      await interaction.editReply({
+    if (interaction instanceof Message) {
+      await interaction.reply({
         embeds: [EmbedCreator.Error(ERROR_MESSAGES.MODIFIED)],
       });
     } else {
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [EmbedCreator.Error(ERROR_MESSAGES.MODIFIED)],
-        ephemeral: true,
       });
     }
     await this.sendAbuseMsg('Modified log', interaction, attach);
   }
 
   public static async largeLog(interaction: ReportInteraction, attach: Attachment, extra = false): Promise<void> {
+    const response = {
+      embeds: [EmbedCreator.Error(extra ? ERROR_MESSAGES.OVERSIZED_BAN : ERROR_MESSAGES.OVERSIZED)],
+    };
+
+    if (interaction instanceof Message) {
+      await interaction.reply(response);
+    } else {
+      await interaction.editReply(response);
+    }
+
     if (extra) {
-      const response = {
-        embeds: [EmbedCreator.Error(ERROR_MESSAGES.OVERSIZED_BAN)],
-        ephemeral: true,
-      };
-
-      if (interaction instanceof StringSelectMenuInteraction) {
-        await interaction.editReply(response);
-      } else {
-        await interaction.reply(response);
-      }
-
       const userId = interaction.member?.user.id;
       const user = userId ? Cache.getUser(userId) : null;
 
@@ -50,17 +48,6 @@ export class Reports {
       } else {
         user.banned = true;
         await DBManager.editUser(user);
-      }
-    } else {
-      const response = {
-        embeds: [EmbedCreator.Error(ERROR_MESSAGES.OVERSIZED)],
-        ephemeral: true,
-      };
-
-      if (interaction instanceof StringSelectMenuInteraction) {
-        await interaction.editReply(response);
-      } else {
-        await interaction.reply(response);
       }
     }
 

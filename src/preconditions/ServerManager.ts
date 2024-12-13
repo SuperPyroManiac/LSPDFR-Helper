@@ -15,8 +15,12 @@ export class ServerManagerPrecondition extends AllFlowsPrecondition {
   }
 
   private async checkServerManager(interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction) {
-    if ((interaction.member?.permissions as PermissionsBitField).has(PermissionsBitField.Flags.BanMembers)) return this.ok();
-    //if ((interaction.member?.roles as GuildMemberRoleManager).cache.has(Cache.getServer(interaction.guildId!)?.ManagerRoleIdEventually)) return this.ok();
+    const permissions = interaction.member?.permissions;
+    if (permissions instanceof PermissionsBitField) {
+      if (permissions.has(PermissionsBitField.Flags.BanMembers)) {
+        return this.ok();
+      }
+    }
     return this.error({ message: '__No Permission__\r\n>>> You do not have permission to use this command!' });
   }
 }

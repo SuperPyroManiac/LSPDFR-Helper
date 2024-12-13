@@ -3,6 +3,7 @@ import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { Cache } from '../Cache';
 import { AutocompleteInteraction, hyperlink, time, TimestampStyles } from 'discord.js';
 import { CloseCase } from '../Functions/AutoHelper/CloseCase';
+import { Logger } from '../Functions/Messages/Logger';
 
 export class CasesCommand extends Subcommand {
   public constructor(context: Subcommand.LoaderContext, options: Subcommand.Options) {
@@ -67,9 +68,13 @@ export class CasesCommand extends Subcommand {
     const cs = Cache.getCase(interaction.options.getString('caseid')!);
     if (!cs) return interaction.editReply({ embeds: [EmbedCreator.Error('__Case Not Found!__\n>>> The case you are trying to join does not exist!')] });
     if (!cs.open) return interaction.editReply({ embeds: [EmbedCreator.Error('__Case Closed!__\n>>> The case you are trying to join is closed!')] });
-    if (cs.getAhChannel()?.members.fetch(interaction.user.id))
-      return interaction.editReply({ embeds: [EmbedCreator.Error('__Already In Case!__\n>>> You are already in this case!')] });
-
+    try {
+      if (await cs.getAhChannel()?.members.fetch(interaction.user.id)) {
+        return interaction.editReply({ embeds: [EmbedCreator.Error('__Already In Case!__\n>>> You are already in this case!')] });
+      }
+    } catch (error) {
+      await Logger.ErrLog(`Error fetching user from case channel, they likely left the server! ID: ${interaction.user.id}`);
+    }
     await cs.getAhChannel()?.members.add(interaction.user.id);
     await interaction.editReply({ embeds: [EmbedCreator.Success(`__Joined Case!__\n>>> You have been added to: <#${cs.channelId}>`)] });
     return;
