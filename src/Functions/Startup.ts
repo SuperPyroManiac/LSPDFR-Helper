@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { Cache } from '../Cache';
 import { APIManager } from '../Web/APIManager';
 import { EmbedCreator } from './Messages/EmbedCreator';
@@ -33,20 +34,33 @@ export class Startup {
   }
 
   private static async SendMessages() {
-    const emb = EmbedCreator.Success('__LSPDFR Helper Initialized!__\r\n');
-    //TODO Git Info
+    const gitInfo = this.getGitInfo();
+    const emb = EmbedCreator.Success('__LSPDFR Helper Initialized!__\n');
+    if (gitInfo)
+      emb.data.description += `> -# Build is based on commit [\`${gitInfo.shortHash}\`](https://github.com/SuperPyroManiac/LSPDFR-Helper/commit/${gitInfo.hash})\n`;
+
     emb.data.description +=
-      `> **Cached Servers:** ${Cache.getServers().length}\r\n` +
-      `> **Cached Plugins:** ${Cache.getPlugins().length}\r\n` +
-      `> **Cached Errors:** ${Cache.getErrors().length}\r\n` +
-      `> **Cached Users:** ${Cache.getUsers().length}\r\n` +
-      `> **Cached Cases:** ${Cache.getCases().length}\r\n\r\n`;
-    if (this.newServers > 0) emb.data.description += `-# Found ${this.newServers} new servers to add to the DB!\r\n`;
-    if (this.remServers > 0) emb.data.description += `-# Found ${this.remServers} servers to remove from the DB!\r\n`;
-    if (this.newUsers > 0) emb.data.description += `-# Found ${this.newUsers} new users to add to the DB!\r\n`;
-    if (this.updateUsers > 0) emb.data.description += `-# Found ${this.updateUsers} users to update in the DB!\r\n`;
-    if (this.closedCases > 0) emb.data.description += `-# Closed ${this.closedCases} cases that failed verification!\r\n`;
+      `> **Cached Servers:** ${Cache.getServers().length}\n` +
+      `> **Cached Plugins:** ${Cache.getPlugins().length}\n` +
+      `> **Cached Errors:** ${Cache.getErrors().length}\n` +
+      `> **Cached Users:** ${Cache.getUsers().length}\n` +
+      `> **Cached Cases:** ${Cache.getCases().length}\n\n`;
+    if (this.newServers > 0) emb.data.description += `-# Found ${this.newServers} new servers to add to the DB!\n`;
+    if (this.remServers > 0) emb.data.description += `-# Found ${this.remServers} servers to remove from the DB!\n`;
+    if (this.newUsers > 0) emb.data.description += `-# Found ${this.newUsers} new users to add to the DB!\n`;
+    if (this.updateUsers > 0) emb.data.description += `-# Found ${this.updateUsers} users to update in the DB!\n`;
+    if (this.closedCases > 0) emb.data.description += `-# Closed ${this.closedCases} cases that failed verification!\n`;
 
     await Logger.BotLog(emb);
+  }
+
+  private static getGitInfo(): { hash: string; shortHash: string } | null {
+    try {
+      const hash = execSync('git rev-parse HEAD').toString().trim();
+      const shortHash = hash.substring(0, 7);
+      return { hash, shortHash };
+    } catch {
+      return null;
+    }
   }
 }
