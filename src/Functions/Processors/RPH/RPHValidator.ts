@@ -29,7 +29,7 @@ export class RPHValidator {
       /(?:(?<!CalloutManager\.cs:line 738)\n.+LSPD First Response: (?!無法載入檔案或組件|\[|Creating| |Error)\W?(.{1,40}), Version=(.+), Culture=\w{1,10}, PublicKeyToken=\w{1,10})|(?:Loading plugin .+\wlugins(?:\\|\/)(.+).dll.*)/gm
     );
     for (const match of allMatch) {
-      if (match[1]!.length > 0) {
+      if (match[1] && match[1].length > 0) {
         const plug = Cache.getPlugin(match[1]!);
         if (plug) {
           const newPlug = plug.clone();
