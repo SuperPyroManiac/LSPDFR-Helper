@@ -49,18 +49,22 @@ export class ASIProcessor {
   //! Server Message
   public async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
     this.cache = Cache.getProcess(this.msgId)!;
-    if (!this.pluginInfoSent) {
-      await Logger.PluginInfo(this.log.missing, [], this.log.downloadLink!, await interaction.channel?.messages.fetch(this.cache.OriginalMessage.id)!);
-      this.pluginInfoSent = true;
-    }
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
     if (interaction instanceof Message) {
       await interaction.reply({ embeds: [this.GetBaseInfo()] });
+      if (!this.pluginInfoSent) {
+        await Logger.PluginInfo(this.log.missing, [], this.log.downloadLink!, await interaction.channel?.messages.fetch(this.msgId)!);
+        this.pluginInfoSent = true;
+      }
     } else {
       if (!interaction.guild) reply = await interaction.editReply({ embeds: [this.GetBaseInfo()] });
       else reply = await interaction.editReply({ embeds: [this.GetBaseInfo()], components: [comps] });
+      if (!this.pluginInfoSent) {
+        await Logger.PluginInfo(this.log.missing, [], this.log.downloadLink!, await interaction.channel?.messages.fetch(this.cache.OriginalMessage.id)!);
+        this.pluginInfoSent = true;
+      }
       this.msgId = reply.id;
       await Cache.saveProcess(reply.id, new ProcessCache(this.cache.OriginalMessage, interaction, this));
     }
