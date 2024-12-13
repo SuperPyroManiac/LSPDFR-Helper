@@ -102,7 +102,7 @@ export class RPHProcessor {
       cnt++;
     }
 
-    if (this.log.errors.length === 0)
+    if (this.log.errors.filter((x) => x.level !== Level.XTRA).length === 0)
       errEmb.data.description += `\n${process.env['INFO']} **__No Error Found!__**\n>>> -# No errors were detected by the bot. If you continue to have issues it may be an issue with a script or the mods folder!`;
     return errEmb;
   }
