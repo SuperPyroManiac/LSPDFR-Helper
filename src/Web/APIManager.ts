@@ -7,7 +7,7 @@ export class APIManager {
   private static port = 8055;
 
   public static init() {
-    if (process.env.MAIN_SERVER !== '736140566311600138') return;
+    if (process.env['MAIN_SERVER'] !== '736140566311600138') return;
     this.setupRoutes();
     this.startServer();
 
@@ -16,7 +16,7 @@ export class APIManager {
   }
 
   private static setupRoutes() {
-    this.app.get('/', (req, res) => {
+    this.app.get('/', (_req, res) => {
       res.send('API Is Running!');
     });
   }

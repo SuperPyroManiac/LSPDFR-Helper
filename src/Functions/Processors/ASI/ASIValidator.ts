@@ -4,7 +4,7 @@ import { State } from '../../../CustomTypes/Enums/State';
 import { ASILog } from '../../../CustomTypes/LogTypes/ASILog';
 import { Plugin } from '../../../CustomTypes/MainTypes/Plugin';
 
-export abstract class ASIValidator {
+export class ASIValidator {
   public static async validate(attachmentUrl: string): Promise<ASILog> {
     const wholeLog = await (await fetch(attachmentUrl)).text();
     const log = new ASILog();
@@ -12,7 +12,7 @@ export abstract class ASIValidator {
 
     const invalidMatches = wholeLog.matchAll(/^\s+.(.+.asi). failed to load.*/gm);
     for (const match of invalidMatches) {
-      let plug = Cache.getPlugin(match[1]);
+      let plug = Cache.getPlugin(match[1]!);
       if (!plug) {
         plug = new Plugin(match[1]);
         plug.version = 'ASI';
@@ -24,8 +24,8 @@ export abstract class ASIValidator {
     }
 
     const validMatches = wholeLog.matchAll(/^\s+.(.+.asi). (?!failed to load).*/gm);
-    for (const match of invalidMatches) {
-      let plug = Cache.getPlugin(match[1]);
+    for (const match of validMatches) {
+      let plug = Cache.getPlugin(match[1]!);
       if (!plug) {
         plug = new Plugin(match[1]);
         plug.version = 'ASI';

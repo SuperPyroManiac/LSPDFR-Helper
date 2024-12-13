@@ -2,7 +2,7 @@ import { Cache } from '../../Cache';
 import { CloseCase } from '../AutoHelper/CloseCase';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 
-export abstract class CaseValidation {
+export class CaseValidation {
   static async VerifyOpenCases(): Promise<number> {
     let cnt = 0;
     for (const cs of Cache.getCases().filter((x) => x.open)) {

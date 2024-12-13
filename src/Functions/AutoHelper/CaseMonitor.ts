@@ -2,7 +2,7 @@ import { time, TimestampStyles } from 'discord.js';
 import { Cache } from '../../Cache';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 
-export abstract class CaseMonitor {
+export class CaseMonitor {
   static async Update(serverId: string) {
     const server = Cache.getServer(serverId);
     if (!server || !server.ahMonChId || server.ahMonChId === '0') return;

@@ -1,13 +1,4 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
-  inlineCode,
-  Message,
-  MessageContextMenuCommandInteraction,
-  StringSelectMenuInteraction,
-} from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, MessageContextMenuCommandInteraction, StringSelectMenuInteraction } from 'discord.js';
 import { ASILog } from '../../../CustomTypes/LogTypes/ASILog';
 import { ProcessCache } from '../../../CustomTypes/CacheTypes/ProcessCache';
 import { Cache, ProcessorType } from '../../../Cache';
@@ -17,12 +8,12 @@ import { PluginType } from '../../../CustomTypes/Enums/PluginType';
 import { Logger } from '../../Messages/Logger';
 
 export class ASIProcessor {
-  log: ASILog;
-  msgId: string;
+  public log: ASILog;
+  public msgId: string;
   private cache!: ProcessCache<ProcessorType>;
   private pluginInfoSent = false;
 
-  constructor(log: ASILog, msgId: string) {
+  public constructor(log: ASILog, msgId: string) {
     this.log = log;
     this.msgId = msgId;
   }
@@ -33,39 +24,40 @@ export class ASIProcessor {
     });
 
     embed.data.description +=
-      `\n${process.env.INFO} **__Log Processed!__**\n> -# Log was successfully processed.\n> \n` +
+      `\n${process.env['INFO']} **__Log Processed!__**\n> -# Log was successfully processed.\n> \n` +
       `> **Valid ASIs:** ${this.log.loadedAsiFiles.length}\n` +
       `> **Broken ASIs:** ${this.log.brokenAsiFiles.length}\n` +
       `> **Faulty ASIs:** ${this.log.failedAsiFiles.length}\n`;
 
     if (this.log.failedAsiFiles.length) {
-      embed.data.description += `\n${process.env.ALERT} **__ASIs Issues Found!__**\n> -# Some ASIs failed to load! \n> \n> Remove or fix the shown files:\n> ${this.log.failedAsiFiles.map((x) => x.dname).join('**,** ')}\n`;
+      embed.data.description += `\n${process.env['ALERT']} **__ASIs Issues Found!__**\n> -# Some ASIs failed to load! \n> \n> Remove or fix the shown files:\n> ${this.log.failedAsiFiles.map((x) => x.dname).join('**,** ')}\n`;
       if (this.log.failedAsiFiles.some((x) => x.name.toLowerCase() === 'els.asi'))
-        embed.data.description += `\n${process.env.WARNING} **__Possible ELS Issue!__**\n> Ensure that you have installed both [AdvancedHookV.dll](https://www.lcpdfr.com/downloads/gta5mods/scripts/13865-emergency-lighting-system/) & [ScriptHookV](http://dev-c.com/GTAV/scripthookv)!\n`;
+        embed.data.description += `\n${process.env['WARNING']} **__Possible ELS Issue!__**\n> Ensure that you have installed both [AdvancedHookV.dll](https://www.lcpdfr.com/downloads/gta5mods/scripts/13865-emergency-lighting-system/) & [ScriptHookV](http://dev-c.com/GTAV/scripthookv)!\n`;
       if (this.log.failedAsiFiles.some((x) => x.type === PluginType.SHV))
-        embed.data.description += `\n${process.env.WARNING} **__Possible SHV Issue!__**\n> Ensure you have installed [ScriptHookV](http://dev-c.com/GTAV/scripthookv)!\n`;
+        embed.data.description += `\n${process.env['WARNING']} **__Possible SHV Issue!__**\n> Ensure you have installed [ScriptHookV](http://dev-c.com/GTAV/scripthookv)!\n`;
     }
 
     if (this.log.brokenAsiFiles.length)
-      embed.data.description += `\n${process.env.ALERT} **__Broken ASIs Found!__**\n> -# Some ASIs are known to cause issue! Remove the shown files. \n> \n> ${this.log.brokenAsiFiles.join('**,** ')}\n`;
+      embed.data.description += `\n${process.env['ALERT']} **__Broken ASIs Found!__**\n> -# Some ASIs are known to cause issue! Remove the shown files. \n> \n> ${this.log.brokenAsiFiles.join('**,** ')}\n`;
 
     if (!this.log.brokenAsiFiles.length && !this.log.failedAsiFiles.length)
-      embed.data.description += `\n${process.env.SUCCESS} **__No Issues Detected!__**\n>>> -# All ASI scripts loaded successfully and no issues were detected. If you continue to have issues, you may have an issue with your mods folder or ScriptHookVDotNet!`;
+      embed.data.description += `\n${process.env['SUCCESS']} **__No Issues Detected!__**\n>>> -# All ASI scripts loaded successfully and no issues were detected. If you continue to have issues, you may have an issue with your mods folder or ScriptHookVDotNet!`;
 
     return embed;
   }
 
   //! Server Message
-  async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
+  public async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
     this.cache = Cache.getProcess(this.msgId)!;
-    this.pluginInfoSent ||
-      ((this.pluginInfoSent = true), await Logger.PluginInfo(this.log.missing, [], this.log.downloadLink!, await interaction.channel?.messages.fetch(this.msgId)!));
-
+    if (!this.pluginInfoSent) {
+      await Logger.PluginInfo(this.log.missing, [], this.log.downloadLink!, await interaction.channel?.messages.fetch(this.msgId)!);
+      this.pluginInfoSent = true;
+    }
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
     if (interaction instanceof Message) {
-      interaction.reply({ embeds: [this.GetBaseInfo()] });
+      await interaction.reply({ embeds: [this.GetBaseInfo()] });
     } else {
       if (!interaction.guild) reply = await interaction.editReply({ embeds: [this.GetBaseInfo()] });
       else reply = await interaction.editReply({ embeds: [this.GetBaseInfo()], components: [comps] });
@@ -75,7 +67,7 @@ export class ASIProcessor {
   }
 
   //! Send To User
-  async SendToUser() {
+  public async SendToUser() {
     this.cache = Cache.getProcess(this.msgId)!;
     await this.cache.Interaction.deleteReply().catch(() => {});
     if (this.cache.OriginalMessage) await this.cache.OriginalMessage.reply({ embeds: [this.GetBaseInfo()] });

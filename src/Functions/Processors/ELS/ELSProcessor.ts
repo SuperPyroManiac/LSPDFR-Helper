@@ -1,7 +1,6 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonInteraction,
   ButtonStyle,
   EmbedBuilder,
   inlineCode,
@@ -16,11 +15,11 @@ import { EmbedCreator } from '../../Messages/EmbedCreator';
 import { LogSendToUser } from '../../../interaction-handlers/_CustomIds';
 
 export class ELSProcessor {
-  log: ELSLog;
-  msgId: string;
+  public log: ELSLog;
+  public msgId: string;
   private cache!: ProcessCache<ProcessorType>;
 
-  constructor(log: ELSLog, msgId: string) {
+  public constructor(log: ELSLog, msgId: string) {
     this.log = log;
     this.msgId = msgId;
   }
@@ -31,17 +30,17 @@ export class ELSProcessor {
     });
 
     if (this.log.faultyElsVcf) {
-      embed.data.description += `\n${process.env.ALERT} **__Faulty VCF Found!__**\n>>> -# There is an issue with this file, and ELS cannot load!\n\n${inlineCode(`ELS/pack_default/${this.log.faultyElsVcf}`)}\nRemove or fix the shown file.\nDue to how ELS loads, we can only show one file at a time!`;
+      embed.data.description += `\n${process.env['ALERT']} **__Faulty VCF Found!__**\n>>> -# There is an issue with this file, and ELS cannot load!\n\n${inlineCode(`ELS/pack_default/${this.log.faultyElsVcf}`)}\nRemove or fix the shown file.\nDue to how ELS loads, we can only show one file at a time!`;
       return embed;
     }
 
     if (!this.log.invalidElsVcfs.length && !this.log.faultyElsVcf) {
-      embed.data.description += `\n${process.env.SUCCESS} **__No Issues Detected!__**\n>>> -# ELS loaded successfully and no issues were detected. If you continue to have issues, you may send your ASILoader.log to verify your ASI scripts.`;
+      embed.data.description += `\n${process.env['SUCCESS']} **__No Issues Detected!__**\n>>> -# ELS loaded successfully and no issues were detected. If you continue to have issues, you may send your ASILoader.log to verify your ASI scripts.`;
       return embed;
     }
 
     embed.data.description +=
-      `\n${process.env.INFO} **__Log Processed!__**\n>>> -# Log was successfully processed.\n\n` +
+      `\n${process.env['INFO']} **__Log Processed!__**\n>>> -# Log was successfully processed.\n\n` +
       `**Valid VCFs:** ${this.log.validElsVcfs.length}\n` +
       `**Invalid VCFs:** ${this.log.invalidElsVcfs.length}\n` +
       `**Faulty VCFs:** ${this.log.faultyElsVcf ? 'Yes' : 'No'}\n`;
@@ -57,14 +56,14 @@ export class ELSProcessor {
       const remaining = this.log.validElsVcfs.length - 30;
       const remainingText = remaining > 0 ? `\n> *...and ${remaining} more files*` : '';
 
-      vcfEmb.data.description += `\n${process.env.SUCCESS} **__Valid VCFs:__**\n> -# These VCFs are working correctly.\n> \n> ${displayVcfs.join('**,** ')}${remainingText}\n`;
+      vcfEmb.data.description += `\n${process.env['SUCCESS']} **__Valid VCFs:__**\n> -# These VCFs are working correctly.\n> \n> ${displayVcfs.join('**,** ')}${remainingText}\n`;
     }
 
     if (this.log.invalidElsVcfs.length)
-      vcfEmb.data.description += `\n${process.env.WARNING} **__Unused VCFs:__**\n> -# These VCFs are not being used and can be safely removed.\n> \n> ${this.log.invalidElsVcfs.join('**,** ')}\n`;
+      vcfEmb.data.description += `\n${process.env['WARNING']} **__Unused VCFs:__**\n> -# These VCFs are not being used and can be safely removed.\n> \n> ${this.log.invalidElsVcfs.join('**,** ')}\n`;
 
     if (vcfEmb.data.description!.length > 4000) {
-      const overflowMessage = `\n\n**${process.env.ERROR} __Too Much To Display!__**\n-# You have too many files for us to display at once! Fix what is shown and send a new log.\n`;
+      const overflowMessage = `\n\n**${process.env['ERROR']} __Too Much To Display!__**\n-# You have too many files for us to display at once! Fix what is shown and send a new log.\n`;
       const maxLength = 3600 - overflowMessage.length;
       vcfEmb.data.description = vcfEmb.data.description!.substring(0, maxLength) + overflowMessage;
     }
@@ -72,7 +71,7 @@ export class ELSProcessor {
   }
 
   //! Server Message
-  async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
+  public async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
     const embs = [this.GetBaseInfo(), this.GetVCFInfo()];
     if (!this.log.invalidElsVcfs.length && !this.log.validElsVcfs.length) embs.splice(1, 1);
     if (this.log.faultyElsVcf) embs.splice(1, 1);
@@ -82,7 +81,7 @@ export class ELSProcessor {
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
     if (interaction instanceof Message) {
-      interaction.reply({ embeds: embs });
+      await interaction.reply({ embeds: embs });
     } else {
       if (!interaction.guild) reply = await interaction.editReply({ embeds: embs });
       else reply = await interaction.editReply({ embeds: embs, components: [comps] });
@@ -92,7 +91,7 @@ export class ELSProcessor {
   }
 
   //! Send To User
-  async SendToUser() {
+  public async SendToUser() {
     const embs = [this.GetBaseInfo(), this.GetVCFInfo()];
     if (!this.log.invalidElsVcfs.length && !this.log.validElsVcfs.length) embs.splice(1, 1);
     if (this.log.faultyElsVcf) embs.splice(1, 1);

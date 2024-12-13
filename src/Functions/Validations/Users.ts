@@ -5,7 +5,7 @@ import { DBManager } from '../DBManager';
 import { codeBlock, GuildMember } from 'discord.js';
 import { Logger } from '../Messages/Logger';
 
-export abstract class UsersValidation {
+export class UsersValidation {
   static async Verify() {
     this.AddMissing();
     this.UpdateNames();

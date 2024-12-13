@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import { Command } from '@sapphire/framework';
 import {
   ActionRowBuilder,
@@ -22,7 +23,6 @@ import { ELSProcessor } from '../Functions/Processors/ELS/ELSProcessor';
 import { ELSValidator } from '../Functions/Processors/ELS/ELSValidator';
 import { ASIProcessor } from '../Functions/Processors/ASI/ASIProcessor';
 import { ASIValidator } from '../Functions/Processors/ASI/ASIValidator';
-import { Log } from '../CustomTypes/LogTypes/Log';
 import { LogMultiSelect } from '../interaction-handlers/_CustomIds';
 
 export class ValidateFilesCommand extends Command {
@@ -64,10 +64,10 @@ export class ValidateFilesCommand extends Command {
       }
 
       if (attach.size / 1000000 > 10) {
-        Reports.largeLog(interaction, attach, true);
+        await Reports.largeLog(interaction, attach, true);
         return;
       } else if (attach.size / 1000000 > 3) {
-        Reports.largeLog(interaction, attach);
+        await Reports.largeLog(interaction, attach);
         return;
       }
     } else if (targetMessage.attachments.size > 1) {

@@ -7,7 +7,7 @@ import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
 import { ButtonStyle } from 'discord.js';
 import { Logger } from '../Messages/Logger';
 
-export abstract class ServerValidation {
+export class ServerValidation {
   static async Verify() {
     this.AddMissing();
     this.RemoveMissing();

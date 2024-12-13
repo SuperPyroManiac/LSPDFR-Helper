@@ -11,8 +11,8 @@ import { inlineCodeBlock } from '@sapphire/utilities';
 import { Logger } from '../../Messages/Logger';
 
 export class RPHProcessor {
-  log: RPHLog;
-  msgId: string;
+  public log: RPHLog;
+  public msgId: string;
   private cache!: ProcessCache<ProcessorType>;
   private currentPlugins?: string;
   private outdatedPlugins?: string;
@@ -23,7 +23,7 @@ export class RPHProcessor {
   private rphVer = '❌';
   private pluginInfoSent = false;
 
-  constructor(log: RPHLog, mesgId: string) {
+  public constructor(log: RPHLog, mesgId: string) {
     this.log = log;
     this.msgId = mesgId;
     //prettier-ignore
@@ -44,18 +44,18 @@ export class RPHProcessor {
     });
 
     if (!this.log.lspdfrVersion) {
-      emb.data.description += `\n${process.env.ALERT} **__LSPDFR Did Not Load!__**\n>>> -# LSPDFR is not running in the provided log. It is very likely you have an issue with your mods folder! It could also be caused by an .ASI script, or ScriptHookVDotNet if you have that!`;
+      emb.data.description += `\n${process.env['ALERT']} **__LSPDFR Did Not Load!__**\n>>> -# LSPDFR is not running in the provided log. It is very likely you have an issue with your mods folder! It could also be caused by an .ASI script, or ScriptHookVDotNet if you have that!`;
       return emb;
     }
 
     //prettier-ignore
     if (!this.outdatedPlugins?.length && !this.removePlugins?.length && !this.log.errors.some(error => error.level === Level.CRITICAL || error.level === Level.SEVERE)) {
-      emb.data.description += `\n${process.env.SUCCESS} **__No Issues Detected!__**\n>>> -# LSPDFR loaded successfully and no errors were detected. If you do have issues, it would most likely be related to the mods folder.`;
+      emb.data.description += `\n${process.env['SUCCESS']} **__No Issues Detected!__**\n>>> -# LSPDFR loaded successfully and no errors were detected. If you do have issues, it would most likely be related to the mods folder.`;
     return emb;
     }
 
     emb.data.description +=
-      `\n${process.env.INFO} **__Log Processed!__**\n>>> -# Log was successfully processed.\n\n` +
+      `\n${process.env['INFO']} **__Log Processed!__**\n>>> -# Log was successfully processed.\n\n` +
       `**LSPDFR Plugins:** ${this.log.current.filter((x) => x.type !== PluginType.RPH).length + this.log.outdated.filter((x) => x.type !== PluginType.RPH).length}\n` +
       `**RPH Plugins:** ${this.log.current.filter((x) => x.type === PluginType.RPH).length}\n` +
       `**Possible Issues:** ${this.log.errors.length}\n`;
@@ -66,15 +66,15 @@ export class RPHProcessor {
   private GetPluginInfo(): EmbedBuilder {
     const plugEmb = EmbedCreator.Support('__Plugin Information:__\n*Plugin Path: GTAV/Plugins/LSPDFR*\n');
     if (this.outdatedPlugins?.length)
-      plugEmb.data.description += `\n${process.env.WARNING} **__Update These Plugins:__**\n> -# These should be updated to ensure stability!\n> \n> ${this.outdatedPlugins}\n`;
+      plugEmb.data.description += `\n${process.env['WARNING']} **__Update These Plugins:__**\n> -# These should be updated to ensure stability!\n> \n> ${this.outdatedPlugins}\n`;
     if (this.removePlugins?.length)
-      plugEmb.data.description += `\n${process.env.ALERT} **__Remove These Plugins:__**\n> -# These are either known to cause issue, or are installed incorrectly. Use /CheckPlugin for more info!\n> \n> ${this.removePlugins}\n`;
+      plugEmb.data.description += `\n${process.env['ALERT']} **__Remove These Plugins:__**\n> -# These are either known to cause issue, or are installed incorrectly. Use /CheckPlugin for more info!\n> \n> ${this.removePlugins}\n`;
     if (this.currentPlugins?.length && !this.outdatedPlugins?.length && !this.removePlugins?.length && this.log.lspdfrVersion)
-      plugEmb.data.description += `\n${process.env.SUCCESS} **__All Plugins Up To Date!:__**\n> -# Good job! This helps ensure your game runs well.\n`;
+      plugEmb.data.description += `\n${process.env['SUCCESS']} **__All Plugins Up To Date!:__**\n> -# Good job! This helps ensure your game runs well.\n`;
     if (!this.currentPlugins?.length && !this.outdatedPlugins?.length && !this.removePlugins?.length && this.log.lspdfrVersion)
-      plugEmb.data.description += `\n${process.env.INFO} **__No Plugins Loaded!__**\n> -# You do not appear to have any LSPDFR plugins installed. No plugin info can be provided here.\n`;
+      plugEmb.data.description += `\n${process.env['INFO']} **__No Plugins Loaded!__**\n> -# You do not appear to have any LSPDFR plugins installed. No plugin info can be provided here.\n`;
     if (!this.log.lspdfrVersion)
-      plugEmb.data.description += `\n${process.env.INFO} **__LSPDFR Not Loaded!__**\n> -# LSPDFR is not loaded in this log! No plugin info can be provided here.\n`;
+      plugEmb.data.description += `\n${process.env['INFO']} **__LSPDFR Not Loaded!__**\n> -# LSPDFR is not loaded in this log! No plugin info can be provided here.\n`;
     if (!this.currentPlugins?.length) this.currentPlugins = '**None**';
     if (!this.rphPlugins?.length) this.rphPlugins = '**None**';
     return plugEmb;
@@ -87,7 +87,7 @@ export class RPHProcessor {
     for (const err of this.log.errors.filter((x) => x.level !== Level.XTRA)) {
       if (cnt >= 10) {
         errEmb.addFields({
-          name: `${process.env.ERROR} Too Many Errors!`,
+          name: `${process.env['ERROR']} Too Many Errors!`,
           value: '> You have more errors than we can display at once! Fix the shown ones, then send a new log.',
         });
         return errEmb;
@@ -95,7 +95,7 @@ export class RPHProcessor {
       if (update && err.level !== Level.CRITICAL) continue;
       errEmb.addFields({
         //prettier-ignore
-        name: `${err.level === Level.XTRA ? process.env.INFO : err.level === Level.WARN ? process.env.WARNING : process.env.ALERT} ___${inlineCodeBlock(`${err.level} ID: ${err.id}`)} Possible Fix:___`,
+        name: `${err.level === Level.XTRA ? process.env['INFO'] : err.level === Level.WARN ? process.env['WARNING'] : process.env['ALERT']} ___${inlineCodeBlock(`${err.level} ID: ${err.id}`)} Possible Fix:___`,
         value: `>>> ${err.solution}`,
       });
       errEmb.data.fields?.sort((a, b) => a.name.localeCompare(b.name));
@@ -103,21 +103,22 @@ export class RPHProcessor {
     }
 
     if (this.log.errors.length === 0)
-      errEmb.data.description += `\n${process.env.INFO} **__No Error Found!__**\n>>> -# No errors were detected by the bot. If you continue to have issues it may be an issue with a script or the mods folder!`;
+      errEmb.data.description += `\n${process.env['INFO']} **__No Error Found!__**\n>>> -# No errors were detected by the bot. If you continue to have issues it may be an issue with a script or the mods folder!`;
     return errEmb;
   }
 
   //! Server Message
-  async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
+  public async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
     this.cache = Cache.getProcess(this.msgId)!;
-    this.pluginInfoSent ||
-      ((this.pluginInfoSent = true),
-      await Logger.PluginInfo(this.log.missing, this.log.newVersion, this.log.downloadLink!, await interaction.channel?.messages.fetch(this.msgId)!));
+    if (!this.pluginInfoSent) {
+      await Logger.PluginInfo(this.log.missing, this.log.newVersion, this.log.downloadLink!, await interaction.channel?.messages.fetch(this.msgId)!);
+      this.pluginInfoSent = true;
+    }
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
     if (interaction instanceof Message) {
-      interaction.reply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
+      await interaction.reply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
     } else {
       if (!interaction.guild) reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
       else reply = await interaction.editReply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()], components: [comps] });
@@ -127,7 +128,7 @@ export class RPHProcessor {
   }
 
   //! Send To User
-  async SendToUser() {
+  public async SendToUser() {
     this.cache = Cache.getProcess(this.msgId)!;
     await this.cache.Interaction.deleteReply().catch(() => {});
     if (this.cache.OriginalMessage) await this.cache.OriginalMessage.reply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });

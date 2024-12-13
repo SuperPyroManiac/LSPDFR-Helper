@@ -12,6 +12,7 @@ A powerful Discord bot designed to analyze and interpret various log types from 
 ## 🚀 Getting Started
 
 Add LSPDFR Helper to your Discord server:
+
 1. Open Discord Apps Directory
 2. Search for "LSPDFR Helper"
 3. Click "Add to Server"
@@ -31,4 +32,5 @@ This project has a strict license. - see the LICENSE file for details.
 - [Documentation](https://dsc.pyrosfun.com/helper) in progress...
 
 ---
-*Made by SuperPyroManiac for the LSPDFR Community.*
+
+_Made by SuperPyroManiac for the LSPDFR Community._

@@ -1,10 +1,9 @@
 import { config } from 'dotenv';
-config({ path: '../.env' });
-
 import '@sapphire/plugin-logger/register';
 import { ActivityType, GatewayIntentBits } from 'discord.js';
 import { SapphireClient } from '@sapphire/framework';
 import { Startup } from './Functions/Startup';
+config({ path: '../.env' });
 
 const client = new SapphireClient({
   intents: [
@@ -35,6 +34,6 @@ const client = new SapphireClient({
   loadMessageCommandListeners: true,
 });
 
-client.once('ready', async () => await Startup.Init());
+client.once('ready', () => void Startup.Init());
 
-client.login(process.env.TOKEN);
+void client.login(process.env['TOKEN']);

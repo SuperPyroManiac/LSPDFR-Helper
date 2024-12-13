@@ -1,6 +1,6 @@
 import { ELSLog } from '../../../CustomTypes/LogTypes/ELSLog';
 
-export abstract class ELSValidator {
+export class ELSValidator {
   public static async validate(attachmentUrl: string): Promise<ELSLog> {
     const wholeLog = await (await fetch(attachmentUrl)).text();
     const log = new ELSLog();
@@ -15,8 +15,8 @@ export abstract class ELSValidator {
       /<FILEV> Found file: \[ (.*) \]\.\r\n<FILEV> Verifying vehicle model name \[ .* \]\.\r\n\s+\(ER\) Model specified is not valid, discarding file\./g
     );
     for (const match of invalidMatches) {
-      if (!log.invalidElsVcfs.includes(match[1])) {
-        log.invalidElsVcfs.push(match[1]);
+      if (!log.invalidElsVcfs.includes(match[1]!)) {
+        log.invalidElsVcfs.push(match[1]!);
       }
     }
 
@@ -24,15 +24,15 @@ export abstract class ELSValidator {
       /<FILEV> Found file: \[ (.*) \]\.\r\n<FILEV> Verifying vehicle model name \[ .* \]\.\r\n\s+\(OK\) Is valid vehicle model, assigned VMID \[ .* \]\.\r\n\s+Parsing file. \*A crash before all clear indicates faulty VCF\.\*\r\n\s+VCF Description: .*\r\n\s+VCF Author: .*(\r\n\s+\(OK\) Collected data from: '\w+'\.)+\r\n\s+\(OK\) ALL CLEAR -- Configuration file processed\./g
     );
     for (const match of validMatches) {
-      if (!log.validElsVcfs.includes(match[1]) && !log.invalidElsVcfs.includes(match[1])) {
-        log.validElsVcfs.push(match[1]);
+      if (!log.validElsVcfs.includes(match[1]!) && !log.invalidElsVcfs.includes(match[1]!)) {
+        log.validElsVcfs.push(match[1]!);
       }
     }
 
     if (/\s+\(OK\) Collected data from: '\w+'\.\r\n$/.test(wholeLog)) {
       const matches = Array.from(wholeLog.matchAll(/<FILEV> Found file: \[ (.+\.xml) \]/g));
       if (matches.length > 0) {
-        log.faultyElsVcf = matches[matches.length - 1][1];
+        log.faultyElsVcf = matches[matches.length - 1]![1];
       }
     }
 
