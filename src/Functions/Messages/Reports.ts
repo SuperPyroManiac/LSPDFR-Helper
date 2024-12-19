@@ -2,7 +2,6 @@ import { MessageContextMenuCommandInteraction, Attachment, Message, StringSelect
 import { EmbedCreator } from './EmbedCreator';
 import { Logger } from './Logger';
 import { Cache } from '../../Cache';
-import { UsersValidation } from '../Validations/Users';
 import { DBManager } from '../DBManager';
 
 type ReportInteraction = MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction;
@@ -44,7 +43,7 @@ export class Reports {
       const user = userId ? Cache.getUser(userId) : null;
 
       if (!user) {
-        await UsersValidation.AddMissing();
+        //await UsersValidation.AddMissing();
       } else {
         user.banned = true;
         await DBManager.editUser(user);

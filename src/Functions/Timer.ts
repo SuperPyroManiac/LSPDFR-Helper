@@ -2,7 +2,6 @@ import * as cron from 'node-cron';
 import { Cache } from '../Cache';
 import { PluginValidation } from './Validations/Plugins';
 import { ServerValidation } from './Validations/Servers';
-import { UsersValidation } from './Validations/Users';
 import { Logger } from './Messages/Logger';
 import { CaseValidation } from './Validations/Cases';
 
@@ -37,7 +36,7 @@ export class Timer {
     cron.schedule(
       '0 */1 * * *',
       () => {
-        UsersValidation.Verify().catch(async (e) => Logger.ErrLog(`User validation failed:\r\n${e}`));
+        //UsersValidation.Verify().catch(async (e) => Logger.ErrLog(`User validation failed:\r\n${e}`));
       },
       {
         runOnInit: false,
