@@ -7,24 +7,19 @@ import { Timer } from './Timer';
 import { AutoHelperValidation } from './Validations/AutoHelper';
 import { CaseValidation } from './Validations/Cases';
 import { ServerValidation } from './Validations/Servers';
-import { UsersValidation } from './Validations/Users';
 
 export class Startup {
   private static newServers = 0;
   private static remServers = 0;
-  private static newUsers = 0;
-  private static updateUsers = 0;
   private static closedCases = 0;
 
   public static async Init() {
     await Cache.resetCache();
     APIManager.init();
 
-    [this.newServers, this.remServers, this.newUsers, this.updateUsers, this.closedCases] = await Promise.all([
+    [this.newServers, this.remServers, this.closedCases] = await Promise.all([
       ServerValidation.AddMissing(),
       ServerValidation.RemoveMissing(),
-      UsersValidation.AddMissing(),
-      UsersValidation.UpdateNames(),
       CaseValidation.VerifyOpenCases(),
     ]);
 
@@ -47,8 +42,6 @@ export class Startup {
       `> **Cached Cases:** ${Cache.getCases().length}\n\n`;
     if (this.newServers > 0) emb.data.description += `-# Found ${this.newServers} new servers to add to the DB!\n`;
     if (this.remServers > 0) emb.data.description += `-# Found ${this.remServers} servers to remove from the DB!\n`;
-    if (this.newUsers > 0) emb.data.description += `-# Found ${this.newUsers} new users to add to the DB!\n`;
-    if (this.updateUsers > 0) emb.data.description += `-# Found ${this.updateUsers} users to update in the DB!\n`;
     if (this.closedCases > 0) emb.data.description += `-# Closed ${this.closedCases} cases that failed verification!\n`;
 
     await Logger.BotLog(emb);
