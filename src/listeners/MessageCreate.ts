@@ -13,6 +13,7 @@ import { ASIProcessor } from '../Functions/Processors/ASI/ASIProcessor';
 import { ASIValidator } from '../Functions/Processors/ASI/ASIValidator';
 import { addDays, differenceInMinutes } from 'date-fns';
 import { DBManager } from '../Functions/DBManager';
+import { UsersValidation } from '../Functions/Validations/Users';
 
 export class MessageCreateListener extends Listener {
   public constructor(context: Listener.LoaderContext, options: Listener.Options) {
@@ -23,6 +24,8 @@ export class MessageCreateListener extends Listener {
   }
 
   public async run(msg: Message) {
+    await UsersValidation.Verify(msg.author);
+
     if (Cache.getCases().some((c) => c.channelId === msg.channelId && c.open)) {
       await this.ahChannels(msg);
     }

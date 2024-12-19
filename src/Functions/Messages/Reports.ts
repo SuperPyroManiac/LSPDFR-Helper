@@ -42,9 +42,7 @@ export class Reports {
       const userId = interaction.member?.user.id;
       const user = userId ? Cache.getUser(userId) : null;
 
-      if (!user) {
-        //await UsersValidation.AddMissing();
-      } else {
+      if (user) {
         user.banned = true;
         await DBManager.editUser(user);
       }

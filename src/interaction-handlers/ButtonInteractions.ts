@@ -6,6 +6,7 @@ import { EmbedCreator } from '../Functions/Messages/EmbedCreator';
 import { Logger } from '../Functions/Messages/Logger';
 import { OpenCase } from '../Functions/AutoHelper/OpenCase';
 import { CloseCase } from '../Functions/AutoHelper/CloseCase';
+import { UsersValidation } from '../Functions/Validations/Users';
 
 export class ButtonInteractions extends InteractionHandler {
   public constructor(ctx: InteractionHandler.LoaderContext, options: InteractionHandler.Options) {
@@ -18,6 +19,8 @@ export class ButtonInteractions extends InteractionHandler {
   public async run(interaction: ButtonInteraction) {
     const pCache = Cache.getProcess(interaction.message.id);
     const iCache = Cache.getInteraction(interaction.user.id, interaction.message.id);
+
+    await UsersValidation.Verify(interaction.user);
 
     if (interaction.customId == LogSendToUser) {
       if (!pCache) {
