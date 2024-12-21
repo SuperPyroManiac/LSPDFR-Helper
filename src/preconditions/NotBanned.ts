@@ -23,7 +23,7 @@ export class NotBannedPrecondition extends AllFlowsPrecondition {
   }
 
   private async checkBanned(userId: string) {
-    const usr = await Cache.getUser(userId);
+    const usr = Cache.getUser(userId);
     if (!usr) return this.ok();
     return usr.banned === false ? this.ok() : this.error({ message: 'banned' });
   }

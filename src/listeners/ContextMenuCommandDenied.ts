@@ -11,7 +11,6 @@ export class ContextMenuCommandDenied extends Listener<typeof Events.ContextMenu
   }
 
   public async run(error: UserError, { interaction }: ContextMenuCommandDeniedPayload) {
-    if (this.container.client.shard?.ids[0] !== 0) return;
     let replyMsg = {
       embeds: [
         EmbedCreator.Error(

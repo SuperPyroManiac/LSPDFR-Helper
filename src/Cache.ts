@@ -1,4 +1,3 @@
-import cluster from 'cluster';
 import { InteractionCache } from './CustomTypes/CacheTypes/InteractionCache';
 import { ProcessCache } from './CustomTypes/CacheTypes/ProcessCache';
 import { Case } from './CustomTypes/MainTypes/Case';
@@ -12,188 +11,125 @@ import { ELSProcessor } from './Functions/Processors/ELS/ELSProcessor';
 import { RPHProcessor } from './Functions/Processors/RPH/RPHProcessor';
 
 export type ProcessorType = RPHProcessor | ELSProcessor | ASIProcessor;
-
 export class Cache {
-  private static processCache = cluster.isPrimary ? new Map<string, ProcessCache<ProcessorType>>() : null;
-  private static interactionCache = cluster.isPrimary ? new Map<string, InteractionCache>() : null;
-  private static pluginCache = cluster.isPrimary ? new Map<string, Plugin>() : null;
-  private static errorCache = cluster.isPrimary ? new Map<number, Error>() : null;
-  private static caseCache = cluster.isPrimary ? new Map<string, Case>() : null;
-  private static userCache = cluster.isPrimary ? new Map<string, User>() : null;
-  private static serverCache = cluster.isPrimary ? new Map<string, Server>() : null;
-
-  private static async primaryAction<T>(action: () => T): Promise<T> {
-    if (cluster.isPrimary) {
-      return action();
-    }
-
-    return new Promise((resolve) => {
-      const id = Math.random().toString(36);
-      process.send?.({ type: 'CACHE_ACTION', id, action: action.toString() });
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      process.once('message', (response: any) => {
-        if (response.id === id) {
-          resolve(response.result);
-        }
-      });
-    });
-  }
+  private static processCache = new Map<string, ProcessCache<ProcessorType>>();
+  private static interactionCache = new Map<string, InteractionCache>();
+  private static pluginCache = new Map<string, Plugin>();
+  private static errorCache = new Map<number, Error>();
+  private static caseCache = new Map<string, Case>();
+  private static userCache = new Map<string, User>();
+  private static serverCache = new Map<string, Server>();
 
   public static async resetCache() {
-    await this.primaryAction(() => {
-      this.pluginCache?.clear();
-      this.errorCache?.clear();
-      this.caseCache?.clear();
-      this.userCache?.clear();
-      this.serverCache?.clear();
+    this.updatePlugins((await DBManager.getPlugins()) ?? []);
+    this.updateErrors((await DBManager.getErrors()) ?? []);
+    this.updateCases((await DBManager.getCases()) ?? []);
+    this.updateUsers((await DBManager.getUsers()) ?? []);
+    this.updateServers((await DBManager.getServers()) ?? []);
+  }
+
+  public static updatePlugins(plugins: Plugin[]) {
+    this.pluginCache.clear();
+    plugins.forEach((plugin) => this.pluginCache.set(plugin.name, plugin));
+  }
+
+  public static getPlugins(): Plugin[] {
+    return Array.from(this.pluginCache.values());
+  }
+
+  public static getPlugin(name: string): Plugin | undefined {
+    return this.pluginCache.get(name);
+  }
+
+  public static updateErrors(errors: Error[]) {
+    this.errorCache.clear();
+    errors.forEach((error) => this.errorCache.set(error.id, error));
+  }
+
+  public static getErrors(): Error[] {
+    return Array.from(this.errorCache.values());
+  }
+
+  public static getError(id: number): Error | undefined {
+    return this.errorCache.get(id);
+  }
+
+  public static updateCases(cases: Case[]) {
+    this.caseCache.clear();
+    cases.forEach((case_) => this.caseCache.set(case_.id, case_));
+  }
+
+  public static getCases(): Case[] {
+    return Array.from(this.caseCache.values());
+  }
+
+  public static getCase(id: string): Case | undefined {
+    return this.caseCache.get(id);
+  }
+
+  public static updateUsers(users: User[]) {
+    this.userCache.clear();
+    users.forEach((user) => this.userCache.set(user.id, user));
+  }
+
+  public static getUsers(): User[] {
+    return Array.from(this.userCache.values());
+  }
+
+  public static getUser(id: string): User | undefined {
+    return this.userCache.get(id);
+  }
+
+  public static updateServers(servers: Server[]) {
+    this.serverCache.clear();
+    servers.forEach((server) => this.serverCache.set(server.id, server));
+  }
+
+  public static getServers(): Server[] {
+    return Array.from(this.serverCache.values());
+  }
+
+  public static getServer(id: string): Server | undefined {
+    return this.serverCache.get(id);
+  }
+
+  //! Special Caches
+  public static async removeExpired() {
+    const processPromises = Array.from(this.processCache.entries()).map(async ([key, cache]) => {
+      if (cache.Expire <= new Date()) {
+        await cache.Cleanup();
+        this.processCache.delete(key);
+      }
     });
 
-    const [plugins, errors, cases, users, servers] = await Promise.all([
-      DBManager.getPlugins(),
-      DBManager.getErrors(),
-      DBManager.getCases(),
-      DBManager.getUsers(),
-      DBManager.getServers(),
-    ]);
-
-    await Promise.all([
-      this.updatePlugins(plugins ?? []),
-      this.updateErrors(errors ?? []),
-      this.updateCases(cases ?? []),
-      this.updateUsers(users ?? []),
-      this.updateServers(servers ?? []),
-    ]);
-  }
-
-  public static async updatePlugins(plugins: Plugin[]) {
-    return this.primaryAction(() => {
-      this.pluginCache?.clear();
-      plugins.forEach((plugin) => this.pluginCache?.set(plugin.name, plugin));
+    const interactionPromises = Array.from(this.interactionCache.entries()).map(async ([key, cache]) => {
+      if (cache.Expire <= new Date()) {
+        await cache.Cleanup();
+        this.processCache.delete(key);
+      }
     });
-  }
 
-  public static async getPlugins(): Promise<Plugin[]> {
-    return this.primaryAction(() => Array.from(this.pluginCache?.values() ?? []));
-  }
-
-  public static async getPlugin(name: string): Promise<Plugin | undefined> {
-    return this.primaryAction(() => this.pluginCache?.get(name));
-  }
-
-  public static async updateErrors(errors: Error[]) {
-    return this.primaryAction(() => {
-      this.errorCache?.clear();
-      errors.forEach((error) => this.errorCache?.set(error.id, error));
-    });
-  }
-
-  public static async getErrors(): Promise<Error[]> {
-    return this.primaryAction(() => Array.from(this.errorCache?.values() ?? []));
-  }
-
-  public static async getError(id: number): Promise<Error | undefined> {
-    return this.primaryAction(() => this.errorCache?.get(id));
-  }
-
-  // Cases methods
-  public static async updateCases(cases: Case[]) {
-    return this.primaryAction(() => {
-      this.caseCache?.clear();
-      cases.forEach((case_) => this.caseCache?.set(case_.id, case_));
-    });
-  }
-
-  public static async getCases(): Promise<Case[]> {
-    return this.primaryAction(() => Array.from(this.caseCache?.values() ?? []));
-  }
-
-  public static async getCase(id: string): Promise<Case | undefined> {
-    return this.primaryAction(() => this.caseCache?.get(id));
-  }
-
-  // Users methods
-  public static async updateUsers(users: User[]) {
-    return this.primaryAction(() => {
-      this.userCache?.clear();
-      users.forEach((user) => this.userCache?.set(user.id, user));
-    });
-  }
-
-  public static async getUsers(): Promise<User[]> {
-    return this.primaryAction(() => Array.from(this.userCache?.values() ?? []));
-  }
-
-  public static async getUser(id: string): Promise<User | undefined> {
-    return this.primaryAction(() => this.userCache?.get(id));
-  }
-
-  // Servers methods
-  public static async updateServers(servers: Server[]) {
-    return this.primaryAction(() => {
-      this.serverCache?.clear();
-      servers.forEach((server) => this.serverCache?.set(server.id, server));
-    });
-  }
-
-  public static async getServers(): Promise<Server[]> {
-    return this.primaryAction(() => Array.from(this.serverCache?.values() ?? []));
-  }
-
-  public static async getServer(id: string): Promise<Server | undefined> {
-    return this.primaryAction(() => this.serverCache?.get(id));
+    await Promise.all([...processPromises, ...interactionPromises]);
   }
 
   public static async saveProcess(messageId: string, process: ProcessCache<ProcessorType>): Promise<ProcessCache<ProcessorType>> {
-    return this.primaryAction(async () => {
-      if (this.processCache?.has(messageId)) {
-        await this.processCache.get(messageId)?.Update(process);
-      } else {
-        this.processCache?.set(messageId, process);
-      }
-      return process;
-    });
+    if (this.processCache.has(messageId)) await this.processCache.get(messageId)?.Update(process);
+    else this.processCache.set(messageId, process);
+    return process;
   }
 
-  public static async getProcess(messageId: string): Promise<ProcessCache<ProcessorType> | undefined> {
-    return this.primaryAction(() => this.processCache?.get(messageId));
+  public static getProcess(messageId: string): ProcessCache<ProcessorType> | undefined {
+    return this.processCache.get(messageId);
   }
 
-  private static getInteractionKey(userId: string, msgId: string): string {
-    return `${userId}%${msgId}`;
+  private static getInteractionKey = (userId: string, msgId: string): string => `${userId}%${msgId}`;
+
+  public static saveInteraction(userId: string, msgId: string, newCache: InteractionCache) {
+    const key = this.getInteractionKey(userId, msgId);
+    this.interactionCache.set(key, newCache);
   }
 
-  public static async saveInteraction(userId: string, msgId: string, newCache: InteractionCache) {
-    return this.primaryAction(() => {
-      const key = this.getInteractionKey(userId, msgId);
-      this.interactionCache?.set(key, newCache);
-    });
-  }
-
-  public static async getInteraction(userId: string, msgId: string): Promise<InteractionCache | undefined> {
-    return this.primaryAction(() => {
-      const key = this.getInteractionKey(userId, msgId);
-      return this.interactionCache?.get(key);
-    });
-  }
-
-  public static async removeExpired() {
-    return this.primaryAction(async () => {
-      const now = new Date();
-
-      for (const [key, cache] of this.processCache?.entries() ?? []) {
-        if (cache.Expire <= now) {
-          await cache.Cleanup();
-          this.processCache?.delete(key);
-        }
-      }
-
-      for (const [key, cache] of this.interactionCache?.entries() ?? []) {
-        if (cache.Expire <= now) {
-          await cache.Cleanup();
-          this.interactionCache?.delete(key);
-        }
-      }
-    });
+  public static getInteraction(userId: string, msgId: string): InteractionCache | undefined {
+    return this.interactionCache.get(this.getInteractionKey(userId, msgId));
   }
 }

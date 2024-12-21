@@ -20,7 +20,7 @@ export class CheckPluginCommand extends Command {
 
   public override async autocompleteRun(interaction: Command.AutocompleteInteraction) {
     const focusedValue = interaction.options.getFocused();
-    const plugins = await Cache.getPlugins();
+    const plugins = Cache.getPlugins();
     const choices = plugins
       .filter((plugin) => plugin.name.toLowerCase().includes(focusedValue.toLowerCase()))
       .slice(0, 25)
@@ -30,7 +30,7 @@ export class CheckPluginCommand extends Command {
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     const pluginName = interaction.options.getString('name') ?? 'NUFFIN';
-    const plug = await Cache.getPlugin(pluginName);
+    const plug = Cache.getPlugin(pluginName);
 
     if (!plug) {
       await interaction.reply({

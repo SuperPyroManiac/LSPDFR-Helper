@@ -49,10 +49,10 @@ export class PluginsCommand extends Subcommand {
 
   public async pluginsExport(interaction: Subcommand.ChatInputCommandInteraction) {
     await Logger.BotLog(
-      EmbedCreator.Warning(`__Exported ${(await Cache.getPlugins()).length} Plugins!__\r\n> Requested by ${interaction.user.tag} in <#${interaction.channelId}>`)
+      EmbedCreator.Warning(`__Exported ${Cache.getPlugins().length} Plugins!__\r\n> Requested by ${interaction.user.tag} in <#${interaction.channelId}>`)
     );
     return interaction.reply({
-      embeds: [EmbedCreator.Success(`__Exported ${(await Cache.getPlugins()).length} Plugins!__\r\n-# Ensure these do not get leaked!`)],
+      embeds: [EmbedCreator.Success(`__Exported ${Cache.getPlugins().length} Plugins!__\r\n-# Ensure these do not get leaked!`)],
       files: [
         {
           attachment: Buffer.from(JSON.stringify(Cache.getPlugins(), null, 2), 'utf-8'),

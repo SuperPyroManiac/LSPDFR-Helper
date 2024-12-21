@@ -53,7 +53,7 @@ export class DBManager {
         },
       });
     });
-    await Cache.updatePlugins((await this.getPlugins()) ?? []);
+    Cache.updatePlugins((await this.getPlugins()) ?? []);
   }
 
   public static async editPlugin(plugin: Plugin): Promise<void> {
@@ -63,14 +63,14 @@ export class DBManager {
         data: plugin,
       });
     });
-    await Cache.updatePlugins((await this.getPlugins()) ?? []);
+    Cache.updatePlugins((await this.getPlugins()) ?? []);
   }
 
   public static async deletePlugin(name: string): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.plugins.delete({ where: { name } });
     });
-    await Cache.updatePlugins((await this.getPlugins()) ?? []);
+    Cache.updatePlugins((await this.getPlugins()) ?? []);
   }
 
   public static async getErrors(): Promise<Error[] | null> {
@@ -99,7 +99,7 @@ export class DBManager {
         },
       });
     });
-    await Cache.updateErrors((await this.getErrors()) ?? []);
+    Cache.updateErrors((await this.getErrors()) ?? []);
   }
 
   public static async editError(error: Error): Promise<void> {
@@ -109,14 +109,14 @@ export class DBManager {
         data: error,
       });
     });
-    await Cache.updateErrors((await this.getErrors()) ?? []);
+    Cache.updateErrors((await this.getErrors()) ?? []);
   }
 
   public static async deleteError(id: number): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.errors.delete({ where: { id } });
     });
-    await Cache.updateErrors((await this.getErrors()) ?? []);
+    Cache.updateErrors((await this.getErrors()) ?? []);
   }
 
   public static async getCases(): Promise<Case[] | null> {
@@ -147,7 +147,7 @@ export class DBManager {
         },
       });
     });
-    await Cache.updateCases((await this.getCases()) ?? []);
+    Cache.updateCases((await this.getCases()) ?? []);
   }
 
   public static async editCase(caseItem: Case): Promise<void> {
@@ -157,14 +157,14 @@ export class DBManager {
         data: caseItem,
       });
     });
-    await Cache.updateCases((await this.getCases()) ?? []);
+    Cache.updateCases((await this.getCases()) ?? []);
   }
 
   public static async deleteCase(id: string): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.cases.delete({ where: { id } });
     });
-    await Cache.updateCases((await this.getCases()) ?? []);
+    Cache.updateCases((await this.getCases()) ?? []);
   }
 
   public static async getUsers(): Promise<User[] | null> {
@@ -194,7 +194,7 @@ export class DBManager {
         skipDuplicates: true,
       });
     });
-    await Cache.updateUsers((await this.getUsers()) ?? []);
+    Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
   public static async createUser(user: User): Promise<void> {
@@ -209,7 +209,7 @@ export class DBManager {
         },
       });
     });
-    await Cache.updateUsers((await this.getUsers()) ?? []);
+    Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
   public static async editUser(user: User): Promise<void> {
@@ -219,14 +219,14 @@ export class DBManager {
         data: user,
       });
     });
-    await Cache.updateUsers((await this.getUsers()) ?? []);
+    Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
   public static async deleteUser(id: string): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.users.delete({ where: { id } });
     });
-    await Cache.updateUsers((await this.getUsers()) ?? []);
+    Cache.updateUsers((await this.getUsers()) ?? []);
   }
 
   public static async getServers(): Promise<Server[] | null> {
@@ -261,7 +261,7 @@ export class DBManager {
         },
       });
     });
-    await Cache.updateServers((await this.getServers()) ?? []);
+    Cache.updateServers((await this.getServers()) ?? []);
   }
 
   public static async editServer(server: Server): Promise<void> {
@@ -271,13 +271,13 @@ export class DBManager {
         data: server,
       });
     });
-    await Cache.updateServers((await this.getServers()) ?? []);
+    Cache.updateServers((await this.getServers()) ?? []);
   }
 
   public static async deleteServer(id: string): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.servers.delete({ where: { id } });
     });
-    await Cache.updateServers((await this.getServers()) ?? []);
+    Cache.updateServers((await this.getServers()) ?? []);
   }
 }

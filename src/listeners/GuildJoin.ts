@@ -11,7 +11,6 @@ export class GuildJoinListener extends Listener {
   }
 
   public async run(_guild: Guild) {
-    if (this.container.client.shard?.ids[0] !== 0) return;
     await ServerValidation.AddMissing();
   }
 }

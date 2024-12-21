@@ -1,4 +1,3 @@
-import { ShardingManager } from 'discord.js';
 import { Cache } from '../../Cache';
 import { AhChannel } from '../../Functions/AutoHelper/AhChannel';
 import { CaseMonitor } from '../../Functions/AutoHelper/CaseMonitor';
@@ -6,7 +5,7 @@ import { APIManager } from '../APIManager';
 import { Request, Response } from 'express';
 
 export class UpdateServer {
-  public static init(manager: ShardingManager) {
+  public static init() {
     const app = APIManager.getApp();
 
     app.post('/SiteConnect/UpdateServer', async (req: Request, res: Response) => {
@@ -26,17 +25,8 @@ export class UpdateServer {
 
       try {
         await Cache.resetCache();
-
-        await manager.broadcastEval(
-          async (client, { guildId }) => {
-            if (client.guilds.cache.has(guildId)) {
-              await AhChannel.UpdateCaseMsg(guildId);
-              await CaseMonitor.Update(guildId);
-            }
-          },
-          { context: { guildId } }
-        );
-
+        await AhChannel.UpdateCaseMsg(guildId);
+        await CaseMonitor.Update(guildId);
         res.status(200).json({ success: true });
       } catch (error) {
         res.status(500).json({ error: 'Internal server error' });

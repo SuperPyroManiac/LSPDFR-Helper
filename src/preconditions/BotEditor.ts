@@ -16,7 +16,7 @@ export class BotEditorPrecondition extends AllFlowsPrecondition {
   }
 
   private async checkEditor(userId: string) {
-    const usr = await Cache.getUser(userId);
+    const usr = Cache.getUser(userId);
     if (!usr) return this.ok();
     return usr.botEditor === true ? this.ok() : this.error({ message: '__No Permission__\r\n>>> You do not have permission to use this command!' });
   }

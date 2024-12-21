@@ -30,7 +30,7 @@ export class RPHValidator {
     );
     for (const match of allMatch) {
       if (match[1] && match[1].length > 0) {
-        const plug = await Cache.getPlugin(match[1]!);
+        const plug = Cache.getPlugin(match[1]!);
         if (plug) {
           const newPlug = plug.clone();
           newPlug.version = match[2];
@@ -41,14 +41,14 @@ export class RPHValidator {
         continue;
       }
       //RPH Plugins
-      const rphPlug = await Cache.getPlugin(match[3]!);
+      const rphPlug = Cache.getPlugin(match[3]!);
       if (rphPlug && !unSorted.some((x) => x.name === rphPlug.name)) unSorted.push(rphPlug);
       if (!rphPlug && !log.missing.some((x) => x.name === match[3]))
         log.missing.push(Object.assign(new Plugin(), { name: match[3], version: 'RPH', type: PluginType.RPH }));
     }
 
     for (const logPlug of unSorted) {
-      const cachePlug = (await Cache.getPlugin(logPlug.name))!;
+      const cachePlug = Cache.getPlugin(logPlug.name)!;
       switch (cachePlug.state) {
         case State.NORMAL:
         case State.EXTERNAL:
@@ -81,7 +81,7 @@ export class RPHValidator {
       }
     }
 
-    for (const error of await Cache.getErrors()) {
+    for (const error of Cache.getErrors()) {
       if (error.id === 1 || error.id === 97 || error.id === 98 || error.id === 99 || error.id === 41 || error.id === 176) continue;
       if (error.level === Level.PIMG || error.level === Level.PMSG) continue;
       if (error.stringMatch) {
@@ -103,7 +103,7 @@ export class RPHValidator {
       }
     }
 
-    log = await RPHAdvancedErrors.processAdvancedErrors(log, rawLog);
+    log = RPHAdvancedErrors.processAdvancedErrors(log, rawLog);
     log.errors.sort((a, b) => Number(b.level) - Number(a.level));
 
     log.validaterCompletedAt = new Date();

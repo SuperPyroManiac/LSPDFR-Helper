@@ -22,7 +22,7 @@ export class ModalInteractions extends InteractionHandler {
       const ahChId = interaction.guild?.channels.cache.get(ahChInput) ? ahChInput : '0';
       const ahMonChInput = interaction.fields.getTextInputValue(SetupAhMnCh);
       const ahMonChId = interaction.guild?.channels.cache.get(ahMonChInput) ? ahMonChInput : '0';
-      const servr = await Cache.getServer(interaction.guildId!);
+      const servr = Cache.getServer(interaction.guildId!);
 
       if (!servr) return;
       servr.ahChId = ahChId;

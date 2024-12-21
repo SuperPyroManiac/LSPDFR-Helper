@@ -14,8 +14,7 @@ export class GuildLeaveListener extends Listener {
   }
 
   public async run(guild: Guild) {
-    if (this.container.client.shard?.ids[0] !== 0) return;
-    const server = await Cache.getServer(guild.id);
+    const server = Cache.getServer(guild.id);
     if (!server) return;
     server.enabled = false;
     const owner = await guild.fetchOwner();

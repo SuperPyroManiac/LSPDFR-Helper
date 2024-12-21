@@ -1,23 +1,37 @@
-import { ShardingManager } from 'discord.js';
 import { config } from 'dotenv';
-import { ShardUtils } from './Functions/ShardUtils';
-
+import '@sapphire/plugin-logger/register';
+import { ActivityType, GatewayIntentBits } from 'discord.js';
+import { SapphireClient } from '@sapphire/framework';
+import { Startup } from './Functions/Startup';
 config({ path: '../.env' });
 
-async function main() {
-  const manager = new ShardingManager('./dist/bot.js', {
-    token: process.env['TOKEN'],
-    totalShards: 4,
-    shardList: [0, 1, 2, 3],
-    mode: 'worker',
-  });
-  await ShardUtils.setManager(manager);
+const client = new SapphireClient({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildModeration,
+    GatewayIntentBits.GuildEmojisAndStickers,
+    GatewayIntentBits.GuildIntegrations,
+    GatewayIntentBits.GuildWebhooks,
+    GatewayIntentBits.GuildInvites,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMessageTyping,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.DirectMessageReactions,
+    GatewayIntentBits.DirectMessageTyping,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildScheduledEvents,
+    GatewayIntentBits.AutoModerationConfiguration,
+    GatewayIntentBits.AutoModerationExecution,
+  ],
+  presence: {
+    status: 'dnd',
+    activities: [{ name: 'with fire!', type: ActivityType.Playing }],
+  },
+  loadMessageCommandListeners: true,
+});
 
-  manager.on('shardCreate', (_shard) => {
-    console.log(`Launched shard ${_shard.id}`);
-  });
+client.once('ready', () => void Startup.Init());
 
-  await manager.spawn();
-}
-
-void main();
+void client.login(process.env['TOKEN']);

@@ -9,7 +9,7 @@ import { CaseMonitor } from './CaseMonitor';
 export class OpenCase {
   public static async Create(userId: string, guildId: string): Promise<Case | undefined> {
     const caseId = this.generateCaseId();
-    const server = await Cache.getServer(guildId);
+    const server = Cache.getServer(guildId);
     if (!server || !server.getGuild() || !server.ahChId) return;
     const ahCh = await server.getGuild()?.channels.fetch(server.ahChId);
     if (!ahCh || ahCh.type !== 0) return;
@@ -41,7 +41,7 @@ export class OpenCase {
     await ch.send(msg);
     await ch.members.add(userId);
 
-    const newCase = new Case(await caseId);
+    const newCase = new Case(caseId);
     newCase.ownerId = userId;
     newCase.channelId = ch.id;
     newCase.serverId = guildId;
@@ -50,11 +50,11 @@ export class OpenCase {
     return newCase;
   }
 
-  private static async generateCaseId(): Promise<string> {
+  private static generateCaseId(): string {
     let id: string;
     do {
       id = Math.random().toString(36).substring(2, 10);
-    } while (await Cache.getCase(id));
+    } while (Cache.getCase(id));
     return id;
   }
 }

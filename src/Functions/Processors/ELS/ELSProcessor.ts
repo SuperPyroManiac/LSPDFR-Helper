@@ -76,7 +76,7 @@ export class ELSProcessor {
     if (!this.log.invalidElsVcfs.length && !this.log.validElsVcfs.length) embs.splice(1, 1);
     if (this.log.faultyElsVcf) embs.splice(1, 1);
 
-    this.cache = (await Cache.getProcess(this.msgId))!;
+    this.cache = Cache.getProcess(this.msgId)!;
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
@@ -96,7 +96,7 @@ export class ELSProcessor {
     if (!this.log.invalidElsVcfs.length && !this.log.validElsVcfs.length) embs.splice(1, 1);
     if (this.log.faultyElsVcf) embs.splice(1, 1);
 
-    this.cache = (await Cache.getProcess(this.msgId))!;
+    this.cache = Cache.getProcess(this.msgId)!;
     await this.cache.Interaction.deleteReply().catch(() => {});
     if (this.cache.OriginalMessage) await this.cache.OriginalMessage.reply({ embeds: embs });
   }

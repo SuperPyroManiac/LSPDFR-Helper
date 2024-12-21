@@ -49,10 +49,10 @@ export class ErrorsCommand extends Subcommand {
 
   public async errorsExport(interaction: Subcommand.ChatInputCommandInteraction) {
     await Logger.BotLog(
-      EmbedCreator.Warning(`__Exported ${(await Cache.getErrors()).length} Errors!__\r\n> Requested by ${interaction.user.tag} in <#${interaction.channelId}>`)
+      EmbedCreator.Warning(`__Exported ${Cache.getErrors().length} Errors!__\r\n> Requested by ${interaction.user.tag} in <#${interaction.channelId}>`)
     );
     return interaction.reply({
-      embeds: [EmbedCreator.Success(`__Exported ${(await Cache.getErrors()).length} Errors!__\r\n-# Ensure these do not get leaked!`)],
+      embeds: [EmbedCreator.Success(`__Exported ${Cache.getErrors().length} Errors!__\r\n-# Ensure these do not get leaked!`)],
       files: [
         {
           attachment: Buffer.from(JSON.stringify(Cache.getErrors(), null, 2), 'utf-8'),

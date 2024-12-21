@@ -48,7 +48,7 @@ export class ASIProcessor {
 
   //! Server Message
   public async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
-    this.cache = (await Cache.getProcess(this.msgId))!;
+    this.cache = Cache.getProcess(this.msgId)!;
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
@@ -72,7 +72,7 @@ export class ASIProcessor {
 
   //! Send To User
   public async SendToUser() {
-    this.cache = (await Cache.getProcess(this.msgId))!;
+    this.cache = Cache.getProcess(this.msgId)!;
     await this.cache.Interaction.deleteReply().catch(() => {});
     if (this.cache.OriginalMessage) await this.cache.OriginalMessage.reply({ embeds: [this.GetBaseInfo()] });
   }

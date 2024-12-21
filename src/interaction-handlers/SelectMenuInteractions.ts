@@ -34,7 +34,7 @@ export class SelectMenuInteractions extends InteractionHandler {
 
       if (attach.name.toLowerCase().includes('ragepluginhook')) {
         let rphProc: RPHProcessor;
-        const cache = await Cache.getProcess(attachmentId!);
+        const cache = Cache.getProcess(attachmentId!);
         if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor as RPHProcessor;
         else {
           rphProc = new RPHProcessor(await RPHValidator.validate(attach!.url), attachmentId!);
@@ -50,7 +50,7 @@ export class SelectMenuInteractions extends InteractionHandler {
 
       if (attach!.name.toLowerCase().includes('els')) {
         let elsProc: ELSProcessor;
-        const cache = await Cache.getProcess(attachmentId!);
+        const cache = Cache.getProcess(attachmentId!);
         if (ProcessCache.IsCacheAvailable(cache)) elsProc = cache!.Processor as ELSProcessor;
         else {
           elsProc = new ELSProcessor(await ELSValidator.validate(attach!.url), attachmentId!);
@@ -65,7 +65,7 @@ export class SelectMenuInteractions extends InteractionHandler {
 
       if (attach!.name.toLowerCase().includes('asiloader')) {
         let asiProc: ASIProcessor;
-        const cache = await Cache.getProcess(attachmentId!);
+        const cache = Cache.getProcess(attachmentId!);
         if (ProcessCache.IsCacheAvailable(cache)) asiProc = cache!.Processor as ASIProcessor;
         else {
           asiProc = new ASIProcessor(await ASIValidator.validate(attach!.url), attachmentId!);

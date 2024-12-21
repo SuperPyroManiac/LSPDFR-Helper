@@ -19,7 +19,7 @@ export class AhChannel {
         "\n> You can add this bot to your server regardless of size! You may also use its commands in ***any*** server by adding it to your account! Just click the user then select 'add app'!" +
         '\n' +
         '\n\n> __Managed by: SuperPyroManiac & Hammer__\n-# More information at: https://dsc.PyrosFun.com';
-      const server = await Cache.getServer(serverId);
+      const server = Cache.getServer(serverId);
       if (!server || !server.ahChId || server.ahChId === '0' || !server.autoSupport) return;
       const ch = await server.getGuild()?.channels.fetch(server.ahChId);
       if (!ch || !ch.isTextBased()) return;

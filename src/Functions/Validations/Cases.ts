@@ -5,10 +5,10 @@ import { EmbedCreator } from '../Messages/EmbedCreator';
 export class CaseValidation {
   public static async VerifyOpenCases(): Promise<number> {
     let cnt = 0;
-    for (const cs of (await Cache.getCases()).filter((x) => x.open)) {
+    for (const cs of Cache.getCases().filter((x) => x.open)) {
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      if (!(await Cache.getServer(cs.serverId))?.enabled) {
+      if (!Cache.getServer(cs.serverId)?.enabled) {
         await CloseCase.Close(cs, true);
         cnt++;
       }
@@ -18,7 +18,7 @@ export class CaseValidation {
         cnt++;
       }
 
-      if ((await Cache.getUser(cs.ownerId!))?.banned) {
+      if (Cache.getUser(cs.ownerId!)?.banned) {
         await cs.getAhChannel()?.send({
           embeds: [
             EmbedCreator.Error(
