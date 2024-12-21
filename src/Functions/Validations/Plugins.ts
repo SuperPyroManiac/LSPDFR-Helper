@@ -13,7 +13,7 @@ interface LSPDFRPlugin {
 export class PluginValidation {
   public static async CheckUpdates() {
     const webPlugs = await this.getPlugins().catch();
-    const plugs = Cache.getPlugins();
+    const plugs = await Cache.getPlugins();
     const emb = EmbedCreator.Info('__Plugin Updates__\r\n-# A new version of the plugins listed have been found!\r\n');
     let cnt = 0;
 

@@ -1,13 +1,12 @@
-import { EmbedBuilder, hyperlink } from '@discordjs/builders';
-import { container } from '@sapphire/framework';
-import { codeBlock } from '@sapphire/utilities';
+import { codeBlock, EmbedBuilder, hyperlink } from '@discordjs/builders';
 import { Attachment, Message } from 'discord.js';
 import { EmbedCreator } from './EmbedCreator';
 import { Plugin } from '../../CustomTypes/MainTypes/Plugin';
+import { ShardUtils } from '../ShardUtils';
 
 export class Logger {
   public static async ErrLog(message: string) {
-    const ch = container.client.channels.cache.get(process.env['ERROR_LOG_CHANNEL']!);
+    const ch = await ShardUtils.getChannel(process.env['ERROR_LOG_CHANNEL']!);
     if (message.length >= 2000) {
       if (ch?.isSendable()) await ch.send(`### __Error Logged__\n${codeBlock(message.substring(0, 1850))}`);
       return;
@@ -16,7 +15,7 @@ export class Logger {
   }
 
   public static async BotLog(message: EmbedBuilder | string, attachment?: Attachment) {
-    const ch = container.client.channels.cache.get(process.env['BOT_LOG_CHANNEL']!);
+    const ch = await ShardUtils.getChannel(process.env['BOT_LOG_CHANNEL']!);
     if (attachment && attachment.size / 1000000 > 24) {
       if (typeof message === 'string') message = `${message}\nFile Too Large To Upload: ${hyperlink('Link', attachment.url)}`;
       else if (message instanceof EmbedBuilder)
@@ -33,7 +32,7 @@ export class Logger {
   }
 
   public static async ServerLog(message: EmbedBuilder | string, attachment?: Attachment) {
-    const ch = container.client.channels.cache.get(process.env['SERVER_LOG_CHANNEL']!);
+    const ch = await ShardUtils.getChannel(process.env['SERVER_LOG_CHANNEL']!);
     if (attachment && attachment.size / 1000000 > 24) {
       if (typeof message === 'string') message = `${message}\nFile Too Large To Upload: ${hyperlink('Link', attachment.url)}`;
       else if (message instanceof EmbedBuilder)
@@ -50,7 +49,7 @@ export class Logger {
   }
 
   public static async UserLog(message: EmbedBuilder | string, attachment?: Attachment) {
-    const ch = container.client.channels.cache.get(process.env['USER_LOG_CHANNEL']!);
+    const ch = await ShardUtils.getChannel(process.env['USER_LOG_CHANNEL']!);
     if (attachment && attachment.size / 1000000 > 24) {
       if (typeof message === 'string') message = `${message}\nFile Too Large To Upload: ${hyperlink('Link', attachment.url)}`;
       else if (message instanceof EmbedBuilder)
@@ -68,7 +67,7 @@ export class Logger {
 
   public static async PluginInfo(missingPlugs: Plugin[], newerPlugs: Plugin[], link: string, msg: Message) {
     if (!link || !msg) return;
-    const ch = container.client.channels.cache.get(process.env['MISSING_PLUGINS_CHANNEL']!);
+    const ch = await ShardUtils.getChannel(process.env['MISSING_PLUGINS_CHANNEL']!);
     if (!ch?.isSendable()) return;
     const message = EmbedCreator.Question('__Unknown Plugins / Versions__\n');
 

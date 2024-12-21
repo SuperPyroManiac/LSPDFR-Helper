@@ -12,7 +12,7 @@ export class ASIValidator {
 
     const invalidMatches = wholeLog.matchAll(/^\s+.(.+.asi). failed to load.*/gm);
     for (const match of invalidMatches) {
-      let plug = Cache.getPlugin(match[1]!);
+      let plug = await Cache.getPlugin(match[1]!);
       if (!plug) {
         plug = new Plugin(match[1]);
         plug.version = 'ASI';
@@ -25,7 +25,7 @@ export class ASIValidator {
 
     const validMatches = wholeLog.matchAll(/^\s+.(.+.asi). (?!failed to load).*/gm);
     for (const match of validMatches) {
-      let plug = Cache.getPlugin(match[1]!);
+      let plug = await Cache.getPlugin(match[1]!);
       if (!plug) {
         plug = new Plugin(match[1]);
         plug.version = 'ASI';

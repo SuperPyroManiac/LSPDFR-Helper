@@ -40,7 +40,7 @@ export class Reports {
 
     if (extra) {
       const userId = interaction.member?.user.id;
-      const user = userId ? Cache.getUser(userId) : null;
+      const user = userId ? await Cache.getUser(userId) : null;
 
       if (user) {
         user.banned = true;

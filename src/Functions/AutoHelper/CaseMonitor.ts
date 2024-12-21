@@ -6,7 +6,7 @@ import { Logger } from '../Messages/Logger';
 export class CaseMonitor {
   public static async Update(serverId: string) {
     try {
-      const server = Cache.getServer(serverId);
+      const server = await Cache.getServer(serverId);
       if (!server || !server.ahMonChId || server.ahMonChId === '0') return;
       const ch = server.getGuild()?.channels.cache.get(server.ahMonChId);
       if (!ch || !ch.isTextBased()) return;
@@ -14,9 +14,7 @@ export class CaseMonitor {
         (x) => x.embeds[0]?.description?.includes('AutoHelper') && x.embeds[0]?.description?.includes('Cases')
       );
       if (!msg) msg = await ch.send({ embeds: [EmbedCreator.Loading('__Starting...__')] });
-      const cases = Cache.getCases()
-        .filter((x) => x.serverId === serverId && x.open)
-        .sort((a, b) => a.expireDate.getTime() - b.expireDate.getTime());
+      const cases = (await Cache.getCases()).filter((x) => x.serverId === serverId && x.open).sort((a, b) => a.expireDate.getTime() - b.expireDate.getTime());
       const emb = EmbedCreator.Question('__Open AutoHelper Cases__');
 
       for (const c of cases) {

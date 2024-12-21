@@ -24,15 +24,16 @@ export class MessageCreateListener extends Listener {
   }
 
   public async run(msg: Message) {
+    if (this.container.client.shard?.ids[0] !== 0) return;
     await UsersValidation.Verify(msg.author);
 
-    if (Cache.getCases().some((c) => c.channelId === msg.channelId && c.open)) {
+    if ((await Cache.getCases()).some((c) => c.channelId === msg.channelId && c.open)) {
       await this.ahChannels(msg);
     }
   }
 
   private async ahChannels(msg: Message) {
-    const cs = Cache.getCases().find((c) => c.channelId === msg.channelId && c.open);
+    const cs = (await Cache.getCases()).find((c) => c.channelId === msg.channelId && c.open);
     if (!cs || msg.author.id !== cs?.ownerId) return;
     const acceptedTypes = ['ragepluginhook', 'els', 'asiloader', '.xml', '.meta'];
 

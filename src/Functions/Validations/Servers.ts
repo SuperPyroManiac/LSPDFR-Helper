@@ -1,11 +1,12 @@
 import { Cache } from '../../Cache';
-import { container } from '@sapphire/framework';
 import { Server } from '../../CustomTypes/MainTypes/Server';
 import { DBManager } from '../DBManager';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
 import { ButtonStyle } from 'discord.js';
 import { Logger } from '../Messages/Logger';
+import { ShardUtils } from '../ShardUtils';
+import { container } from '@sapphire/framework';
 
 export class ServerValidation {
   public static async Verify() {
@@ -15,10 +16,10 @@ export class ServerValidation {
 
   public static async AddMissing(): Promise<number> {
     let cnt = 0;
-    for (const server of Array.from(container.client.guilds.cache.values())) {
+    for (const server of await ShardUtils.getAllGuilds()) {
       const ch = server.systemChannel;
-      const owner = await server.fetchOwner();
-      let cachedServ = Cache.getServer(server.id);
+      const owner = await container.client.users.fetch(server.ownerId);
+      let cachedServ = await Cache.getServer(server.id);
 
       const emb = EmbedCreator.Success(
         '__LSPDFR Helper Added!__\r\n' +
@@ -47,7 +48,7 @@ export class ServerValidation {
               `**Server Name:** ${server.name}\r\n` +
               `**Server Id:** ${server.id}\r\n` +
               `**Members:** ${server.memberCount}\r\n` +
-              `**Owner:** ${owner.user.username} (${owner.user.id})`
+              `**Owner:** ${owner.username} (${owner.id})`
           ).setThumbnail(server.iconURL())
         );
         cnt++;
@@ -68,7 +69,7 @@ export class ServerValidation {
               `**Server Name:** ${server.name}\r\n` +
               `**Server Id:** ${server.id}\r\n` +
               `**Members:** ${server.memberCount}\r\n` +
-              `**Owner:** ${owner.user.username} (${owner.user.id})`
+              `**Owner:** ${owner.username} (${owner.id})`
           ).setThumbnail(server.iconURL())
         );
         cachedServ.enabled = false;
@@ -86,7 +87,7 @@ export class ServerValidation {
               `**Server Name:** ${server.name}\r\n` +
               `**Server Id:** ${server.id}\r\n` +
               `**Members:** ${server.memberCount}\r\n` +
-              `**Owner:** ${owner.user.username} (${owner.user.id})`
+              `**Owner:** ${owner.username} (${owner.id})`
           ).setThumbnail(server.iconURL())
         );
         cnt++;
@@ -99,8 +100,8 @@ export class ServerValidation {
   public static async RemoveMissing(): Promise<number> {
     let cnt = 0;
 
-    for (const server of Cache.getServers().filter((x) => x.enabled === true)) {
-      if (!container.client.guilds.cache.has(server.id)) {
+    for (const server of (await Cache.getServers()).filter((x) => x.enabled === true)) {
+      if (!(await ShardUtils.getAllGuilds()).find((x) => x.id === server.id)) {
         const serv = await DBManager.getServer(server.id);
         if (serv?.enabled === false) continue;
         server.enabled = false;

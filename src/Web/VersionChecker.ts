@@ -12,8 +12,8 @@ export class VersionChecker {
     });
   }
 
-  private static getPluginVersion(pluginName: string): string {
-    const plugin = Cache.getPlugin(pluginName);
+  private static async getPluginVersion(pluginName: string): Promise<string> {
+    const plugin = await Cache.getPlugin(pluginName);
     return plugin?.version || 'Plugin not found';
   }
 }

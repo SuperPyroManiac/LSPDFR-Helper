@@ -17,8 +17,8 @@ export class ButtonInteractions extends InteractionHandler {
   }
 
   public async run(interaction: ButtonInteraction) {
-    const pCache = Cache.getProcess(interaction.message.id);
-    const iCache = Cache.getInteraction(interaction.user.id, interaction.message.id);
+    const pCache = await Cache.getProcess(interaction.message.id);
+    const iCache = await Cache.getInteraction(interaction.user.id, interaction.message.id);
 
     await UsersValidation.Verify(interaction.user);
 
@@ -76,7 +76,7 @@ export class ButtonInteractions extends InteractionHandler {
     if (interaction.customId === AhOpenCase) {
       await interaction.reply({ embeds: [EmbedCreator.Loading('__Creating Case!__\r\n>>> A case is being created for you. Please wait...')], ephemeral: true });
 
-      if (Cache.getUser(interaction.user.id)?.banned) {
+      if ((await Cache.getUser(interaction.user.id))?.banned) {
         await interaction.editReply({
           embeds: [
             EmbedCreator.Error(
@@ -87,14 +87,14 @@ export class ButtonInteractions extends InteractionHandler {
         return;
       }
 
-      const findCase = Cache.getCases().filter((x) => x.open && x.ownerId === interaction.user.id)[0];
+      const findCase = (await Cache.getCases()).filter((x) => x.open && x.ownerId === interaction.user.id)[0];
       if (findCase) {
         await interaction.editReply({
           embeds: [EmbedCreator.Error(`__Case Already Open!__\n>>> You already have an open case!\r\nCheck: <#${findCase.channelId}>`)],
         });
         return;
       }
-      if (Cache.getServer(interaction.guildId!)?.ahChId != interaction.channelId) {
+      if ((await Cache.getServer(interaction.guildId!))?.ahChId != interaction.channelId) {
         await interaction.editReply({
           embeds: [EmbedCreator.Error('__Server Setup Incorrectly!__\n>>> The servers AutoHelper channel ID is not set correctly. Please let server staff know!')],
         });
@@ -108,7 +108,7 @@ export class ButtonInteractions extends InteractionHandler {
 
     if (interaction.customId === AhMarkComplete) {
       await interaction.reply({ embeds: [EmbedCreator.Loading('__Closing Case!__\r\n>>> The case is being closed. Please wait...')], ephemeral: true });
-      const cs = Cache.getCases().filter((x) => x.channelId === interaction.channelId)[0];
+      const cs = (await Cache.getCases()).filter((x) => x.channelId === interaction.channelId)[0];
       if (!cs) {
         await interaction.editReply({
           embeds: [

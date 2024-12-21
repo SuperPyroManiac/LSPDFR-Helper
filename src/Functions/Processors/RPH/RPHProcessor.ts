@@ -26,15 +26,19 @@ export class RPHProcessor {
   public constructor(log: RPHLog, mesgId: string) {
     this.log = log;
     this.msgId = mesgId;
+    void this.init();
+  }
+
+  private async init() {
     //prettier-ignore
     {
-    this.currentPlugins = log.current.map((x) => x.dname).join('**,** ');
-    this.outdatedPlugins = log.outdated.map((x) => x.linkedName()).join('**,** ');
-    this.rphPlugins = log.current.filter((x) => x.type === PluginType.RPH).map((x) => x.dname).join('**,** ');
-    this.removePlugins = log.current.filter((x) => x.state === State.BROKEN || x.type === PluginType.LIBRARY).map((x) => x.dname).join('**,** ');
-    this.gtaVer = Cache.getPlugin('GrandTheftAuto5')?.version === log.gtaVersion ? '✓' : '❌';
-    this.lspdfrVer = Cache.getPlugin('LSPDFR')?.version === log.lspdfrVersion ? '✓' : '❌';
-    this.rphVer = Cache.getPlugin('RagePluginHook')?.version === log.rphVersion ? '✓' : '❌';
+      this.currentPlugins = this.log.current.map((x) => x.dname).join('**,** ');
+      this.outdatedPlugins = this.log.outdated.map((x) => x.linkedName()).join('**,** ');
+      this.rphPlugins = this.log.current.filter((x) => x.type === PluginType.RPH).map((x) => x.dname).join('**,** ');
+      this.removePlugins = this.log.current.filter((x) => x.state === State.BROKEN || x.type === PluginType.LIBRARY).map((x) => x.dname).join('**,** ');
+      this.gtaVer = (await Cache.getPlugin('GrandTheftAuto5'))?.version === this.log.gtaVersion ? '✓' : '❌';
+      this.lspdfrVer = (await Cache.getPlugin('LSPDFR'))?.version === this.log.lspdfrVersion ? '✓' : '❌';
+      this.rphVer = (await Cache.getPlugin('RagePluginHook'))?.version === this.log.rphVersion ? '✓' : '❌';
     }
   }
 
@@ -109,7 +113,7 @@ export class RPHProcessor {
 
   //! Server Message
   public async SendReply(interaction: MessageContextMenuCommandInteraction | Message | StringSelectMenuInteraction) {
-    this.cache = Cache.getProcess(this.msgId)!;
+    this.cache = (await Cache.getProcess(this.msgId))!;
     const comps = new ActionRowBuilder<ButtonBuilder>();
     comps.addComponents([new ButtonBuilder().setCustomId(LogSendToUser).setLabel('Send To User').setStyle(ButtonStyle.Danger)]);
     let reply: Message;
@@ -138,7 +142,7 @@ export class RPHProcessor {
 
   //! Send To User
   public async SendToUser() {
-    this.cache = Cache.getProcess(this.msgId)!;
+    this.cache = (await Cache.getProcess(this.msgId))!;
     await this.cache.Interaction.deleteReply().catch(() => {});
     if (this.cache.OriginalMessage) await this.cache.OriginalMessage.reply({ embeds: [this.GetBaseInfo(), this.GetPluginInfo(), this.GetErrorInfo()] });
   }

@@ -20,7 +20,7 @@ export class SetupCommand extends Command {
   }
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const serv = Cache.getServer(interaction.guildId!);
+    const serv = await Cache.getServer(interaction.guildId!);
     const imsg = await interaction.reply({
       embeds: [
         EmbedCreator.Question(
@@ -40,6 +40,6 @@ export class SetupCommand extends Command {
       ephemeral: true,
     });
     const msg = await imsg.fetch();
-    Cache.saveInteraction(interaction.user.id, msg.id, new InteractionCache(msg, interaction));
+    await Cache.saveInteraction(interaction.user.id, msg.id, new InteractionCache(msg, interaction));
   }
 }

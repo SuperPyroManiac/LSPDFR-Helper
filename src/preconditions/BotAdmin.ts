@@ -16,7 +16,7 @@ export class BotAdminPrecondition extends AllFlowsPrecondition {
   }
 
   private async checkAdmin(userId: string) {
-    const usr = Cache.getUser(userId);
+    const usr = await Cache.getUser(userId);
     if (!usr) return this.ok();
     return usr.botAdmin === true ? this.ok() : this.error({ message: '__No Permission__\r\n>>> You do not have permission to use this command!' });
   }

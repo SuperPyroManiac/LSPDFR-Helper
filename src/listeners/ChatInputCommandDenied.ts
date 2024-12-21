@@ -11,6 +11,7 @@ export class ChatInputCommandDenied extends Listener<typeof Events.ChatInputComm
   }
 
   public async run(error: UserError, { interaction }: ChatInputCommandDeniedPayload) {
+    if (this.container.client.shard?.ids[0] !== 0) return;
     let replyMsg = {
       embeds: [
         EmbedCreator.Error(
