@@ -16,8 +16,7 @@ Add LSPDFR Helper to your Discord server:
 1. Open Discord Apps Directory
 2. Search for "LSPDFR Helper"
 3. Click "Add to Server"
-
-User app is coming soon!
+(Can also add as a personal app for global usage!)
 
 ## 🤝 Contributing
 

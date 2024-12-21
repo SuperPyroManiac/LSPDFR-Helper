@@ -49,20 +49,20 @@ export class ValidateFilesCommand extends Command {
 
       if (targetMessage.attachments.size === 0) {
         // prettier-ignore
-        await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
+        await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
         return;
       } else if (targetMessage.attachments.size === 1) {
         attach = targetMessage.attachments.first();
 
         if (!attach) {
           // prettier-ignore
-          await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
+          await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
           return;
         }
 
         if (!acceptedTypes.some((x) => attach!.name.toLowerCase().includes(x))) {
           // prettier-ignore
-          await interaction.editReply({embeds: [EmbedCreator.Error('__No Valid File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- ScriptHookVDotNet.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
+          await interaction.editReply({embeds: [EmbedCreator.Error('__No Valid File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
           return;
         }
 
