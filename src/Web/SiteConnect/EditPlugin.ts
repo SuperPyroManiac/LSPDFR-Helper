@@ -5,11 +5,11 @@ import { APIManager } from '../APIManager';
 import { Request, Response } from 'express';
 import { EmbedCreator } from '../../Functions/Messages/EmbedCreator';
 
-export class RemovePlugin {
+export class EditPlugin {
   public static init() {
     const app = APIManager.getApp();
 
-    app.post('/SiteConnect/RemovePlugin', async (req: Request, res: Response) => {
+    app.post('/SiteConnect/EditPlugin', async (req: Request, res: Response) => {
       const authToken = req.headers['x-site-auth'];
 
       if (authToken !== process.env['WEBSITE_KEY']) {
@@ -31,10 +31,19 @@ export class RemovePlugin {
           return;
         }
 
-        await DBManager.deletePlugin(oldPlugin.name);
+        oldPlugin.dname = pluginData.dname || oldPlugin.dname;
+        oldPlugin.description = pluginData.description || oldPlugin.description;
+        oldPlugin.version = pluginData.version || oldPlugin.version;
+        oldPlugin.eaVersion = pluginData.eaVersion || oldPlugin.eaVersion;
+        oldPlugin.link = pluginData.link || oldPlugin.link;
+        oldPlugin.id = pluginData.id || oldPlugin.id;
+        oldPlugin.type = pluginData.type || oldPlugin.type;
+        oldPlugin.state = pluginData.state || oldPlugin.state;
+
+        await DBManager.editPlugin(oldPlugin);
         await Logger.BotLog(
-          EmbedCreator.Warning(
-            '__Removed Plugin!__\n ' +
+          EmbedCreator.Info(
+            'Edited Plugin!__\n ' +
               `>>> -# Sender: ${userData.name}\n` +
               `**Plugin:** ${oldPlugin.name}\n` +
               `**Display Name:** ${oldPlugin.dname}\n` +

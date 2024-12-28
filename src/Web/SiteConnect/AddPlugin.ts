@@ -39,7 +39,7 @@ export class AddPlugin {
         await DBManager.createPlugin(newPlugin);
         await Logger.BotLog(
           EmbedCreator.Info(
-            '__Added new plugin!__\n ' +
+            '__Added New Plugin!__\n ' +
               `>>> -# Sender: ${userData.name}\n` +
               `**Plugin:** ${newPlugin.name}\n` +
               `**Display Name:** ${newPlugin.dname}\n` +

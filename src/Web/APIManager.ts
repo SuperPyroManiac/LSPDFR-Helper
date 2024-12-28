@@ -5,6 +5,7 @@ import { ErrorReport } from './ErrorReport';
 import { UpdateServer } from './SiteConnect/UpdateServer';
 import { AddPlugin } from './SiteConnect/AddPlugin';
 import { RemovePlugin } from './SiteConnect/RemovePlugin';
+import { EditPlugin } from './SiteConnect/EditPlugin';
 
 export class APIManager {
   private static app = express();
@@ -21,6 +22,7 @@ export class APIManager {
     ErrorReport.init();
     UpdateServer.init();
     AddPlugin.init();
+    EditPlugin.init();
     RemovePlugin.init();
   }
 
