@@ -69,19 +69,7 @@ export class EditPlugin {
 
         await DBManager.editPlugin(oldPlugin);
         await Logger.BotLog(
-          EmbedCreator.Info(
-            '__Edited Plugin!__\n ' +
-              `>>> -# Sender: ${userData.name}\n` +
-              `**Plugin:** ${oldPlugin.name}\n` +
-              `**Display Name:** ${oldPlugin.dname}\n` +
-              `**link:** ${oldPlugin.link}\n` +
-              `**ID:** ${oldPlugin.id}\n` +
-              `**Version:** ${oldPlugin.version}\n` +
-              `**EA Version:** ${oldPlugin.eaVersion}\n` +
-              `**Description:** ${codeBlock(oldPlugin.description!)}\n` +
-              `**Type:** ${oldPlugin.type}\n` +
-              `**State:** ${oldPlugin.state}\n`
-          )
+          EmbedCreator.Info('__Plugin Edited!__\n' + `>>> -# Sender: ${userData.name}\n` + `**Plugin:** ${oldPlugin.name}\n${changes.join('\n')}`)
         );
 
         res.status(200).json({
