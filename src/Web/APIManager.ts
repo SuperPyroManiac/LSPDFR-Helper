@@ -4,6 +4,7 @@ import { VersionChecker } from './VersionChecker';
 import { ErrorReport } from './ErrorReport';
 import { UpdateServer } from './SiteConnect/UpdateServer';
 import { AddPlugin } from './SiteConnect/AddPlugin';
+import { RemovePlugin } from './SiteConnect/RemovePlugin';
 
 export class APIManager {
   private static app = express();
@@ -20,6 +21,7 @@ export class APIManager {
     ErrorReport.init();
     UpdateServer.init();
     AddPlugin.init();
+    RemovePlugin.init();
   }
 
   private static setupRoutes() {
