@@ -29,10 +29,10 @@ export class AddPlugin {
         const newPlugin = new Plugin(pluginData.name);
         newPlugin.dname = pluginData.dname || pluginData.name;
         newPlugin.description = pluginData.description;
-        newPlugin.version = pluginData.version;
-        newPlugin.eaVersion = pluginData.eaVersion;
-        newPlugin.link = pluginData.link;
-        newPlugin.id = pluginData.id;
+        newPlugin.version = pluginData.version ?? null;
+        newPlugin.eaVersion = pluginData.eaVersion ?? null;
+        newPlugin.link = pluginData.link ?? null;
+        newPlugin.id = pluginData.id ?? null;
         newPlugin.type = pluginData.type;
         newPlugin.state = pluginData.state;
 

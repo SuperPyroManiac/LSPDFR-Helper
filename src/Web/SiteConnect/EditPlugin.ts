@@ -33,10 +33,10 @@ export class EditPlugin {
 
         oldPlugin.dname = pluginData.dname;
         oldPlugin.description = pluginData.description;
-        oldPlugin.version = pluginData.version;
-        oldPlugin.eaVersion = pluginData.eaVersion;
-        oldPlugin.link = pluginData.link;
-        oldPlugin.id = pluginData.id;
+        oldPlugin.version = pluginData.version ?? null;
+        oldPlugin.eaVersion = pluginData.eaVersion ?? null;
+        oldPlugin.link = pluginData.link ?? null;
+        oldPlugin.id = pluginData.id ?? null;
         oldPlugin.type = pluginData.type;
         oldPlugin.state = pluginData.state;
 
