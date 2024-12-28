@@ -33,8 +33,7 @@ export class EmbedCreator {
     return new EmbedBuilder()
       .setColor('Gold')
       .setDescription(bold ? `## ${process.env['CHECKLIST']} ${msg}` : `${process.env['SUPPORT']} ${msg}`)
-      .setThumbnail('https://i.imgur.com/ZbwmXtr.png');
-    //.setThumbnail('https://i.imgur.com/bPWj8aV.png');
+      .setThumbnail('https://i.imgur.com/bPWj8aV.png');
   }
 
   public static AddBlanks(count: number): string {
