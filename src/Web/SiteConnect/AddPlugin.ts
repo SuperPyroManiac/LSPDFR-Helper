@@ -40,7 +40,7 @@ export class AddPlugin {
         await Logger.BotLog(
           EmbedCreator.Info(
             '__Added new plugin!__\n ' +
-              `>>> -# Sender:** ${userData.name}\n` +
+              `>>> -# Sender: ${userData.name}\n` +
               `**Plugin:** ${newPlugin.name}\n` +
               `**Display Name:** ${newPlugin.dname}\n` +
               `**link:** ${newPlugin.link}\n` +

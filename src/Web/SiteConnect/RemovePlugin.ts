@@ -34,8 +34,8 @@ export class RemovePlugin {
         await DBManager.deletePlugin(oldPlugin.name);
         await Logger.BotLog(
           EmbedCreator.Warning(
-            'Removed plugin!__\n ' +
-              `>>> -# Sender:** ${userData.name}\n` +
+            '__Removed plugin!__\n ' +
+              `>>> -# Sender: ${userData.name}\n` +
               `**Plugin:** ${oldPlugin.name}\n` +
               `**Display Name:** ${oldPlugin.dname}\n` +
               `**link:** ${oldPlugin.link}\n` +
