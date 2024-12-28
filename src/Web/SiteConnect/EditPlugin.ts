@@ -31,6 +31,33 @@ export class EditPlugin {
           return;
         }
 
+        const changes: string[] = [];
+
+        if (oldPlugin.dname !== pluginData.dname) {
+          changes.push(`**Display Name:** ${oldPlugin.dname} → ${pluginData.dname}`);
+        }
+        if (oldPlugin.description !== pluginData.description) {
+          changes.push(`**Description:** ${codeBlock(oldPlugin.description!)} → ${codeBlock(pluginData.description!)}`);
+        }
+        if (oldPlugin.version !== pluginData.version) {
+          changes.push(`**Version:** ${oldPlugin.version} → ${pluginData.version}`);
+        }
+        if (oldPlugin.eaVersion !== pluginData.eaVersion) {
+          changes.push(`**EA Version:** ${oldPlugin.eaVersion} → ${pluginData.eaVersion}`);
+        }
+        if (oldPlugin.link !== pluginData.link) {
+          changes.push(`**Link:** ${oldPlugin.link} → ${pluginData.link}`);
+        }
+        if (oldPlugin.id !== pluginData.id) {
+          changes.push(`**ID:** ${oldPlugin.id} → ${pluginData.id}`);
+        }
+        if (oldPlugin.type !== pluginData.type) {
+          changes.push(`**Type:** ${oldPlugin.type} → ${pluginData.type}`);
+        }
+        if (oldPlugin.state !== pluginData.state) {
+          changes.push(`**State:** ${oldPlugin.state} → ${pluginData.state}`);
+        }
+
         oldPlugin.dname = pluginData.dname;
         oldPlugin.description = pluginData.description;
         oldPlugin.version = pluginData.version ?? null;
