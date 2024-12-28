@@ -31,14 +31,14 @@ export class EditPlugin {
           return;
         }
 
-        oldPlugin.dname = pluginData.dname || oldPlugin.dname;
-        oldPlugin.description = pluginData.description || oldPlugin.description;
-        oldPlugin.version = pluginData.version || oldPlugin.version;
-        oldPlugin.eaVersion = pluginData.eaVersion || oldPlugin.eaVersion;
-        oldPlugin.link = pluginData.link || oldPlugin.link;
-        oldPlugin.id = pluginData.id || oldPlugin.id;
-        oldPlugin.type = pluginData.type || oldPlugin.type;
-        oldPlugin.state = pluginData.state || oldPlugin.state;
+        oldPlugin.dname = pluginData.dname;
+        oldPlugin.description = pluginData.description;
+        oldPlugin.version = pluginData.version;
+        oldPlugin.eaVersion = pluginData.eaVersion;
+        oldPlugin.link = pluginData.link;
+        oldPlugin.id = pluginData.id;
+        oldPlugin.type = pluginData.type;
+        oldPlugin.state = pluginData.state;
 
         await DBManager.editPlugin(oldPlugin);
         await Logger.BotLog(
