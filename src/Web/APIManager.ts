@@ -3,6 +3,7 @@ import cors from 'cors';
 import { VersionChecker } from './VersionChecker';
 import { ErrorReport } from './ErrorReport';
 import { UpdateServer } from './SiteConnect/UpdateServer';
+import { AddPlugin } from './SiteConnect/AddPlugin';
 
 export class APIManager {
   private static app = express();
@@ -18,6 +19,7 @@ export class APIManager {
     VersionChecker.init();
     ErrorReport.init();
     UpdateServer.init();
+    AddPlugin.init();
   }
 
   private static setupRoutes() {

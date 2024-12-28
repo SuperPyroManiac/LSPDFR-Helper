@@ -5,7 +5,7 @@ import { Logger } from '../../Functions/Messages/Logger';
 import { APIManager } from '../APIManager';
 import { Request, Response } from 'express';
 
-export class UpdateServer {
+export class AddPlugin {
   public static init() {
     const app = APIManager.getApp();
 
