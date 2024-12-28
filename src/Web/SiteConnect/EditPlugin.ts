@@ -43,7 +43,7 @@ export class EditPlugin {
         await DBManager.editPlugin(oldPlugin);
         await Logger.BotLog(
           EmbedCreator.Info(
-            'Edited Plugin!__\n ' +
+            '__Edited Plugin!__\n ' +
               `>>> -# Sender: ${userData.name}\n` +
               `**Plugin:** ${oldPlugin.name}\n` +
               `**Display Name:** ${oldPlugin.dname}\n` +
