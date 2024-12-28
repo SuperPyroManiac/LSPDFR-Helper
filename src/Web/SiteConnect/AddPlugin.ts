@@ -4,6 +4,7 @@ import { DBManager } from '../../Functions/DBManager';
 import { Logger } from '../../Functions/Messages/Logger';
 import { APIManager } from '../APIManager';
 import { Request, Response } from 'express';
+import { EmbedCreator } from '../../Functions/Messages/EmbedCreator';
 
 export class AddPlugin {
   public static init() {
@@ -37,17 +38,19 @@ export class AddPlugin {
 
         await DBManager.createPlugin(newPlugin);
         await Logger.BotLog(
-          '__Added new plugin!__\n ' +
-            `>>> -# Sender:** ${userData.name}\n` +
-            `>>> **Plugin:** ${newPlugin.name}\n` +
-            `>>> **Display Name:** ${newPlugin.dname}\n` +
-            `>>> **link:** ${newPlugin.link}\n` +
-            `>>> **ID:** ${newPlugin.id}\n` +
-            `>>> **Version:** ${newPlugin.version}\n` +
-            `>>> **EA Version:** ${newPlugin.eaVersion}\n` +
-            `>>> **Description:** ${codeBlock(newPlugin.description!)}\n` +
-            `>>> **Type:** ${newPlugin.type}\n` +
-            `>>> **State:** ${newPlugin.state}\n`
+          EmbedCreator.Info(
+            '__Added new plugin!__\n ' +
+              `>>> -# Sender:** ${userData.name}\n` +
+              `**Plugin:** ${newPlugin.name}\n` +
+              `**Display Name:** ${newPlugin.dname}\n` +
+              `**link:** ${newPlugin.link}\n` +
+              `**ID:** ${newPlugin.id}\n` +
+              `**Version:** ${newPlugin.version}\n` +
+              `**EA Version:** ${newPlugin.eaVersion}\n` +
+              `**Description:** ${codeBlock(newPlugin.description!)}\n` +
+              `**Type:** ${newPlugin.type}\n` +
+              `**State:** ${newPlugin.state}\n`
+          )
         );
 
         res.status(200).json({
