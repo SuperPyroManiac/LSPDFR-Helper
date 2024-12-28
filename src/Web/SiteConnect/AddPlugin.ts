@@ -30,6 +30,7 @@ export class UpdateServer {
         newPlugin.description = pluginData.description;
         newPlugin.version = pluginData.version;
         newPlugin.eaVersion = pluginData.eaVersion;
+        newPlugin.link = pluginData.link;
         newPlugin.id = pluginData.id;
         newPlugin.type = pluginData.type;
         newPlugin.state = pluginData.state;
@@ -37,15 +38,16 @@ export class UpdateServer {
         await DBManager.createPlugin(newPlugin);
         await Logger.BotLog(
           '__Added new plugin!__\n ' +
-            `>>> -# Sender: ${userData.name}\n` +
-            `>>> -# Plugin: ${newPlugin.name}\n` +
-            `>>> -# Display Name: ${newPlugin.dname}\n` +
-            `>>> -# ID: ${newPlugin.id}\n` +
-            `>>> -# Version: ${newPlugin.version}\n` +
-            `>>> -# EA Version: ${newPlugin.eaVersion}\n` +
-            `>>> -# Description: ${codeBlock(newPlugin.description!)}\n` +
-            `>>> -# Type: ${newPlugin.type}\n` +
-            `>>> -# State: ${newPlugin.state}\n`
+            `>>> -# Sender:** ${userData.name}\n` +
+            `>>> **Plugin:** ${newPlugin.name}\n` +
+            `>>> **Display Name:** ${newPlugin.dname}\n` +
+            `>>> **link:** ${newPlugin.link}\n` +
+            `>>> **ID:** ${newPlugin.id}\n` +
+            `>>> **Version:** ${newPlugin.version}\n` +
+            `>>> **EA Version:** ${newPlugin.eaVersion}\n` +
+            `>>> **Description:** ${codeBlock(newPlugin.description!)}\n` +
+            `>>> **Type:** ${newPlugin.type}\n` +
+            `>>> **State:** ${newPlugin.state}\n`
         );
 
         res.status(200).json({
