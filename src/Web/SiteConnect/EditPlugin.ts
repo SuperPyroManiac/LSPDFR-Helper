@@ -39,17 +39,17 @@ export class EditPlugin {
         if (oldPlugin.description !== pluginData.description) {
           changes.push(`**Description:** ${codeBlock(oldPlugin.description!)} → ${codeBlock(pluginData.description!)}`);
         }
-        if (oldPlugin.version !== pluginData.version) {
-          changes.push(`**Version:** ${oldPlugin.version} → ${pluginData.version}`);
+        if (oldPlugin.version !== (pluginData.version ?? null)) {
+          changes.push(`**Version:** ${oldPlugin.version} → ${pluginData.version ?? null}`);
         }
-        if (oldPlugin.eaVersion !== pluginData.eaVersion) {
-          changes.push(`**EA Version:** ${oldPlugin.eaVersion} → ${pluginData.eaVersion}`);
+        if (oldPlugin.eaVersion !== (pluginData.eaVersion ?? null)) {
+          changes.push(`**EA Version:** ${oldPlugin.eaVersion} → ${pluginData.eaVersion ?? null}`);
         }
-        if (oldPlugin.link !== pluginData.link) {
-          changes.push(`**Link:** ${oldPlugin.link} → ${pluginData.link}`);
+        if (oldPlugin.link !== (pluginData.link ?? null)) {
+          changes.push(`**Link:** ${oldPlugin.link} → ${pluginData.link ?? null}`);
         }
-        if (oldPlugin.id !== pluginData.id) {
-          changes.push(`**ID:** ${oldPlugin.id} → ${pluginData.id}`);
+        if (oldPlugin.id !== (pluginData.id ?? null)) {
+          changes.push(`**ID:** ${oldPlugin.id} → ${pluginData.id ?? null}`);
         }
         if (oldPlugin.type !== pluginData.type) {
           changes.push(`**Type:** ${oldPlugin.type} → ${pluginData.type}`);
