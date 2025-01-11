@@ -103,7 +103,7 @@ export class ValidateFilesCommand extends Command {
       }
 
       if (attach!.name.toLowerCase().endsWith('.xml') || attach!.name.toLowerCase().endsWith('.meta')) {
-        const xmlProc = new XMLProcessor(attach!.url);
+        const xmlProc = new XMLProcessor(attach!.url, attach!.name);
         await xmlProc.SendReply(interaction);
         return;
       }

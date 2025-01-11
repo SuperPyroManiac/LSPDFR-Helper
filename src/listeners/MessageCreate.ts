@@ -83,7 +83,7 @@ export class MessageCreateListener extends Listener {
         }
 
         if (a.name.endsWith('.xml') || a.name.endsWith('.meta')) {
-          const xmlProc = new XMLProcessor(a.url);
+          const xmlProc = new XMLProcessor(a.url, a.name);
           await xmlProc.SendReply(msg);
         }
       }
