@@ -87,13 +87,23 @@ export class PluginValidation {
   public static compareVer(version1: string, version2: string): number {
     const parts1 = version1.split('.').map(Number);
     const parts2 = version2.split('.').map(Number);
-    const length = Math.max(parts1.length, parts2.length);
-    for (let i = 0; i < length; i++) {
+
+    for (let i = 0; i < 2; i++) {
       const num1 = parts1[i] || 0;
       const num2 = parts2[i] || 0;
       if (num1 < num2) return -1;
       if (num1 > num2) return 1;
     }
+
+    if (parts1.length > 2 || parts2.length > 2) {
+      for (let i = 2; i < Math.max(parts1.length, parts2.length); i++) {
+        const num1 = parts1[i] || 0;
+        const num2 = parts2[i] || 0;
+        if (num1 < num2) return -1;
+        if (num1 > num2) return 1;
+      }
+    }
+
     return 0;
   }
 }
