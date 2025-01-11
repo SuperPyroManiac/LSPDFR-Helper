@@ -38,7 +38,7 @@ export class PluginValidation {
         `> **Type:** \`${plug.type}\` | **State:** \`${plug.state}\`\r\n` +
         `> **EA Version?:** \`${Boolean(plug.eaVersion && plug.eaVersion !== '0')}\`\r\n`;
 
-      if (this.compareVer(plug.version, webPlug.file_version) === 1) return;
+      if (this.compareVer(plug.version, webPlug.file_version) === 1) continue;
       plug.version = webPlug.file_version;
       await DBManager.editPlugin(plug);
       cnt++;
