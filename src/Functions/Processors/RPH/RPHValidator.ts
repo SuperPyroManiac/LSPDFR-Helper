@@ -93,7 +93,7 @@ export class RPHValidator {
       for (const match of errMatch) {
         const newError = error.clone();
 
-        for (let i = 0; i <= 3; i++) {
+        for (let i = 0; i <= 5; i++) {
           newError.solution = newError.solution!.replace(`{${i}}`, match[i]!);
         }
 
