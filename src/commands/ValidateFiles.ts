@@ -47,41 +47,30 @@ export class ValidateFilesCommand extends Command {
       const acceptedTypes = ['ragepluginhook', 'els', 'asiloader', '.xml', '.meta'];
       let attach: Attachment | undefined;
 
-      if (targetMessage.attachments.size === 0) {
-        // prettier-ignore
-        await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
-        return;
-      } else if (targetMessage.attachments.size === 1) {
-        attach = targetMessage.attachments.first();
+      const validAttachments = Array.from(targetMessage.attachments.values()).filter((attachment) =>
+        acceptedTypes.some((type) => attachment.name.toLowerCase().includes(type))
+      );
 
-        if (!attach) {
-          // prettier-ignore
-          await interaction.editReply({embeds: [EmbedCreator.Error('__No File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
-          return;
-        }
-
-        if (!acceptedTypes.some((x) => attach!.name.toLowerCase().includes(x))) {
-          // prettier-ignore
-          await interaction.editReply({embeds: [EmbedCreator.Error('__No Valid File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- asiloader.log\r\n- .xml\r\n- .meta')]});
-          return;
-        }
-
-        if (attach.size / 1000000 > 10) {
-          await Reports.largeLog(interaction, attach, true);
-          return;
-        } else if (attach.size / 1000000 > 3) {
-          await Reports.largeLog(interaction, attach);
-          return;
-        }
-      } else if (targetMessage.attachments.size > 1) {
+      if (validAttachments.length === 0) {
         await interaction.editReply({
-          embeds: [EmbedCreator.Loading(`__Validating!__\r\n>>> The file is currently being processed. Please wait...`)],
+          embeds: [
+            EmbedCreator.Error(
+              '__No Valid File Found!__\r\n>>> The selected message must include a valid log type!\r\n- RagePluginHook.log\r\n- ELS.log\r\n- asiloader.log\r\n- .xml\r\n- .meta'
+            ),
+          ],
         });
+        return;
+      } else if (validAttachments.length === 1) {
+        attach = validAttachments[0];
 
-        const validAttachments = Array.from(targetMessage.attachments.values()).filter((attachment) =>
-          acceptedTypes.some((type) => attachment.name.toLowerCase().includes(type))
-        );
-
+        if (attach!.size / 1000000 > 10) {
+          await Reports.largeLog(interaction, attach!, true);
+          return;
+        } else if (attach!.size / 1000000 > 3) {
+          await Reports.largeLog(interaction, attach!);
+          return;
+        }
+      } else {
         await interaction.editReply({
           embeds: [EmbedCreator.Warning('__Multiple Valid Files!__\r\n>>> Please select the one you would like to be validated!')],
           components: [
@@ -97,7 +86,6 @@ export class ValidateFilesCommand extends Command {
             ),
           ],
         });
-
         await Cache.saveProcess(interaction.id, new ProcessCache(targetMessage, interaction));
         return;
       }
@@ -108,7 +96,7 @@ export class ValidateFilesCommand extends Command {
         return;
       }
 
-      if (attach!.name.toLowerCase().includes('ragepluginhook')) {
+      if (attach!.name.toLowerCase().includes('ragepluginhook') && attach!.name.endsWith('.log')) {
         let rphProc: RPHProcessor;
         const cache = Cache.getProcess(targetMessage.id);
         if (ProcessCache.IsCacheAvailable(cache)) rphProc = cache!.Processor as RPHProcessor;
@@ -124,7 +112,7 @@ export class ValidateFilesCommand extends Command {
         return;
       }
 
-      if (attach!.name.toLowerCase().includes('els')) {
+      if (attach!.name.toLowerCase().includes('els') && attach!.name.endsWith('.log')) {
         let elsProc: ELSProcessor;
         const cache = Cache.getProcess(targetMessage.id);
         if (ProcessCache.IsCacheAvailable(cache)) elsProc = cache!.Processor as ELSProcessor;
@@ -139,7 +127,7 @@ export class ValidateFilesCommand extends Command {
         return;
       }
 
-      if (attach!.name.toLowerCase().includes('asiloader')) {
+      if (attach!.name.toLowerCase().includes('asiloader') && attach!.name.endsWith('.log')) {
         let asiProc: ASIProcessor;
         const cache = Cache.getProcess(targetMessage.id);
         if (ProcessCache.IsCacheAvailable(cache)) asiProc = cache!.Processor as ASIProcessor;
