@@ -20,33 +20,31 @@ export class PluginValidation {
     if (!webPlugs || !webPlugs.length) return;
 
     for (const webPlug of webPlugs!) {
-      const matchingPlugs = plugs.filter((plug) => plug.id == webPlug.file_id);
-      for (const plug of matchingPlugs) {
-        if (!plug || plug.id == 0 || plug.state === State.IGNORE || plug.state === State.EXTERNAL) continue;
-        webPlug.file_version = webPlug.file_version.split(' ')[0]!.trim();
-        webPlug.file_version = webPlug.file_version.replace(/[^0-9.]/g, '');
-        const onlineVersionSplit = webPlug.file_version.split('.');
-        if (onlineVersionSplit.length == 2) webPlug.file_version += '.0.0';
-        if (onlineVersionSplit.length == 3) webPlug.file_version += '.0';
-        if (!plug.version) plug.version = '0';
-        if (!webPlug.file_version) webPlug.file_version = '0';
-        if (plug.version == webPlug.file_version) continue;
+      const plug = plugs.filter((plug) => plug.id == webPlug.file_id)[0];
+      if (!plug || plug.id == 0 || plug.state === State.IGNORE || plug.state === State.EXTERNAL) continue;
+      webPlug.file_version = webPlug.file_version.split(' ')[0]!.trim();
+      webPlug.file_version = webPlug.file_version.replace(/[^0-9.]/g, '');
+      const onlineVersionSplit = webPlug.file_version.split('.');
+      if (onlineVersionSplit.length == 2) webPlug.file_version += '.0.0';
+      if (onlineVersionSplit.length == 3) webPlug.file_version += '.0';
+      if (!plug.version) plug.version = '0';
+      if (!webPlug.file_version) webPlug.file_version = '0';
+      if (plug.version == webPlug.file_version) continue;
 
-        emb.data.description +=
-          `## __[${plug.name}](${plug.link})__\r\n` +
-          `> **Previous Version:** \`${plug.version}\`\r\n` +
-          `> **New Version:** \`${webPlug.file_version}\`\r\n` +
-          `> **Type:** \`${plug.type}\` | **State:** \`${plug.state}\`\r\n` +
-          `> **EA Version?:** \`${Boolean(plug.eaVersion && plug.eaVersion !== '0')}\`\r\n`;
+      emb.data.description +=
+        `## __[${plug.name}](${plug.link})__\r\n` +
+        `> **Previous Version:** \`${plug.version}\`\r\n` +
+        `> **New Version:** \`${webPlug.file_version}\`\r\n` +
+        `> **Type:** \`${plug.type}\` | **State:** \`${plug.state}\`\r\n` +
+        `> **EA Version?:** \`${Boolean(plug.eaVersion && plug.eaVersion !== '0')}\`\r\n`;
 
-        if (this.compareVer(plug.version, webPlug.file_version) === 1) continue;
-        plug.version = webPlug.file_version;
-        await DBManager.editPlugin(plug);
-        cnt++;
-      }
-      if (cnt > 0) {
-        await Logger.BotLog(emb);
-      }
+      if (this.compareVer(plug.version, webPlug.file_version) === 1) continue;
+      plug.version = webPlug.file_version;
+      await DBManager.editPlugin(plug);
+      cnt++;
+    }
+    if (cnt > 0) {
+      await Logger.BotLog(emb);
     }
   }
 
