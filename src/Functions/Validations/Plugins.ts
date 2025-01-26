@@ -20,7 +20,7 @@ export class PluginValidation {
     if (!webPlugs || !webPlugs.length) return;
 
     for (const webPlug of webPlugs!) {
-      const matchingLocalPlugs = plugs.filter((plug) => plug.id === webPlug.file_id);
+      const matchingLocalPlugs = plugs.filter((plug) => plug.id == webPlug.file_id);
 
       if (!matchingLocalPlugs.length) continue;
 
