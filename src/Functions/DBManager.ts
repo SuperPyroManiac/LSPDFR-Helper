@@ -181,32 +181,27 @@ export class DBManager {
     });
   }
 
-  public static async createUsers(users: User[]): Promise<void> {
+  public static async createUser(users: User | User[]): Promise<void> {
     await this.handleDbOperation(async () => {
       await prisma.users.createMany({
-        data: users.map((user) => ({
-          id: user.id,
-          name: user.name,
-          banned: user.banned,
-          botEditor: user.botEditor,
-          botAdmin: user.botAdmin,
-        })),
+        data: Array.isArray(users)
+          ? users.map((user) => ({
+              id: user.id,
+              name: user.name,
+              banned: user.banned,
+              botEditor: user.botEditor,
+              botAdmin: user.botAdmin,
+            }))
+          : [
+              {
+                id: users.id,
+                name: users.name,
+                banned: users.banned,
+                botEditor: users.botEditor,
+                botAdmin: users.botAdmin,
+              },
+            ],
         skipDuplicates: true,
-      });
-    });
-    Cache.updateUsers((await this.getUsers()) ?? []);
-  }
-
-  public static async createUser(user: User): Promise<void> {
-    await this.handleDbOperation(async () => {
-      await prisma.users.create({
-        data: {
-          id: user.id,
-          name: user.name,
-          banned: user.banned,
-          botEditor: user.botEditor,
-          botAdmin: user.botAdmin,
-        },
       });
     });
     Cache.updateUsers((await this.getUsers()) ?? []);
