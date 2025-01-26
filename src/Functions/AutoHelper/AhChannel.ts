@@ -27,7 +27,7 @@ export class AhChannel {
         ?.channels.fetch(server.ahChId)
         .catch(async () => {
           {
-            server.ahMonChId = '0';
+            server.ahChId = '0';
             await DBManager.editServer(server);
             return null;
           }
