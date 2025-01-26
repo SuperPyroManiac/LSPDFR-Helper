@@ -28,6 +28,7 @@ This project has a strict license. - see the LICENSE file for details.
 
 ## 🔗 Links
 
+- [Website & Dashboard](https://www.pyrosfun.com/)
 - [Discord Support Server](https://dsc.pyrosfun.com/)
 - [Documentation](https://dsc.pyrosfun.com/helper) in progress...
 
