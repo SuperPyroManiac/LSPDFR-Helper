@@ -4,13 +4,22 @@ import { Server } from '../../CustomTypes/MainTypes/Server';
 import { DBManager } from '../DBManager';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
-import { ButtonStyle } from 'discord.js';
+import { ButtonStyle, PermissionFlagsBits, TextChannel } from 'discord.js';
 import { Logger } from '../Messages/Logger';
 
 export class ServerValidation {
   public static async Verify() {
     void this.AddMissing();
     void this.RemoveMissing();
+  }
+
+  private static canSendMessages(channel: TextChannel): boolean {
+    if (!channel) return false;
+
+    const botMember = channel.guild.members.me;
+    if (!botMember) return false;
+
+    return channel.permissionsFor(botMember).has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]);
   }
 
   public static async AddMissing(): Promise<number> {
@@ -55,12 +64,16 @@ export class ServerValidation {
       }
 
       if (cachedServ.banned) {
-        await ch?.send({
-          embeds: [
-            EmbedCreator.Error('__Server Is Banned!__\r\n>>> This server has been banned from using this bot. You may appeal this by contacting us on our Discord.'),
-          ],
-          components: [comps],
-        });
+        if (ch && this.canSendMessages(ch)) {
+          await ch?.send({
+            embeds: [
+              EmbedCreator.Error(
+                '__Server Is Banned!__\r\n>>> This server has been banned from using this bot. You may appeal this by contacting us on our Discord.'
+              ),
+            ],
+            components: [comps],
+          });
+        }
         await server.leave();
         await Logger.ServerLog(
           EmbedCreator.Error(
