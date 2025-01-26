@@ -3,6 +3,7 @@ import { Cache } from '../../Cache';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 import { AhOpenCase } from '../../interaction-handlers/_CustomIds';
 import { Logger } from '../Messages/Logger';
+import { DBManager } from '../DBManager';
 
 export class AhChannel {
   public static async UpdateCaseMsg(serverId: string) {
@@ -21,7 +22,16 @@ export class AhChannel {
         '\n\n> __Managed by: SuperPyroManiac & Hammer__\n-# More information at: https://dsc.PyrosFun.com';
       const server = Cache.getServer(serverId);
       if (!server || !server.ahChId || server.ahChId === '0' || !server.autoSupport) return;
-      const ch = await server.getGuild()?.channels.fetch(server.ahChId);
+      const ch = await server
+        .getGuild()
+        ?.channels.fetch(server.ahChId)
+        .catch(async () => {
+          {
+            server.ahMonChId = '0';
+            await DBManager.editServer(server);
+            return null;
+          }
+        });
       if (!ch || !ch.isTextBased()) return;
       const emb = EmbedCreator.Support('__LSPDFR AutoHelper__');
       let msg = (await ch.messages.fetch({ limit: 10 })).find((x) => x.embeds[0]?.description?.includes('LSPDFR AutoHelper'));
