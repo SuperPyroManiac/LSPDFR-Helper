@@ -33,7 +33,7 @@ export class CaseMonitor {
 
       await msg.edit({ embeds: [emb] });
     } catch (error) {
-      await Logger.ErrLog(`Error while trying to update case monitor for ${serverId}\n`);
+      await Logger.ErrLog(`Error while trying to update case monitor for ${serverId}\n${error}`);
     }
   }
 }
