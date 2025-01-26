@@ -38,7 +38,7 @@ export class AhChannel {
         ],
       });
     } catch (error) {
-      await Logger.ErrLog(`Error while trying to update AutoHelper message for ${serverId}\n`);
+      await Logger.ErrLog(`Error while trying to update AutoHelper message for ${serverId}\n${error}`);
     }
   }
 
