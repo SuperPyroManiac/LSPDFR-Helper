@@ -70,7 +70,7 @@ export class Logger {
     if (!link || !msg) return;
     const ch = container.client.channels.cache.get(process.env['MISSING_PLUGINS_CHANNEL']!);
     if (!ch?.isSendable()) return;
-    const message = EmbedCreator.Question('__Unknown Plugins / Versions__\n');
+    const message = EmbedCreator.Question('__Unknown Plugins/Versions__\n');
 
     const missingDashListStr = `> - ${missingPlugs.map((plugin) => `${plugin?.name} (${plugin?.version})`).join('\n> - ')}\n`;
     if (missingDashListStr.length > 5 && missingDashListStr.length < 1024) {
