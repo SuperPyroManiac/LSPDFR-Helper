@@ -77,7 +77,7 @@ export class Logger {
       message.setDescription(`${message.data.description}\n${process.env['WARNING']} **Plugins not recognized:** \n${missingDashListStr}`);
     }
 
-    const missmatchDashListStr = `> - ${newerPlugs.map((plugin) => `${plugin?.name} (${plugin?.eaVersion})`).join('\n> - ')}\n`;
+    const missmatchDashListStr = `> - ${newerPlugs.map((plugin) => `${plugin?.name} (DB: ${plugin.eaVersion} → Log: ${plugin?.version})`).join('\n> - ')}\n`;
     if (missmatchDashListStr.length > 5 && missmatchDashListStr.length < 1024) {
       message.setDescription(`${message.data.description}\n${process.env['WARNING']} **Plugin version newer than DB:** \n${missmatchDashListStr}`);
     }
