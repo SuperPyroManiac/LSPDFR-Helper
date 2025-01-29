@@ -16,7 +16,7 @@ export class CaseMonitor {
           {
             server.ahMonChId = '0';
             await DBManager.editServer(server);
-            return null;
+            return;
           }
         });
       if (!ch || !ch.isTextBased()) return;

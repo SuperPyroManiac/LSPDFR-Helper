@@ -29,7 +29,7 @@ export class AhChannel {
           {
             server.ahChId = '0';
             await DBManager.editServer(server);
-            return null;
+            return;
           }
         });
       if (!ch || !ch.isTextBased()) return;
