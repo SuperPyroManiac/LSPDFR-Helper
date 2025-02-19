@@ -9,17 +9,17 @@ export class AhChannel {
   public static async UpdateCaseMsg(serverId: string) {
     try {
       const description =
-        '\n> The AutoHelper can read a variety of file types and will attempt to find issues. Currently supported log files are **RagePluginHook**, **ELS**, and **ASI** logs. The AutoHelper can also parse **.xml** and **.meta** files as well.' +
-        '\n> Please note that frequent issues can often be detected, but human assistance may be required for more advanced problems. Its a robot made by a human, so it may not always be correct.' +
+        '\n> You can check files for common issues here. \n> Currently supported files:\n> - **RagePluginHook Logs**\n> - **ELS Logs**\n> - **ASI Logs** \n> - **.xml Files**\n> - **.meta Files**' +
+        '\n> Please note that frequent issues can often be detected, but human assistance may be required for more advanced problems.' +
         `\n\n## ${process.env['ALERT']!} __AutoHelper Terms Of Use__` +
-        "\n> - Do not send modified logs. To 'test' the bot is not a valid excuse." +
-        '\n> - Do not upload logs or files greater than **__3MB__**.' +
-        '\n> - Do not spam cases. You can upload multiple logs to a single case.' +
+        '\n> - No modified logs' +
+        '\n> - No files bigger than **__3MB__**.' +
+        '\n> - No spamming cases or files rapidly.' +
         `\n\n## ${process.env['QUESTION']!} __Other Info__` +
         '\n> Anyone can join and assist in cases, using /JoinCase' +
-        "\n> You can add this bot to your server regardless of size! You may also use its commands in ***any*** server by adding it to your account! Just click the user then select 'add app'!" +
+        "\n> You can add this bot to your server regardless of size! You may also use its commands in ***any*** server by adding it to your account! Just click the bot then select 'add app'!" +
         '\n' +
-        '\n\n> __Managed by: SuperPyroManiac & Hammer__\n-# More information at: https://dsc.PyrosFun.com';
+        '\n\n> __Created by: SuperPyroManiac__\n-# To contact me visit: https://dsc.PyrosFun.com';
       const server = Cache.getServer(serverId);
       if (!server || !server.ahChId || server.ahChId === '0' || !server.autoSupport) return;
       const ch = await server
@@ -42,7 +42,7 @@ export class AhChannel {
         components: [
           new ActionRowBuilder<ButtonBuilder>().addComponents([
             new ButtonBuilder().setCustomId(AhOpenCase).setLabel('Open Case').setStyle(ButtonStyle.Success).setEmoji(process.env['SUCCESS']!),
-            new ButtonBuilder().setURL('https://www.pyrosfun.com/').setLabel('Bot Website').setStyle(ButtonStyle.Link),
+            new ButtonBuilder().setURL('https://www.pyrosfun.com/helper').setLabel('Add To Your Server').setStyle(ButtonStyle.Link),
             new ButtonBuilder().setURL('https://www.paypal.com/donate/?hosted_button_id=XPVRV3WJKGFW2').setLabel('Donations').setStyle(ButtonStyle.Link),
           ]),
         ],
