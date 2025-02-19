@@ -80,9 +80,7 @@ export class MessageCreateListener extends Listener {
             await Logger.ErrLog(`Failed to process file!\r\n${e}`);
             await msg.reply({ embeds: [EmbedCreator.Error('__Failed to process file!__\r\n>>> The error has been sent to the bot developer!')] });
           });
-        }
-
-        if (a.name.endsWith('.xml') || a.name.endsWith('.meta')) {
+        } else if (a.name.endsWith('.xml') || a.name.endsWith('.meta')) {
           const xmlProc = new XMLProcessor(a.url, a.name);
           await xmlProc.SendReply(msg);
         }
