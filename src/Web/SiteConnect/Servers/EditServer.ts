@@ -67,7 +67,13 @@ export class EditServer {
         oldServer.updateChId = serverData.updateChId;
 
         await DBManager.editServer(oldServer);
-        await Logger.BotLog(EmbedCreator.Info('__Server Edited!__\n' + `>>> -# Sender: ${userData.name}\n` + `**Server:** ${oldServer.id}\n${changes.join('\n')}`));
+        await Logger.BotLog(
+          EmbedCreator.Info(
+            '__Server Edited!__\n' +
+              `>>> -# Sender: ${userData.name}\n` +
+              `**Server ID:** ${oldServer.id}\n**Server Name:** ${oldServer.name}\n${changes.join('\n')}`
+          )
+        );
 
         res.status(200).json({
           success: true,

@@ -47,7 +47,14 @@ export class EditUser {
         oldUser.botAdmin = userData.botAdmin;
 
         await DBManager.editUser(oldUser);
-        await Logger.BotLog(EmbedCreator.Info('__User Edited!__\n' + `>>> -# Sender: ${userData.name}\n` + `**User:** ${oldUser.id}\n${changes.join('\n')}`));
+        await Logger.BotLog(
+          EmbedCreator.Info(
+            '__User Edited!__\n' +
+              `>>> -# Sender: ${userData.name}\n` +
+              `**User ID:** ${oldUser.id}\n**Username:** ${oldUser.name}
+          n${changes.join('\n')}`
+          )
+        );
 
         res.status(200).json({
           success: true,
