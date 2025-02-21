@@ -36,24 +36,25 @@ export class UpdateServer {
 
         //Announce Channel Setup
         const existingHook = await DBManager.getWebhook(guildId);
-        console.log('1');
-        if (existingHook) if (existingHook.channelId !== serv?.announceChId) await existingHook?.delete();
-        console.log('2');
+        if (existingHook)
+          if (existingHook.channelId !== serv?.announceChId) {
+            await existingHook?.delete();
+            if (existingHook.channelId === serv?.announceChId) {
+              res.status(200).json({ success: true });
+              return;
+            }
+          }
+
         if (serv?.announceChId != '0') {
-          console.log('3');
           const ch = await container.client.channels.fetch(serv?.announceChId!);
-          console.log('4');
           if (ch instanceof TextChannel || ch instanceof NewsChannel) {
-            console.log('5');
             const webhook = await ch.createWebhook({
               name: 'LSPDFR Helper',
               avatar: 'https://i.imgur.com/jxODw4N.png',
             });
             const newHook = new UpdateWebhook(guildId, serv?.announceChId!, webhook.url);
-            console.log('6');
             await DBManager.createWebhook(newHook);
-            console.log('7');
-            await newHook.send({ embeds: [EmbedCreator.Success('Updates Channel Set__\nPlugin updates will now be posted here!')] });
+            await newHook.send({ embeds: [EmbedCreator.Success('__Updates Channel Set__\nPlugin updates will now be posted here!')] });
           }
         }
 
