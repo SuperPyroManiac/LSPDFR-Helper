@@ -1,7 +1,11 @@
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 import { Cache } from '../../Cache';
 import { State } from '../../CustomTypes/Enums/State';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 import { Logger } from '../Messages/Logger';
+import { CookieJar } from 'tough-cookie';
+import { wrapper } from 'axios-cookiejar-support';
 import { DBManager } from '../DBManager';
 
 interface LSPDFRPlugin {
@@ -14,8 +18,6 @@ export class PluginValidation {
   public static async CheckUpdates() {
     const webPlugs = await this.getPlugins().catch();
     const plugs = Cache.getPlugins();
-    const emb = EmbedCreator.Info('__Plugin Updates__\r\n-# A new version of the plugins listed have been found!\r\n');
-    let cnt = 0;
 
     if (!webPlugs || !webPlugs.length) return;
 
@@ -36,6 +38,12 @@ export class PluginValidation {
         if (!localPlug.version) localPlug.version = '0';
         if (localPlug.version === webPlug.file_version) continue;
 
+        const emb = EmbedCreator.Info('__Plugin Update__\r\n');
+        emb.setThumbnail('https://i.imgur.com/jxODw4N.png');
+
+        const mainImage = await this.getPluginMainImage(localPlug.link!);
+        if (mainImage) emb.data.image = { url: mainImage };
+
         emb.data.description +=
           `## __[${localPlug.name}](${localPlug.link})__\r\n` +
           `> **Previous Version:** \`${localPlug.version}\`\r\n` +
@@ -46,11 +54,9 @@ export class PluginValidation {
         if (this.compareVer(localPlug.version, webPlug.file_version) === 1) continue;
         localPlug.version = webPlug.file_version;
         await DBManager.editPlugin(localPlug);
-        cnt++;
+        await Logger.BotLog(emb);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
-    }
-    if (cnt > 0) {
-      await Logger.BotLog(emb);
     }
   }
 
@@ -88,6 +94,33 @@ export class PluginValidation {
       }
     }
     return allPlugins;
+  }
+
+  private static async getPluginMainImage(pluginUrl: string): Promise<string | null> {
+    const jar = new CookieJar();
+    const client = wrapper(
+      axios.create({
+        jar,
+        maxRedirects: 5,
+        withCredentials: true,
+      })
+    );
+
+    try {
+      const response = await client.get(pluginUrl);
+      const $ = cheerio.load(response.data);
+
+      // Target the og:image meta tag specifically
+      const ogImage = $('meta[property="og:image"]').attr('content');
+
+      if (ogImage) {
+        return ogImage;
+      }
+
+      return null;
+    } catch (error) {
+      return null;
+    }
   }
 
   public static compareVer(version1: string, version2: string): number {
