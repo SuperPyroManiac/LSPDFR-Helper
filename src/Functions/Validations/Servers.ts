@@ -32,9 +32,10 @@ export class ServerValidation {
       const emb = EmbedCreator.Success(
         '__LSPDFR Helper Added!__\r\n' +
           '-# This bot is able to read a multitude of different log types and even provide support autonomously!\r\n\r\n' +
-          'Created by SuperPyroManiac with the help of Hammer using data collected from ULSS, RPH, and DG.\r\n' +
+          'Created by SuperPyroManiac. Join the Discord if you want to contribute!\r\n' +
           'To contribute or for more information, you may visit the PF Discord or GitHub.\r\n\r\n' +
           'To get started, you can assign the AutoHelper channels using the web interface linked below.\r\n' +
+          'There are other settings as well on the web page you can custimize. Check it out yourself!\r\n' +
           'You can adjust what commands users can see by adjusting your integration server settings.\r\n\r\n' +
           '*You may delete this message or click the buttons below for more info!*'
       );
