@@ -6,6 +6,9 @@ import { UpdateServer } from './SiteConnect/UpdateServer';
 import { AddPlugin } from './SiteConnect/Plugins/AddPlugin';
 import { RemovePlugin } from './SiteConnect/Plugins/RemovePlugin';
 import { EditPlugin } from './SiteConnect/Plugins/EditPlugin';
+import { AddError } from './SiteConnect/Errors/AddError';
+import { EditError } from './SiteConnect/Errors/EditError';
+import { RemoveError } from './SiteConnect/Errors/RemoveError';
 
 export class APIManager {
   private static app = express();
@@ -24,6 +27,9 @@ export class APIManager {
     AddPlugin.init();
     EditPlugin.init();
     RemovePlugin.init();
+    AddError.init();
+    EditError.init();
+    RemoveError.init();
   }
 
   private static setupRoutes() {
