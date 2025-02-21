@@ -50,6 +50,7 @@ export class UpdateServer {
             const webhook = await ch.createWebhook({
               name: 'LSPDFR Helper',
               avatar: 'https://i.imgur.com/jxODw4N.png',
+              reason: 'Plugin update notifications',
             });
             const newHook = new UpdateWebhook(guildId, serv?.announceChId!, webhook.url);
             await DBManager.createWebhook(newHook);
