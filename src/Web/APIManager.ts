@@ -9,6 +9,8 @@ import { EditPlugin } from './SiteConnect/Plugins/EditPlugin';
 import { AddError } from './SiteConnect/Errors/AddError';
 import { EditError } from './SiteConnect/Errors/EditError';
 import { RemoveError } from './SiteConnect/Errors/RemoveError';
+import { EditServer } from './SiteConnect/Servers/EditServer';
+import { EditUser } from './SiteConnect/Users/EditUser';
 
 export class APIManager {
   private static app = express();
@@ -30,6 +32,8 @@ export class APIManager {
     AddError.init();
     EditError.init();
     RemoveError.init();
+    EditUser.init();
+    EditServer.init();
   }
 
   private static setupRoutes() {
