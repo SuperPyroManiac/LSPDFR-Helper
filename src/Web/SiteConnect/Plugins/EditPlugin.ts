@@ -1,9 +1,9 @@
 import { codeBlock } from 'discord.js';
-import { DBManager } from '../../Functions/DBManager';
-import { Logger } from '../../Functions/Messages/Logger';
-import { APIManager } from '../APIManager';
+import { DBManager } from '../../../Functions/DBManager';
+import { Logger } from '../../../Functions/Messages/Logger';
+import { APIManager } from '../../APIManager';
 import { Request, Response } from 'express';
-import { EmbedCreator } from '../../Functions/Messages/EmbedCreator';
+import { EmbedCreator } from '../../../Functions/Messages/EmbedCreator';
 
 export class EditPlugin {
   public static init() {

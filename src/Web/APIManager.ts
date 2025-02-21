@@ -3,9 +3,9 @@ import cors from 'cors';
 import { VersionChecker } from './VersionChecker';
 import { ErrorReport } from './ErrorReport';
 import { UpdateServer } from './SiteConnect/UpdateServer';
-import { AddPlugin } from './SiteConnect/AddPlugin';
-import { RemovePlugin } from './SiteConnect/RemovePlugin';
-import { EditPlugin } from './SiteConnect/EditPlugin';
+import { AddPlugin } from './SiteConnect/Plugins/AddPlugin';
+import { RemovePlugin } from './SiteConnect/Plugins/RemovePlugin';
+import { EditPlugin } from './SiteConnect/Plugins/EditPlugin';
 
 export class APIManager {
   private static app = express();
