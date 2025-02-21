@@ -108,7 +108,13 @@ export class DBManager {
     await this.handleDbOperation(async () => {
       await prisma.errors.update({
         where: { id: error.id },
-        data: error,
+        data: {
+          pattern: error.pattern,
+          solution: error.solution,
+          description: error.description,
+          stringMatch: error.stringMatch,
+          level: error.level,
+        },
       });
     });
     Cache.updateErrors((await this.getErrors()) ?? []);
