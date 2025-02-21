@@ -40,6 +40,7 @@ export class PluginValidation {
 
         const emb = EmbedCreator.Info('__Plugin Update__\r\n');
         emb.setThumbnail('https://i.imgur.com/jxODw4N.png');
+        emb.setFooter({ text: 'Automated Notification | LSPDFR Helper' });
 
         const mainImage = await this.getPluginMainImage(localPlug.link!);
         if (mainImage) emb.data.image = { url: mainImage };
@@ -55,7 +56,14 @@ export class PluginValidation {
         localPlug.version = webPlug.file_version;
         await DBManager.editPlugin(localPlug);
         await Logger.BotLog(emb);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const hooks = await DBManager.getWebhooks();
+        if (hooks)
+          for (let i = 0; i < hooks.length; i += 10) {
+            await Promise.all(hooks.slice(i, i + 10).map(async (hook) => hook.send({ embeds: [emb] })));
+            if (i + 10 < hooks.length) await new Promise((r) => setTimeout(r, 2000));
+          }
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       }
     }
   }

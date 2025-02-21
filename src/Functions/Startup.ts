@@ -29,6 +29,13 @@ export class Startup {
   }
 
   private static async SendMessages() {
+    // const cha = (await container.client.channels.fetch('1268215151492862015')) as TextChannel;
+    // const webhook = await cha.createWebhook({
+    //   name: 'LSPDFR Helper Test',
+    //   avatar: 'https://i.imgur.com/jxODw4N.png',
+    // });
+    // const uwebhook = new UpdateWebhook('1268215151492862012', '1268215151492862015', webhook.url);
+    // await DBManager.createWebhook(uwebhook);
     const gitInfo = this.getGitInfo();
     const emb = EmbedCreator.Success('__LSPDFR Helper Initialized!__\n');
     if (gitInfo)
