@@ -36,7 +36,7 @@ export class UpdateServer {
 
         //Announce Channel Setup
         const existingHook = await DBManager.getWebhook(guildId);
-        if (existingHook?.channelId !== serv?.announceChId) await existingHook?.delete();
+        if (existingHook) if (existingHook.channelId !== serv?.announceChId) await existingHook?.delete();
         if (serv?.announceChId != '0') {
           const ch = await container.client.channels.fetch(serv?.announceChId!);
           if (ch instanceof TextChannel || ch instanceof NewsChannel) {
