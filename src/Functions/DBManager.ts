@@ -7,6 +7,7 @@ import { Case } from '../CustomTypes/MainTypes/Case';
 import { User } from '../CustomTypes/MainTypes/User';
 import { Server } from '../CustomTypes/MainTypes/Server';
 import { Cache } from '../Cache';
+import { UpdateWebhook } from '../CustomTypes/MainTypes/UpdateWebhook';
 const prisma = new PrismaClient();
 
 export class DBManager {
@@ -282,5 +283,37 @@ export class DBManager {
       await prisma.servers.delete({ where: { id } });
     });
     Cache.updateServers((await this.getServers()) ?? []);
+  }
+
+  public static async createWebhook(webhook: UpdateWebhook): Promise<void> {
+    await this.handleDbOperation(async () => {
+      await prisma.updatewebhooks.create({
+        data: {
+          serverId: webhook.serverId,
+          channelId: webhook.channelId,
+          webhookUrl: webhook.webhookUrl,
+        },
+      });
+    });
+  }
+
+  public static async getWebhook(serverId: string): Promise<UpdateWebhook | null> {
+    return this.handleDbOperation(async () => {
+      const result = await prisma.updatewebhooks.findUnique({ where: { serverId } });
+      return result ? new UpdateWebhook(result.serverId, result.channelId, result.webhookUrl) : null;
+    });
+  }
+
+  public static async getWebhooks(): Promise<UpdateWebhook[] | null> {
+    return this.handleDbOperation(async () => {
+      const results = await prisma.updatewebhooks.findMany();
+      return results.map((result) => new UpdateWebhook(result.serverId, result.channelId, result.webhookUrl));
+    });
+  }
+
+  public static async deleteWebhook(serverId: string): Promise<void> {
+    await this.handleDbOperation(async () => {
+      await prisma.updatewebhooks.delete({ where: { serverId } });
+    });
   }
 }
