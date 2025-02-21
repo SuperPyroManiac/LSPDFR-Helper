@@ -49,7 +49,7 @@ export class UpdateServer {
           if (ch instanceof TextChannel || ch instanceof NewsChannel) {
             const webhook = await ch.createWebhook({
               name: 'LSPDFR Helper',
-              avatar: 'https://i.imgur.com/jxODw4N.png',
+              avatar: container.client.user?.avatarURL(),
               reason: 'Plugin update notifications',
             });
             const newHook = new UpdateWebhook(guildId, serv?.announceChId!, webhook.url);
