@@ -87,9 +87,9 @@ export class DBManager {
     });
   }
 
-  public static async createError(error: Error): Promise<void> {
-    await this.handleDbOperation(async () => {
-      await prisma.errors.create({
+  public static async createError(error: Error): Promise<number> {
+    const result = await this.handleDbOperation(async () => {
+      const created = await prisma.errors.create({
         data: {
           pattern: error.pattern ?? null,
           solution: error.solution ?? null,
@@ -98,8 +98,10 @@ export class DBManager {
           level: error.level as any,
         },
       });
+      Cache.updateErrors((await this.getErrors()) ?? []);
+      return created.id;
     });
-    Cache.updateErrors((await this.getErrors()) ?? []);
+    return result ?? 0;
   }
 
   public static async editError(error: Error): Promise<void> {

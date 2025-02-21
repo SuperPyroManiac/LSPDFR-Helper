@@ -1,10 +1,10 @@
 import { codeBlock } from 'discord.js';
-import { Plugin } from '../../CustomTypes/MainTypes/Plugin';
-import { DBManager } from '../../Functions/DBManager';
-import { Logger } from '../../Functions/Messages/Logger';
-import { APIManager } from '../APIManager';
+import { Plugin } from '../../../CustomTypes/MainTypes/Plugin';
+import { DBManager } from '../../../Functions/DBManager';
+import { Logger } from '../../../Functions/Messages/Logger';
+import { APIManager } from '../../APIManager';
 import { Request, Response } from 'express';
-import { EmbedCreator } from '../../Functions/Messages/EmbedCreator';
+import { EmbedCreator } from '../../../Functions/Messages/EmbedCreator';
 
 export class AddPlugin {
   public static init() {
