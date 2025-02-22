@@ -9,7 +9,7 @@ export class AhChannel {
   public static async UpdateCaseMsg(serverId: string) {
     try {
       const description =
-        '\n> You can check files for common issues here. \n> Currently supported files:\n> - **RagePluginHook Logs**\n> - **ELS Logs**\n> - **ASI Logs** \n> - **.xml Files**\n> - **.meta Files**' +
+        '\n> You can check files for common issues here. \n> Currently supported files:\n> - **RagePluginHook Logs**\n> - **ELS Logs**\n> - **ASI Logs** \n> - **.xml Files**\n> - **.meta Files**\n> - **Images**' +
         '\n> Please note that frequent issues can often be detected, but human assistance may be required for more advanced problems.' +
         `\n\n## ${process.env['ALERT']!} __AutoHelper Terms Of Use__` +
         '\n> - No modified logs' +

@@ -52,7 +52,7 @@ export class EditUser {
             '__User Edited!__\n' +
               `>>> -# Sender: ${userData.name}\n` +
               `**User ID:** ${oldUser.id}\n**Username:** ${oldUser.name}
-          n${changes.join('\n')}`
+          ${changes.join('\n')}`
           )
         );
 

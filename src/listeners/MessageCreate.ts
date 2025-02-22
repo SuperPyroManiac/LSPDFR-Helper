@@ -14,6 +14,9 @@ import { ASIValidator } from '../Functions/Processors/ASI/ASIValidator';
 import { addDays, differenceInMinutes } from 'date-fns';
 import { DBManager } from '../Functions/DBManager';
 import { UsersValidation } from '../Functions/Validations/Users';
+import { fuzzy } from 'fast-fuzzy';
+import { Level } from '../CustomTypes/Enums/Level';
+import Tesseract from 'tesseract.js';
 
 export class MessageCreateListener extends Listener {
   public constructor(context: Listener.LoaderContext, options: Listener.Options) {
@@ -34,7 +37,24 @@ export class MessageCreateListener extends Listener {
   private async ahChannels(msg: Message) {
     const cs = Cache.getCases().find((c) => c.channelId === msg.channelId && c.open);
     if (!cs || msg.author.id !== cs?.ownerId) return;
-    const acceptedTypes = ['ragepluginhook', 'els', 'asiloader', '.xml', '.meta'];
+    const acceptedTypes = [
+      'ragepluginhook',
+      'els',
+      'asiloader',
+      '.xml',
+      '.meta',
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.webp',
+      '.bmp',
+      '.tiff',
+      '.tif',
+      '.gif',
+      '.pbm',
+      '.pgm',
+      '.ppm',
+    ];
 
     const currentTime = new Date();
     if (differenceInMinutes(cs.expireDate, currentTime) <= 1435) {
@@ -42,7 +62,26 @@ export class MessageCreateListener extends Listener {
       await DBManager.editCase(cs);
     }
 
-    //TODO: Text and IMG recog - Fuzzy alt fast-fuzzy | IMG has direct port
+    if (msg.content.length > 7) {
+      const bestMatch = Cache.getErrors()
+        .filter((x) => x.level === Level.PMSG)
+        .map((emsg) => ({
+          id: emsg.id,
+          match: fuzzy(msg.content.toLowerCase(), emsg.pattern?.toLowerCase()!),
+          solution: emsg.solution!,
+        }))
+        .filter((x) => x.match > 0.7)
+        .reduce((best, current) => (current.match > best.match ? current : best), { id: 0, match: 0, solution: '' });
+
+      if (bestMatch.match > 0) {
+        await msg.reply({
+          embeds: [
+            EmbedCreator.Support(`__LSPDFR AutoHelper__\n-# Matched with ID: ${bestMatch.id} - ${(bestMatch.match * 100).toFixed(2)}%\n\n>>> ${bestMatch.solution}`),
+          ],
+        });
+      }
+    }
+
     if (msg.attachments.size === 0) return;
     for (const a of msg.attachments.values()) {
       //prettier-ignore
@@ -83,6 +122,41 @@ export class MessageCreateListener extends Listener {
         } else if (a.name.endsWith('.xml') || a.name.endsWith('.meta')) {
           const xmlProc = new XMLProcessor(a.url, a.name);
           await xmlProc.SendReply(msg);
+        } else if (
+          a.name.endsWith('.png') ||
+          a.name.endsWith('.jpg') ||
+          a.name.endsWith('.jpeg') ||
+          a.name.endsWith('.webp') ||
+          a.name.endsWith('.bmp') ||
+          a.name.endsWith('.tiff') ||
+          a.name.endsWith('.tif') ||
+          a.name.endsWith('.gif') ||
+          a.name.endsWith('.pbm') ||
+          a.name.endsWith('.pgm') ||
+          a.name.endsWith('.ppm')
+        ) {
+          const result = await Tesseract.recognize(a.url, 'eng');
+          const extractedText = result.data.text;
+
+          const bestMatch = Cache.getErrors()
+            .filter((x) => x.level === Level.PIMG)
+            .map((emsg) => ({
+              id: emsg.id,
+              match: fuzzy(extractedText.toLowerCase(), emsg.pattern?.toLowerCase()!),
+              solution: emsg.solution!,
+            }))
+            .filter((x) => x.match > 0.7)
+            .reduce((best, current) => (current.match > best.match ? current : best), { id: 0, match: 0, solution: '' });
+
+          if (bestMatch.match > 0) {
+            await msg.reply({
+              embeds: [
+                EmbedCreator.Support(
+                  `__LSPDFR AutoHelper__\n-# Image Matched with ID: ${bestMatch.id} - ${(bestMatch.match * 100).toFixed(2)}%\n\n>>> ${bestMatch.solution}`
+                ),
+              ],
+            });
+          }
         }
       }
     }
