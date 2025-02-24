@@ -26,7 +26,7 @@ export class OpenCase {
             '> - RagePluginHook.log\n' +
             '> - ELS.log\n' +
             '> - asiloader.log\n' +
-            '> - .xml and .meta files\n\n' +
+            '> - .xml and .meta files\n' +
             '> - Images\n\n' +
             '-# Do not abuse the bot by spamming it or sending altered logs. Your access may be revoked for detected abuse.\n\n' +
             '__This bot is maintained by https://dsc.PyrosFun.com__'
@@ -39,7 +39,8 @@ export class OpenCase {
       ],
     };
 
-    await ch.send(msg);
+    const sentMsg = await ch.send(msg);
+    await sentMsg.pin();
     await ch.members.add(userId);
 
     const newCase = new Case(caseId);

@@ -3,6 +3,7 @@ import { Cache } from '../../Cache';
 import { EmbedCreator } from '../Messages/EmbedCreator';
 import { Logger } from '../Messages/Logger';
 import { DBManager } from '../DBManager';
+import { AhType } from '../../CustomTypes/Enums/AhType';
 
 export class CaseMonitor {
   public static async Update(serverId: string) {
@@ -39,6 +40,11 @@ export class CaseMonitor {
           value: `>>> Author: <@${c.ownerId}>\nCreated: ${time(c.createDate, TimestampStyles.RelativeTime)} | AutoClose: ${time(c.expireDate, TimestampStyles.RelativeTime)}`,
         });
       }
+      if (server.ahType === AhType.CHANNEL)
+        emb.addFields({
+          name: 'Channel Mode',
+          value: 'Your AutoHelper is set to channel mode, there will never be open cases here! For cases use either the ticket or hybrid modes.',
+        });
       if (!emb.data.fields) emb.addFields({ name: 'No Cases', value: 'There are no open cases!' });
 
       await msg.edit({ embeds: [emb] });

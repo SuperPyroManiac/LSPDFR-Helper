@@ -30,7 +30,8 @@ export class UpdateServer {
 
       try {
         await Cache.resetCache();
-        await AhChannel.UpdateCaseMsg(guildId);
+        await AhChannel.UpdateTicketMsg(guildId);
+        await AhChannel.UpdateChannelMsg(guildId);
         await CaseMonitor.Update(guildId);
 
         //Announce Channel Setup

@@ -17,6 +17,8 @@ import { UsersValidation } from '../Functions/Validations/Users';
 import { fuzzy } from 'fast-fuzzy';
 import { Level } from '../CustomTypes/Enums/Level';
 import Tesseract from 'tesseract.js';
+import { AhType } from '../CustomTypes/Enums/AhType';
+import { AhChannel } from '../Functions/AutoHelper/AhChannel';
 
 export class MessageCreateListener extends Listener {
   public constructor(context: Listener.LoaderContext, options: Listener.Options) {
@@ -26,42 +28,58 @@ export class MessageCreateListener extends Listener {
     });
   }
 
+  private acceptedTypes = [
+    'ragepluginhook',
+    'els',
+    'asiloader',
+    '.xml',
+    '.meta',
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.webp',
+    '.bmp',
+    '.tiff',
+    '.tif',
+    '.gif',
+    '.pbm',
+    '.pgm',
+    '.ppm',
+  ];
+
   public async run(msg: Message) {
     await UsersValidation.Verify(msg.author);
 
-    if (Cache.getCases().some((c) => c.channelId === msg.channelId && c.open)) {
+    if (Cache.getServers().some((s) => s.ahChId === msg.channelId)) {
       await this.ahChannels(msg);
+    }
+
+    if (Cache.getCases().some((c) => c.channelId === msg.channelId && c.open)) {
+      await this.ahCases(msg);
     }
   }
 
   private async ahChannels(msg: Message) {
+    if (msg.embeds[0]?.description?.includes('Created by: SuperPyroManiac')) return;
+    if (Cache.getServer(msg.guildId!)?.ahType !== AhType.TICKET) {
+      await this.ProcessMessage(msg);
+      await AhChannel.UpdateChannelMsg(msg.guildId!);
+    }
+  }
+
+  private async ahCases(msg: Message) {
     const cs = Cache.getCases().find((c) => c.channelId === msg.channelId && c.open);
     if (!cs || msg.author.id !== cs?.ownerId) return;
-    const acceptedTypes = [
-      'ragepluginhook',
-      'els',
-      'asiloader',
-      '.xml',
-      '.meta',
-      '.png',
-      '.jpg',
-      '.jpeg',
-      '.webp',
-      '.bmp',
-      '.tiff',
-      '.tif',
-      '.gif',
-      '.pbm',
-      '.pgm',
-      '.ppm',
-    ];
 
     const currentTime = new Date();
     if (differenceInMinutes(cs.expireDate, currentTime) <= 1435) {
       cs.expireDate = addDays(currentTime, 1);
       await DBManager.editCase(cs);
     }
+    await this.ProcessMessage(msg);
+  }
 
+  private async ProcessMessage(msg: Message) {
     if (msg.content.length > 7) {
       const bestMatch = Cache.getErrors()
         .filter((x) => x.level === Level.PMSG)
@@ -70,7 +88,7 @@ export class MessageCreateListener extends Listener {
           match: fuzzy(msg.content.toLowerCase(), emsg.pattern?.toLowerCase()!),
           solution: emsg.solution!,
         }))
-        .filter((x) => x.match > 0.7)
+        .filter((x) => x.match > 0.85)
         .reduce((best, current) => (current.match > best.match ? current : best), { id: 0, match: 0, solution: '' });
 
       if (bestMatch.match > 0) {
@@ -91,11 +109,11 @@ export class MessageCreateListener extends Listener {
         if (a.name === 'message.txt') await msg.reply({embeds: [EmbedCreator.Support("__LSPDFR AutoHelper__\r\n>>> Please don't copy and paste the log! Please send `RagePluginHook.log` from your main GTA directory instead by dragging it into Discord."),],});
       }
 
-      if (acceptedTypes.some((x) => a.name.toLowerCase().includes(x))) {
-        if (a.size / 1000000 > 10) {
+      if (this.acceptedTypes.some((x) => a.name.toLowerCase().includes(x))) {
+        if (a.size / 1000000 > 15) {
           await Reports.largeLog(msg, a, true);
           return;
-        } else if (a.size / 1000000 > 3) {
+        } else if (a.size / 1000000 > 5) {
           await Reports.largeLog(msg, a);
           return;
         }
@@ -145,7 +163,7 @@ export class MessageCreateListener extends Listener {
               match: fuzzy(extractedText.toLowerCase(), emsg.pattern?.toLowerCase()!),
               solution: emsg.solution!,
             }))
-            .filter((x) => x.match > 0.7)
+            .filter((x) => x.match > 0.85)
             .reduce((best, current) => (current.match > best.match ? current : best), { id: 0, match: 0, solution: '' });
 
           if (bestMatch.match > 0) {

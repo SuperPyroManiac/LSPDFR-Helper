@@ -38,11 +38,14 @@ export class EditServer {
         if (oldServer.banned !== serverData.banned) {
           changes.push(`**Banned:** ${oldServer.banned} → ${serverData.banned}`);
         }
-        if (oldServer.autoSupport !== serverData.autoSupport) {
-          changes.push(`**Auto Support:** ${oldServer.autoSupport} → ${serverData.autoSupport}`);
+        if (oldServer.redirect !== serverData.redirect) {
+          changes.push(`**Redirect:** ${oldServer.redirect} → ${serverData.redirect}`);
         }
-        if (oldServer.ahCases !== serverData.ahCases) {
-          changes.push(`**Cases Enabled:** ${oldServer.ahCases} → ${serverData.ahCases}`);
+        if (oldServer.request !== serverData.request) {
+          changes.push(`**Request:** ${oldServer.request} → ${serverData.request}`);
+        }
+        if (oldServer.ahType !== serverData.AhType) {
+          changes.push(`**AH Type:** ${oldServer.ahType} → ${serverData.AhType}`);
         }
         if (oldServer.ahChId !== serverData.ahChId) {
           changes.push(`**Helper Channel:** ${oldServer.ahChId} → ${serverData.ahChId}`);
@@ -53,18 +56,15 @@ export class EditServer {
         if (oldServer.announceChId !== serverData.announceChId) {
           changes.push(`**Announce Channel:** ${oldServer.announceChId} → ${serverData.announceChId}`);
         }
-        if (oldServer.updateChId !== serverData.updateChId) {
-          changes.push(`**Update Channel:** ${oldServer.updateChId} → ${serverData.updateChId}`);
-        }
 
         oldServer.enabled = serverData.enabled;
         oldServer.banned = serverData.banned;
-        oldServer.autoSupport = serverData.autoSupport;
-        oldServer.ahCases = serverData.ahCases;
+        oldServer.redirect = serverData.redirect;
+        oldServer.request = serverData.request;
+        oldServer.ahType = serverData.AhType;
         oldServer.ahChId = serverData.ahChId;
         oldServer.ahMonChId = serverData.ahMonChId;
         oldServer.announceChId = serverData.announceChId;
-        oldServer.updateChId = serverData.updateChId;
 
         await DBManager.editServer(oldServer);
         await Logger.BotLog(

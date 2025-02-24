@@ -45,12 +45,12 @@ model servers {
   ownerId      String
   enabled      Boolean @default(true)
   banned       Boolean @default(false)
-  autoSupport  Boolean @default(true)
-  ahCases      Boolean @default(true)
+  redirect     Boolean @default(false)
+  request      Boolean @default(true)
+  ahType       AhType  @default(TICKET)
   ahChId       String  @default("0")
   ahMonChId    String  @default("0")
   announceChId String  @default("0")
-  updateChId   String  @default("0")
 }
 
 model users {
@@ -90,4 +90,10 @@ enum Level {
   WARN
   SEVERE
   CRITICAL
+}
+
+enum AhType {
+  TICKET
+  HYBRID
+  CHANNEL
 }

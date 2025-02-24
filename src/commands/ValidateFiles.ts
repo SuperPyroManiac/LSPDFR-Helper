@@ -63,10 +63,10 @@ export class ValidateFilesCommand extends Command {
       } else if (validAttachments.length === 1) {
         attach = validAttachments[0];
 
-        if (attach!.size / 1000000 > 10) {
+        if (attach!.size / 1000000 > 15) {
           await Reports.largeLog(interaction, attach!, true);
           return;
-        } else if (attach!.size / 1000000 > 3) {
+        } else if (attach!.size / 1000000 > 5) {
           await Reports.largeLog(interaction, attach!);
           return;
         }
