@@ -60,7 +60,7 @@ export class MessageCreateListener extends Listener {
   }
 
   private async ahChannels(msg: Message) {
-    if (msg.embeds[0]?.description?.includes('Created by: SuperPyroManiac')) return;
+    if (msg.embeds[0]?.description?.includes('Created by: SuperPyroManiac') || msg.flags.has('Ephemeral')) return;
     if (Cache.getServer(msg.guildId!)?.ahType !== AhType.TICKET) {
       await this.ProcessMessage(msg);
       await AhChannel.UpdateChannelMsg(msg.guildId!);
