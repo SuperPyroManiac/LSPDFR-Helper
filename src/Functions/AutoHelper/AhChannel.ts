@@ -86,8 +86,8 @@ export class AhChannel {
     try {
       this.throttle(serverId, async () => {
         const description =
-          '\n-# You can check files for common issues here.\n-# Simply upload a file here to check it.\n\n' +
-          `${process.env['QUESTION']!} **__Currently supported files:__**\n> - **RagePluginHook Logs, ELS Logs, ASI Logs**\n> - **.xml Files, .meta Files, and Images**` +
+          '\nYou can check files for common issues here.\n**Simply upload a file here to check it.**\n\n' +
+          `${process.env['QUESTION']!} **__Currently supported files:__**\n> - RagePluginHook Logs, ELS Logs, ASI Logs\n> - .xml Files, .meta Files, and Images` +
           `\n\n${process.env['ALERT']!} **__AutoHelper Rules__**` +
           '\n> - No modified logs' +
           '\n> - No files bigger than **__5MB__**.' +
