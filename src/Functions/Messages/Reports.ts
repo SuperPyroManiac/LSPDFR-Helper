@@ -9,8 +9,8 @@ type ReportInteraction = MessageContextMenuCommandInteraction | Message | String
 const SUPPORT_SERVER_URL = 'https://dsc.PyrosFun.com';
 const ERROR_MESSAGES = {
   MODIFIED: `__Modified Log__\n>>> -# This log is invalid!\nThe selected log has been modified or is invalid It will not be processed.\nFor more information you can join the bots support server at ${SUPPORT_SERVER_URL}`,
-  OVERSIZED: `__Oversized Log__\n>>> -# This log is not allowed!\nThis log is bigger than 3MB and will not be processed.\nFor more information you can join the bots support server at ${SUPPORT_SERVER_URL}`,
-  OVERSIZED_BAN: `__Oversized Log__\n>>> -# This log is not allowed!\nThis log is much bigger than 3MB and will not be processed.\nDue to the size, you have been automatically banned. For more information you can join the bots support server at ${SUPPORT_SERVER_URL}`,
+  OVERSIZED: `__Oversized Log__\n>>> -# This log is not allowed!\nThis log is bigger than 5MB and will not be processed.\nFor more information you can join the bots support server at ${SUPPORT_SERVER_URL}`,
+  OVERSIZED_BAN: `__Oversized Log__\n>>> -# This log is not allowed!\nThis log is much bigger than 5MB and will not be processed.\nDue to the size, you have been automatically banned. For more information you can join the bots support server at ${SUPPORT_SERVER_URL}`,
 };
 
 export class Reports {

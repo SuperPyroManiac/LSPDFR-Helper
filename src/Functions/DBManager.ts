@@ -256,12 +256,12 @@ export class DBManager {
           ownerId: server.ownerId!,
           enabled: server.enabled,
           banned: server.banned,
-          autoSupport: server.autoSupport,
-          ahCases: server.ahCases,
+          redirect: server.redirect,
+          request: server.request,
+          ahType: server.ahType,
           ahChId: server.ahChId,
           ahMonChId: server.ahMonChId,
           announceChId: server.announceChId,
-          updateChId: server.updateChId,
         },
       });
     });

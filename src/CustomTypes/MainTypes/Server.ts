@@ -1,18 +1,19 @@
 import { container } from '@sapphire/framework';
 import { Guild } from 'discord.js';
+import { AhType } from '../Enums/AhType';
 
 export class Server {
   public id: string;
   public name?: string;
   public ownerId?: string;
-  public enabled?: boolean = true;
-  public banned?: boolean = false;
-  public autoSupport?: boolean = true;
-  public ahCases: boolean = true;
+  public enabled: boolean = true;
+  public banned: boolean = false;
+  public redirect: boolean = false;
+  public request: boolean = true;
+  public ahType: AhType = AhType.TICKET;
   public ahChId?: string;
   public ahMonChId?: string;
   public announceChId?: string;
-  public updateChId?: string;
 
   public constructor(id: string = '') {
     this.id = id;
