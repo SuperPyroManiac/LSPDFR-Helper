@@ -44,8 +44,8 @@ export class EditServer {
         if (oldServer.request !== serverData.request) {
           changes.push(`**Request:** ${oldServer.request} → ${serverData.request}`);
         }
-        if (oldServer.ahType !== serverData.AhType) {
-          changes.push(`**AH Type:** ${oldServer.ahType} → ${serverData.AhType}`);
+        if (oldServer.ahType !== serverData.ahType) {
+          changes.push(`**AH Type:** ${oldServer.ahType} → ${serverData.ahType}`);
         }
         if (oldServer.ahChId !== serverData.ahChId) {
           changes.push(`**Helper Channel:** ${oldServer.ahChId} → ${serverData.ahChId}`);
@@ -61,7 +61,7 @@ export class EditServer {
         oldServer.banned = serverData.banned;
         oldServer.redirect = serverData.redirect;
         oldServer.request = serverData.request;
-        oldServer.ahType = serverData.AhType;
+        oldServer.ahType = serverData.ahType;
         oldServer.ahChId = serverData.ahChId;
         oldServer.ahMonChId = serverData.ahMonChId;
         oldServer.announceChId = serverData.announceChId;
